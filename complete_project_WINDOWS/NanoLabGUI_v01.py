@@ -147,7 +147,7 @@ root.geometry("%dx%d" % (width, height))
 root.eval("tk::PlaceWindow . center")
 
 # create a frame widgets
-frame1 = tk.Frame(root, width=1920, height=1080, bg=bg_colour)
+frame1 = tk.Frame(root, width=width, height=height, bg=bg_colour)
 frame2 = tk.Frame(root, bg=bg_colour)
 
 # place frame widgets in window
