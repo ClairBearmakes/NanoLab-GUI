@@ -3,7 +3,8 @@ from PIL import ImageTk
 import sqlite3
 from numpy import random
 import pyglet
-# Test Commit?
+import webbrowser
+
 # set colours
 bg_colour = "white"
 menu_bg_color = "black"
@@ -13,6 +14,14 @@ act_fg_color = "#808080"
 # load custom fonts
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
 pyglet.font.add_file("fonts/Shanti-Regular.ttf")
+
+# set about website
+new = 1
+url = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
+
+# funtion for about button website
+def openweb():
+    webbrowser.open(url,new=new)
 
 def clear_widgets(frame):
 	# select all frame widgets and delete them
@@ -45,6 +54,8 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_bg_color,
 		activeforeground=act_fg_color,
+		# webbrowser.open(url, new=new),
+		command=openweb
 		# command=lambda:load_menu() # load the about frame
 		).grid(row=0, column=1, sticky="w", padx="8", pady="5")
 
@@ -60,6 +71,32 @@ def load_menu(): # button bar on top
 		activeforeground=act_fg_color,
 		# command=lambda:load_menu() # open file explorer
 		).grid(row=0, column=2, sticky="w", padx="8", pady="5")
+
+	# create updates button widget
+	tk.Button(
+		menu,
+		text="Updates",
+		font=("Ubuntu", 12),
+		bg=menu_bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=menu_bg_color,
+		activeforeground=act_fg_color,
+		# command=lambda:load_menu() # open site with changes to code/app
+		).grid(row=0, column=3, sticky="w", padx="8", pady="5")
+
+	# create log button widget
+	tk.Button(
+		menu,
+		text="Log",
+		font=("Ubuntu", 12),
+		bg=menu_bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=menu_bg_color,
+		activeforeground=act_fg_color,
+		# command=lambda:load_menu() # open a log of what is happening right now
+		).grid(row=0, column=4, sticky="e", padx="8", pady="5")
 
 def load_frame1():
 	clear_widgets(frame2)
