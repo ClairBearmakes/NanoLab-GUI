@@ -18,10 +18,14 @@ pyglet.font.add_file("fonts/Shanti-Regular.ttf")
 # set about website
 new = 1
 url = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
+url1 = "https://github.com/ClairBearmakes/NanoLab-GUI"
 
 # funtion for about button website
 def openweb():
     webbrowser.open(url,new=new)
+# function for update button website
+def openweb1():
+	webbrowser.open(url1,new=new)
 
 def clear_widgets(frame):
 	# select all frame widgets and delete them
@@ -82,6 +86,8 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_bg_color,
 		activeforeground=act_fg_color,
+		# webbrowser.open(url1, new=new),
+		command = openweb1
 		# command=lambda:load_menu() # open site with changes to code/app
 		).grid(row=0, column=3, sticky="w", padx="8", pady="5")
 
