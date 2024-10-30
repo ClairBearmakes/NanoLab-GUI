@@ -40,11 +40,11 @@ root.eval("tk::PlaceWindow . center")
 # create a frame widgets
 menu = tk.Frame(root, width=width, height="50", bg="#000000")
 frame1 = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
-frame2 = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
+settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
 
 # place frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
-for frame in (frame1, frame2):
+for frame in (frame1, settings_frame):
 	frame.grid(rowspan=2, row=1, column=0, sticky="nesw")
 
 # funtion for about button website
@@ -65,19 +65,19 @@ def load_menu(): # button bar on top
 
 
 def load_frame1():
-	clear_widgets(frame2)
+	clear_widgets(settings_frame)
 	# stack frame 1 above frame 2
 	frame1.tkraise()
 	# prevent widgets from modifying the frame
 	frame1.pack_propagate(False)
 	# 'back' button widget (replace with back icon)
 	
-def load_frame2():
+def load_settings_frame():
 	clear_widgets(frame1)
 	# stack frame 2 above frame 1
-	frame2.tkraise()
+	settings_frame.tkraise()
 	# prevent widgets from modifying the frame
-	frame2.pack_propagate(False)
+	settings_frame.pack_propagate(False)
 	# 'back' button widget (replace with back icon)
 
 	tk.Button(
@@ -158,7 +158,7 @@ def load_frame2():
 		cursor="hand2",
 		activebackground=menu_bg_color,
 		activeforeground=act_fg_color,
-		command=lambda:load_frame2(),
+		command=lambda:load_settings_frame(),
 		).grid(row=0, column=5, sticky="w", padx="8", pady="5")
 
 	# create logo widget
@@ -168,13 +168,13 @@ def load_frame2():
 	logo_widget.grid(row=0, column=0)
 
 	# create logo widget
-	logo_img = ImageTk.PhotoImage(file="assets/NanoLabs_logo.png")
-	logo_widget = tk.Label(frame2, image=logo_img, bg=bg_colour)
-	logo_widget.image = logo_img
-	logo_widget.grid(row=0, column=0)
+	#logo_img = ImageTk.PhotoImage(file="assets/NanoLabs_logo.png")
+	#logo_widget = tk.Label(settings_frame, image=logo_img, bg=bg_colour)
+	#logo_widget.image = logo_img
+	#logo_widget.grid(row=0, column=0)
 
 	# load settings window
-	command=lambda:load_frame2()
+	command=lambda:load_settings_frame()
 	print("settings loaded")
 
 	# data results button
@@ -183,14 +183,15 @@ def load_frame2():
 		text="Data Results",
 		font=("Ubuntu", 20),
 		bg=bg_colour,
-		fg=fg_color,
+		fg=menu_bg_color,
 		activebackground=menu_bg_color,
 		activeforeground=act_fg_color,
 		).grid(row=1, column=0)
 
 # load the first frame
 load_menu()
-load_frame2()
+load_settings_frame()
+load_frame1()
 
 # run app
 root.mainloop()
