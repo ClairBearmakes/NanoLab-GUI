@@ -40,7 +40,11 @@ root.eval("tk::PlaceWindow . center")
 # create a frame widgets
 menu = tk.Frame(root, width=width, height="50", bg="#000000")
 frame1 = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
-frame2 = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
+
+# place frame widgets in window
+menu.grid(row=0, column=0, sticky=tk.E+tk.W)
+for frame in (frame1):
+	frame.grid(rowspan=2, row=1, column=0, sticky="nesw")
 
 # place frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
@@ -148,6 +152,7 @@ def load_frame2():
 		# command=lambda:load_menu() # open a log of what is happening right now
 		).grid(row=0, column=4, sticky="e", padx="8", pady="5")
 
+
 	# create settings button widget
 	tk.Button(
 		menu,
@@ -187,6 +192,11 @@ def load_frame2():
 		activebackground=menu_bg_color,
 		activeforeground=act_fg_color,
 		).grid(row=1, column=0)
+
+
+
+
+
 
 # load the first frame
 load_menu()
