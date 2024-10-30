@@ -105,26 +105,9 @@ def load_menu(): # button bar on top
 		).grid(row=0, column=4, sticky="e", padx="8", pady="5")
 
 def load_frame1():
-	clear_widgets(frame2)
-	# stack frame 1 above frame 2
-	frame1.tkraise()
-	# prevent widgets from modifying the frame
-	frame1.pack_propagate(False)
-
-	# create logo widget
-	logo_img = ImageTk.PhotoImage(file="assets/NanoLabs_logo.png")
-	logo_widget = tk.Label(frame1, image=logo_img, bg=bg_colour)
-	logo_widget.image = logo_img
-	logo_widget.grid(row=0, column=0)
-
-	# load settings window
-	command=lambda:load_frame2()
-	print("settings loaded")
-
-def load_frame2():
 	clear_widgets(frame1)
 	# stack frame 2 above frame 1
-	frame2.tkraise()
+	frame1.tkraise()
 
 	# create logo widget
 	logo_img = ImageTk.PhotoImage(file="assets/NanoLabs_logo.png")
@@ -134,7 +117,7 @@ def load_frame2():
 
 	# data results button
 	tk.Button(
-		frame2, 
+		frame1, 
 		text="Data Results",
 		bg=bg_colour,
 		fg="white",
@@ -161,11 +144,10 @@ root.eval("tk::PlaceWindow . center")
 # create a frame widgets
 menu = tk.Frame(root, width=width, height="50", bg="#000000")
 frame1 = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
-frame2 = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
 
 # place frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
-for frame in (frame1, frame2):
+for frame in (frame1):
 	frame.grid(rowspan=2, row=1, column=0, sticky="nesw")
 
 # load the first frame
