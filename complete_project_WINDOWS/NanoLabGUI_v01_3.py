@@ -46,6 +46,11 @@ menu.grid(row=0, column=0, sticky=tk.E+tk.W)
 for frame in (frame1):
 	frame.grid(rowspan=2, row=1, column=0, sticky="nesw")
 
+# place frame widgets in window
+menu.grid(row=0, column=0, sticky=tk.E+tk.W)
+for frame in (frame1, frame2):
+	frame.grid(rowspan=2, row=1, column=0, sticky="nesw")
+
 # funtion for about button website
 def openweb():
     webbrowser.open(url,new=new)
