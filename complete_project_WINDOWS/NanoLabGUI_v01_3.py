@@ -179,7 +179,7 @@ def load_frame2():
 
 	# data results button
 	tk.Button(
-		frame2, 
+		frame1, 
 		text="Data Results",
 		font=("Ubuntu", 20),
 		bg=bg_colour,
