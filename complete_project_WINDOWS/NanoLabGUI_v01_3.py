@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import *
 from PIL import ImageTk
 import sqlite3
 from numpy import random
@@ -38,7 +39,7 @@ root.geometry("%dx%d" % (width, height))
 root.eval("tk::PlaceWindow . center")
 
 # create a frame widgets
-menu = tk.Frame(root, width=width, height="50", bg="#000000")
+menu = tk.Frame(root, width=width, height="50", bg=menu_bg_color)
 frame1 = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
 settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
 
@@ -79,6 +80,8 @@ def load_settings_frame():
 	# prevent widgets from modifying the frame
 	settings_frame.pack_propagate(False)
 	# 'back' button widget (replace with back icon)
+
+# MENU 
 
 	tk.Button(
 		menu,
@@ -161,6 +164,10 @@ def load_settings_frame():
 		command=lambda:load_settings_frame(),
 		).grid(row=0, column=5, sticky="w", padx="8", pady="5")
 
+	#MENU
+
+	#FRAME1
+
 	# create logo widget
 	logo_img = ImageTk.PhotoImage(file="assets/NanoLabs_logo.png")
 	logo_widget = tk.Label(frame1, image=logo_img, bg=bg_colour)
@@ -172,10 +179,6 @@ def load_settings_frame():
 	#logo_widget = tk.Label(settings_frame, image=logo_img, bg=bg_colour)
 	#logo_widget.image = logo_img
 	#logo_widget.grid(row=0, column=0)
-
-	# load settings window
-	command=lambda:load_settings_frame()
-	print("settings loaded")
 
 	# data results button
 	tk.Button(
