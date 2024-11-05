@@ -5,6 +5,9 @@ import sqlite3
 from numpy import random
 import pyglet
 import webbrowser
+import serial 
+
+
 
 # set colours
 bg_colour = "white"
