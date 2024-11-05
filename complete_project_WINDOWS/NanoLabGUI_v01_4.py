@@ -44,7 +44,7 @@ settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_colo
 
 # place frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
-settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
+settings_frame.grid(rowspan=3, columnspan=4, row=1, column=0, sticky="nesw")
 
 # funtion for about button website
 def openweb():
@@ -72,6 +72,8 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
+		width=7, 
+		height=0,
 		command=lambda:load_settings_frame()
 		).grid(row=0, column=0, sticky="w", padx="8", pady="5") # row==up and down, column==left and right
 
@@ -85,7 +87,8 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
-		# webbrowser.open(url, new=new),
+		width=7, 
+		height=0,
 		command=openweb
 		).grid(row=0, column=1, sticky="w", padx="8", pady="5")
 
@@ -99,6 +102,8 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
+		width=7, 
+		height=0,
 		# command=lambda:load_menu() # open file explorer
 		).grid(row=0, column=2, sticky="w", padx="8", pady="5")
 
@@ -112,9 +117,9 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
-		# webbrowser.open(url1, new=new),
+		width=7, 
+		height=0,
 		command = openweb1
-		# command=lambda:load_menu() # open site with changes to code/app
 		).grid(row=0, column=3, sticky="w", padx="8", pady="5")
 
 	# create log button widget
@@ -127,6 +132,8 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
+		width=7, 
+		height=0,
 		# command=lambda:load_menu() # open a log of what is happening right now
 		).grid(row=0, column=4, sticky="e", padx="8", pady="5")
 	
@@ -156,6 +163,8 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
+		width=15, 
+		height=0,
 		# command=lambda:load_settings_frame(), # load data results frame
 		).grid(row=1, column=1, sticky="w", padx="8", pady="5")
 
@@ -169,6 +178,8 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
+		width=15, 
+		height=0,
 		# command=lambda:load_settings_frame(), # load water pump settings frame
 		).grid(row=1, column=2, sticky="w", padx="8", pady="5")
 
@@ -182,6 +193,8 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
+		width=15, 
+		height=0,
 		# command=lambda:load_settings_frame(), # LED settings frame
 		).grid(row=1, column=3, sticky="w", padx="8", pady="5")
 
@@ -195,6 +208,8 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
+		width=15, 
+		height=0,
 		# command=lambda:load_settings_frame(), # load fan settings frame
 		).grid(row=2, column=1, sticky="w", padx="8", pady="5")
 
@@ -208,39 +223,40 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
+		width=15, 
+		height=0,
 		# command=lambda:load_settings_frame(), # load camera settings frame
 		).grid(row=2, column=2, sticky="w", padx="8", pady="5")
 
 	# create atmospheric sensor button widget
 	tk.Button(
 		settings_frame,
-		text="Camera Settings",
+		text="Atmospheric Sensor",
 		font=("Ubuntu", 20),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=lambda:load_settings_frame(), # load camera settings frame
-		).grid(row=2, column=2, sticky="w", padx="8", pady="5")
+		width=15, 
+		height=0,
+		# command=lambda:load_settings_frame(), # load atmospheric sensor settings frame
+		).grid(row=2, column=3, sticky="w", padx="8", pady="5")
 
 	# load settings window
 	command=lambda:load_settings_frame()
 	print("settings loaded")
-<<<<<<< HEAD
-=======
 
-ser = serial.Serial('COM3')
+# ser = serial.Serial('COM3')
 # open serial port
->>>>>>> 2942187f9c538e16bcbf946730c0dd7c325f18a8
- 
-print(ser.name)
+
+# print(ser.name)
  # check which port was really used
  
-ser.write(b'hello')
+# ser.write(b'hello')
  # write a string
  
-ser.close()
+# ser.close()
  # close port	
 
 # load the first frame and button bar
