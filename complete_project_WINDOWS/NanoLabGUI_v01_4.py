@@ -4,6 +4,7 @@ import sqlite3
 from numpy import random
 import pyglet
 import webbrowser
+import serial
 
 # set colours
 menu_bg_color = "#000000"
@@ -161,6 +162,12 @@ def load_settings_frame():
 	command=lambda:load_settings_frame()
 	print("settings loaded")
 
+
+
+#HI
+
+
+ 
 # load the first frame and button bar
 load_menu()
 load_settings_frame()
