@@ -44,7 +44,7 @@ settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_colo
 
 # place frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
-settings_frame.grid(rowspan=2, row=1, column=0, sticky="nesw")
+settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
 
 # funtion for about button website
 def openweb():
@@ -73,8 +73,7 @@ def load_menu(): # button bar on top
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
 		command=lambda:load_settings_frame()
-		).grid(row=0, column=0, sticky="w", padx="8", pady="5") # row==up and down, column==lefft and right
-	print("Back")
+		).grid(row=0, column=0, sticky="w", padx="8", pady="5") # row==up and down, column==left and right
 
 	# create about button widget
 	tk.Button(
@@ -88,7 +87,6 @@ def load_menu(): # button bar on top
 		activeforeground=menu_act_fg_color,
 		# webbrowser.open(url, new=new),
 		command=openweb
-		# command=lambda:load_menu() # load the about frame
 		).grid(row=0, column=1, sticky="w", padx="8", pady="5")
 
 	# create storage button widget
@@ -133,14 +131,17 @@ def load_menu(): # button bar on top
 		).grid(row=0, column=4, sticky="e", padx="8", pady="5")
 	
 def load_settings_frame():
-	clear_widgets(frame1)
+	# clear_widgets(frame1)
 	# stack settings frame above frame 1
-	settings_frame.tkraise()
+	# settings_frame.tkraise()
 	# prevent widgets from modifying the frame
 	settings_frame.pack_propagate(False)
 
-	# create logo widget
-	logo_img = ImageTk.PhotoImage(file="assets/NanoLabs_logo.png")
+	# Read the Image
+	image = Image.open("assets/NanoLabs_logo.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((100, 100))
+	logo_img = ImageTk.PhotoImage(resize_image)
 	logo_widget = tk.Label(settings_frame, image=logo_img, bg=bg_colour)
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
@@ -149,7 +150,7 @@ def load_settings_frame():
 	tk.Button(
 		settings_frame,
 		text="Data Results",
-		font=("Ubuntu", 12),
+		font=("Ubuntu", 20),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
@@ -158,15 +159,74 @@ def load_settings_frame():
 		# command=lambda:load_settings_frame(), # load data results frame
 		).grid(row=1, column=1, sticky="w", padx="8", pady="5")
 
+# create water pump settings button widget
+	tk.Button(
+		settings_frame,
+		text="Water Pump Settings",
+		font=("Ubuntu", 20),
+		bg=bg_colour,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=lambda:load_settings_frame(), # load water pump settings frame
+		).grid(row=1, column=2, sticky="w", padx="8", pady="5")
+
+	# create LED settings button widget
+	tk.Button(
+		settings_frame,
+		text="LED Settings",
+		font=("Ubuntu", 20),
+		bg=bg_colour,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=lambda:load_settings_frame(), # LED settings frame
+		).grid(row=1, column=3, sticky="w", padx="8", pady="5")
+
+	# create fan settings button widget
+	tk.Button(
+		settings_frame,
+		text="Fan Settings",
+		font=("Ubuntu", 20),
+		bg=bg_colour,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=lambda:load_settings_frame(), # load fan settings frame
+		).grid(row=2, column=1, sticky="w", padx="8", pady="5")
+
+	# create camera settings button widget
+	tk.Button(
+		settings_frame,
+		text="Camera Settings",
+		font=("Ubuntu", 20),
+		bg=bg_colour,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=lambda:load_settings_frame(), # load camera settings frame
+		).grid(row=2, column=2, sticky="w", padx="8", pady="5")
+
+	# create atmospheric sensor button widget
+	tk.Button(
+		settings_frame,
+		text="Camera Settings",
+		font=("Ubuntu", 20),
+		bg=bg_colour,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=lambda:load_settings_frame(), # load camera settings frame
+		).grid(row=2, column=2, sticky="w", padx="8", pady="5")
+
 	# load settings window
 	command=lambda:load_settings_frame()
 	print("settings loaded")
-
-
-
-#HI
-
-
  
 # load the first frame and button bar
 load_menu()
