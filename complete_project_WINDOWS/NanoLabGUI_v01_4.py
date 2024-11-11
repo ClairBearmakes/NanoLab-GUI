@@ -54,6 +54,9 @@ def openweb():
 def openweb1():
 	webbrowser.open(url1,new=new)
 
+def openstorage():
+	open("C:/Windows/explorer.exe")
+
 def clear_widgets(root):
 	# select all frame widgets and delete them
 	for widget in root.winfo_children():
@@ -104,7 +107,7 @@ def load_menu(): # button bar on top
 		activeforeground=menu_act_fg_color,
 		width=7, 
 		height=0,
-		# command=lambda:load_menu() # open file explorer
+		command = openstorage
 		).grid(row=0, column=2, sticky="w", padx="8", pady="5")
 
 	# create updates button widget
