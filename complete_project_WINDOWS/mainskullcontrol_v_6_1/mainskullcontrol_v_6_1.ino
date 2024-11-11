@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 /*
   Dale Shisler 4/18/2014
   operates Chad the Head
@@ -348,4 +348,4 @@ void loop() {
   }
 
 }
->>>>>>> 8020ece155d0e6b4a4bfed87df482880f5471054
+
