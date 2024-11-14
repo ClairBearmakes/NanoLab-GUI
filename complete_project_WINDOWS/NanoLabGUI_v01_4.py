@@ -227,12 +227,12 @@ def load_settings_frame():
 	# load settings window
 	command=lambda:load_settings_frame()
 	print("settings loaded")
-<<<<<<< HEAD
-=======
+
+
 
 ser = serial.Serial('COM3')
 # open serial port
->>>>>>> 2942187f9c538e16bcbf946730c0dd7c325f18a8
+
  
 print(ser.name)
  # check which port was really used
