@@ -67,6 +67,8 @@ def load_menu(): # button bar on top
 		menu,
 		text="Back",
 		font=("Ubuntu", 12),
+		height=("5"),
+		width=("15"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
 		cursor="hand2",
@@ -214,7 +216,7 @@ def load_settings_frame():
 	# create atmospheric sensor button widget
 	tk.Button(
 		settings_frame,
-		text="Camera Settings",
+		text="Atmospheric Sensor",
 		font=("Ubuntu", 20),
 		bg=bg_colour,
 		fg=fg_color,
@@ -222,7 +224,7 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		# command=lambda:load_settings_frame(), # load camera settings frame
-		).grid(row=2, column=2, sticky="w", padx="8", pady="5")
+		).grid(row=2, column=3, sticky="w", padx="8", pady="5")
 
 	# load settings window
 	command=lambda:load_settings_frame()
@@ -230,18 +232,18 @@ def load_settings_frame():
 
 
 
-ser = serial.Serial('COM3')
-# open serial port
+# ser = serial.Serial('COM3')
+# # open serial port
 
  
-print(ser.name)
- # check which port was really used
+# print(ser.name)
+#  # check which port was really used
  
-ser.write(b'hello')
- # write a string
+# ser.write(b'hello')
+#  # write a string
  
-ser.close()
- # close port	
+# ser.close()
+#  # close port	
 
 # load the first frame and button bar
 load_menu()
