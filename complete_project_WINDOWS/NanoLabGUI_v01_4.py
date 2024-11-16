@@ -67,21 +67,23 @@ def load_menu(): # button bar on top
 		menu,
 		text="Back",
 		font=("Ubuntu", 12),
-		height=("5"),
-		width=("15"),
+		height=("0"),
+		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
 		command=lambda:load_settings_frame()
-		).grid(row=0, column=0, sticky="w", padx="8", pady="5") # row==up and down, column==left and right
+		).grid(row=0, column=0, sticky="w", padx="5", pady="3") # row==up and down, column==left and right
 
 	# create about button widget
 	tk.Button(
 		menu,
 		text="About",
 		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
 		cursor="hand2",
@@ -89,26 +91,30 @@ def load_menu(): # button bar on top
 		activeforeground=menu_act_fg_color,
 		# webbrowser.open(url, new=new),
 		command=openweb
-		).grid(row=0, column=1, sticky="w", padx="8", pady="5")
+		).grid(row=0, column=1, sticky="w", padx="5", pady="3")
 
 	# create storage button widget
 	tk.Button(
 		menu,
 		text="Storage",
 		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
 		# command=lambda:load_menu() # open file explorer
-		).grid(row=0, column=2, sticky="w", padx="8", pady="5")
+		).grid(row=0, column=2, sticky="w", padx="5", pady="3")
 
 	# create updates button widget
 	tk.Button(
 		menu,
 		text="Updates",
 		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
 		cursor="hand2",
@@ -117,20 +123,22 @@ def load_menu(): # button bar on top
 		# webbrowser.open(url1, new=new),
 		command = openweb1
 		# command=lambda:load_menu() # open site with changes to code/app
-		).grid(row=0, column=3, sticky="w", padx="8", pady="5")
+		).grid(row=0, column=3, sticky="w", padx="5", pady="3")
 
 	# create log button widget
 	tk.Button(
 		menu,
 		text="Log",
 		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
 		# command=lambda:load_menu() # open a log of what is happening right now
-		).grid(row=0, column=4, sticky="e", padx="8", pady="5")
+		).grid(row=0, column=4, sticky="w", padx="5", pady="3")
 	
 def load_settings_frame():
 	# clear_widgets(frame1)
@@ -153,6 +161,8 @@ def load_settings_frame():
 		settings_frame,
 		text="Data Results",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
@@ -166,6 +176,8 @@ def load_settings_frame():
 		settings_frame,
 		text="Water Pump Settings",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
@@ -179,6 +191,8 @@ def load_settings_frame():
 		settings_frame,
 		text="LED Settings",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
@@ -192,6 +206,8 @@ def load_settings_frame():
 		settings_frame,
 		text="Fan Settings",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
@@ -205,6 +221,8 @@ def load_settings_frame():
 		settings_frame,
 		text="Camera Settings",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
@@ -218,6 +236,8 @@ def load_settings_frame():
 		settings_frame,
 		text="Atmospheric Sensor",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
