@@ -45,3 +45,20 @@ ports = serial.tools.list_ports.comports()
 
 for port, desc, hwid in sorted(ports):
         print("{}: {} [{}]".format(port, desc, hwid))
+
+
+def ListGCodeFiles_From_FlashDrive(self):
+    dir_path = "/media/ron"
+    supported_file_type = ".gcode"
+    gcode_files_list = []
+    
+    if len(os.listdir(dir_path)) == 0:
+        return gcode_files_list
+    
+    for path, folders, files in os.walk(dir_path):
+        for filename in files:
+            file_path = os.path.join(dir_path, filename)
+            if supported_file_type in filename:
+                gcode_files_list.append(file_path)
+                
+    return gcode_files_list
