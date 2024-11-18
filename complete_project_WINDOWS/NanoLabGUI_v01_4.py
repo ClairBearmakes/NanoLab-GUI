@@ -1,10 +1,13 @@
 import tkinter as tk
+from tkinter import *
 from PIL import Image, ImageTk
 import sqlite3
 from numpy import random
 import pyglet
 import webbrowser
 import serial
+import sys
+import glob
 
 # set colours
 menu_bg_color = "#000000"
@@ -228,24 +231,52 @@ def load_settings_frame():
 	command=lambda:load_settings_frame()
 	print("settings loaded")
 
-
-
-ser = serial.Serial('COM3')
-# open serial port
-
- 
-print(ser.name)
- # check which port was really used
- 
-ser.write(b'hello')
- # write a string
- 
-ser.close()
- # close port	
+"""
+  
+# Create object 
+root = Tk() 
+  
+# Adjust size 
+root.geometry( "200x200" ) 
+  
+# Change the label text 
+def show(): 
+    label.config( text = clicked.get() ) 
+  
+# Dropdown menu options 
+options = [ 
+    "Monday", 
+    "Tuesday", 
+    "Wednesday", 
+    "Thursday", 
+    "Friday", 
+    "Saturday", 
+    "Sunday"
+] 
+  
+# datatype of menu text 
+clicked = StringVar() 
+  
+# initial menu text 
+clicked.set( "Monday" ) 
+  
+# Create Dropdown menu 
+drop = OptionMenu( root , clicked , *options ) 
+drop.pack() 
+  
+# Create button, it will change label text 
+button = Button( root , text = "click Me" , command = show ).pack() 
+  
+# Create Label 
+label = Label( root , text = " " ) 
+label.pack() 
+  
+# Execute tkinter 
+root.mainloop() 
 
 # load the first frame and button bar
 load_menu()
 load_settings_frame()
-
+"""
 # run app
 root.mainloop()
