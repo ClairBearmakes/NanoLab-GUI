@@ -42,12 +42,13 @@ root.eval("tk::PlaceWindow . center")
 
 # create a frame widgets
 menu = tk.Frame(root, width=width, height="50", bg=menu_bg_color)
-frame1 = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
 settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
+led_settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
 
 # place frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
 settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
+# led_settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
 
 # funtion for about button website
 def openweb():
@@ -56,6 +57,9 @@ def openweb():
 # function for update button website
 def openweb1():
 	webbrowser.open(url1,new=new)
+
+def open_files():
+    webbrowser.open_new("C:")
 
 def clear_widgets(root):
 	# select all frame widgets and delete them
@@ -70,19 +74,23 @@ def load_menu(): # button bar on top
 		menu,
 		text="Back",
 		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
 		command=lambda:load_settings_frame()
-		).grid(row=0, column=0, sticky="w", padx="8", pady="5") # row==up and down, column==left and right
+		).grid(row=0, column=0, sticky="w", padx="5", pady="3") # row==up and down, column==left and right
 
 	# create about button widget
 	tk.Button(
 		menu,
 		text="About",
 		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
 		cursor="hand2",
@@ -90,26 +98,30 @@ def load_menu(): # button bar on top
 		activeforeground=menu_act_fg_color,
 		# webbrowser.open(url, new=new),
 		command=openweb
-		).grid(row=0, column=1, sticky="w", padx="8", pady="5")
+		).grid(row=0, column=1, sticky="w", padx="5", pady="3")
 
 	# create storage button widget
 	tk.Button(
 		menu,
 		text="Storage",
 		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
-		# command=lambda:load_menu() # open file explorer
-		).grid(row=0, column=2, sticky="w", padx="8", pady="5")
+		command=open_files # open file explorer
+		).grid(row=0, column=2, sticky="w", padx="5", pady="3")
 
 	# create updates button widget
 	tk.Button(
 		menu,
 		text="Updates",
 		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
 		cursor="hand2",
@@ -118,25 +130,27 @@ def load_menu(): # button bar on top
 		# webbrowser.open(url1, new=new),
 		command = openweb1
 		# command=lambda:load_menu() # open site with changes to code/app
-		).grid(row=0, column=3, sticky="w", padx="8", pady="5")
+		).grid(row=0, column=3, sticky="w", padx="5", pady="3")
 
 	# create log button widget
 	tk.Button(
 		menu,
 		text="Log",
 		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
 		# command=lambda:load_menu() # open a log of what is happening right now
-		).grid(row=0, column=4, sticky="e", padx="8", pady="5")
+		).grid(row=0, column=4, sticky="w", padx="5", pady="3")
 	
 def load_settings_frame():
-	# clear_widgets(frame1)
+	clear_widgets(led_settings_frame)
 	# stack settings frame above frame 1
-	# settings_frame.tkraise()
+	settings_frame.tkraise()
 	# prevent widgets from modifying the frame
 	settings_frame.pack_propagate(False)
 
@@ -154,6 +168,8 @@ def load_settings_frame():
 		settings_frame,
 		text="Data Results",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
@@ -167,6 +183,8 @@ def load_settings_frame():
 		settings_frame,
 		text="Water Pump Settings",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
@@ -180,12 +198,14 @@ def load_settings_frame():
 		settings_frame,
 		text="LED Settings",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=lambda:load_settings_frame(), # LED settings frame
+		command=lambda:load_led_settings_frame(), # LED settings frame
 		).grid(row=1, column=3, sticky="w", padx="8", pady="5")
 
 	# create fan settings button widget
@@ -193,6 +213,8 @@ def load_settings_frame():
 		settings_frame,
 		text="Fan Settings",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
@@ -206,6 +228,8 @@ def load_settings_frame():
 		settings_frame,
 		text="Camera Settings",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
@@ -217,20 +241,61 @@ def load_settings_frame():
 	# create atmospheric sensor button widget
 	tk.Button(
 		settings_frame,
-		text="Camera Settings",
+		text="Atmospheric Sensor",
 		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
 		bg=bg_colour,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		# command=lambda:load_settings_frame(), # load camera settings frame
-		).grid(row=2, column=2, sticky="w", padx="8", pady="5")
+		).grid(row=2, column=3, sticky="w", padx="8", pady="5")
 
 	# load settings window
 	command=lambda:load_settings_frame()
 	print("settings loaded")
 
+def load_led_settings_frame():
+	clear_widgets(settings_frame)
+	# stack settings frame above frame 1
+	led_settings_frame.tkraise()
+	# prevent widgets from modifying the frame
+	led_settings_frame.pack_propagate(False)
+
+	# create data results button widget
+	tk.Button(
+		led_settings_frame,
+		text="Data Results",
+		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
+		bg=bg_colour,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=lambda:load_settings_frame(), # load data results frame
+		).grid(row=1, column=1, sticky="w", padx="8", pady="5")
+
+	# load led settings window
+	led_settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
+	# command=lambda:load_led_settings_frame()
+	print("LED settings loaded")
+
+# ser = serial.Serial('COM3')
+# # open serial port
+
+ 
+# print(ser.name)
+#  # check which port was really used
+ 
+# ser.write(b'hello')
+#  # write a string
+ 
+# ser.close()
+#  # close port	
 """
   
 # Create object 
@@ -273,10 +338,12 @@ label.pack()
   
 # Execute tkinter 
 root.mainloop() 
+>>>>>>> 166714e53ff6049772b27556e12ad84e35987ea2
+"""
 
 # load the first frame and button bar
 load_menu()
 load_settings_frame()
-"""
+
 # run app
 root.mainloop()
