@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import *
+from tkinter import ttk
 from PIL import Image, ImageTk
 import sqlite3
 from numpy import random
@@ -14,8 +15,18 @@ menu_bg_color = "#000000"
 menu_fg_color = "#ffffff"
 menu_act_bg_color = "#000000"
 menu_act_fg_color = "#808080"
-bg_colour = "#ffffff"
-fg_color = "#000000"
+bg_color = "#ffffff"
+fg_color = "#000000" # normal
+
+# colors
+red_fg = "red"
+orange_fg = "orange"
+yellow_fg = "yellow"
+green_fg = "green"
+blue_fg = "blue"
+purple_fg = "purple"
+violet_fg = "violet"
+
 act_bg_color = "#ffffff"
 act_fg_color = "#808080"
 
@@ -29,7 +40,7 @@ url = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-
 url1 = "https://github.com/ClairBearmakes/NanoLab-GUI"
 
 # initiallize app with basic settings
-root = tk.Tk() # root is the main window name
+root = Tk() # root is the main window name
 root.title("Universal NanoLab Settings")
 
 # getting screen dimentions of display
@@ -42,12 +53,21 @@ root.eval("tk::PlaceWindow . center")
 
 # create a frame widgets
 menu = tk.Frame(root, width=width, height="50", bg=menu_bg_color)
-settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
-led_settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_colour)
+settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_color)
+led_settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_color)
+
+# canvas
+"""
+settingsCanvas = tk.Canvas(root, width = width, 
+                 height = height - int(50), bg="blue") 
+
+settingsCanvas.grid(rowspan=3, columnspan=1, row=0, column=0, #fill = "both", expand = True
+	)
+"""
 
 # place frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
-settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
+settings_frame.grid(rowspan=5, columnspan=3, row=1, column=0, sticky="nesw")
 # led_settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
 
 # funtion for about button website
@@ -59,7 +79,7 @@ def openweb1():
 	webbrowser.open(url1,new=new)
 
 def open_files():
-    webbrowser.open_new("C:")
+    webbrowser.open_new("C:") 
 
 def clear_widgets(root):
 	# select all frame widgets and delete them
@@ -67,6 +87,7 @@ def clear_widgets(root):
 		widget.destroy()
 
 def load_menu(): # button bar on top
+	menu.tkraise()
 	# prevent widgets from modifying the frame
 	menu.pack_propagate(False)
 
@@ -96,7 +117,6 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
-		# webbrowser.open(url, new=new),
 		command=openweb
 		).grid(row=0, column=1, sticky="w", padx="5", pady="3")
 
@@ -159,7 +179,7 @@ def load_settings_frame():
 	# Resize the image using resize() method
 	resize_image = image.resize((100, 100))
 	logo_img = ImageTk.PhotoImage(resize_image)
-	logo_widget = tk.Label(settings_frame, image=logo_img, bg=bg_colour)
+	logo_widget = tk.Label(settings_frame, image=logo_img, bg=bg_color)
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
@@ -170,7 +190,7 @@ def load_settings_frame():
 		font=("Ubuntu", 20),
 		height=("2"),
 		width=("17"),
-		bg=bg_colour,
+		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
@@ -185,7 +205,7 @@ def load_settings_frame():
 		font=("Ubuntu", 20),
 		height=("2"),
 		width=("17"),
-		bg=bg_colour,
+		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
@@ -200,7 +220,7 @@ def load_settings_frame():
 		font=("Ubuntu", 20),
 		height=("2"),
 		width=("17"),
-		bg=bg_colour,
+		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
@@ -215,7 +235,7 @@ def load_settings_frame():
 		font=("Ubuntu", 20),
 		height=("2"),
 		width=("17"),
-		bg=bg_colour,
+		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
@@ -230,7 +250,7 @@ def load_settings_frame():
 		font=("Ubuntu", 20),
 		height=("2"),
 		width=("17"),
-		bg=bg_colour,
+		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
@@ -245,7 +265,7 @@ def load_settings_frame():
 		font=("Ubuntu", 20),
 		height=("2"),
 		width=("17"),
-		bg=bg_colour,
+		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
@@ -257,6 +277,18 @@ def load_settings_frame():
 	command=lambda:load_settings_frame()
 	print("settings loaded")
 
+# slider current value
+current_value = tk.DoubleVar()
+value_label=0
+
+
+def get_current_value():
+    return '{: .2f}'.format(current_value.get())
+
+def slider_changed():
+    # value_label.configure(text=get_current_value())
+    ser.write(get_current_value()) # relace with send brightness to Arduino
+
 def load_led_settings_frame():
 	clear_widgets(settings_frame)
 	# stack settings frame above frame 1
@@ -264,40 +296,136 @@ def load_led_settings_frame():
 	# prevent widgets from modifying the frame
 	led_settings_frame.pack_propagate(False)
 
-	# create data results button widget
+	w1 = Scale(led_settings_frame, from_=0, to=255, orient=HORIZONTAL, variable=current_value)
+	# w1.set(23)
+	w1.grid(row=2, columnspan=7, column=1)
+	Button(led_settings_frame, text='Test', command=slider_changed).grid(row=3, columnspan=7, column=1)
+
+	# create red color button widget
 	tk.Button(
 		led_settings_frame,
-		text="Data Results",
-		font=("Ubuntu", 20),
-		height=("2"),
-		width=("17"),
-		bg=bg_colour,
-		fg=fg_color,
+		text="Red",
+		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
+		bg=bg_color,
+		fg=red_fg,
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=lambda:load_settings_frame(), # load data results frame
-		).grid(row=1, column=1, sticky="w", padx="8", pady="5")
+		ser.write("rr") # send color to Arduino
+		).grid(row=0, column=1, sticky="w", padx="5", pady="3")
+
+	# create orange color button widget
+	tk.Button(
+		led_settings_frame,
+		text="Red",
+		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
+		bg=bg_color,
+		fg=orange_fg,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=openweb # send color to Arduino
+		).grid(row=0, column=2, sticky="w", padx="5", pady="3")
+
+	# create yellow color button widget
+	tk.Button(
+		led_settings_frame,
+		text="Red",
+		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
+		bg=bg_color,
+		fg=yellow_fg,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=openweb # send color to Arduino
+		).grid(row=0, column=3, sticky="w", padx="5", pady="3")
+
+	# create green color button widget
+	tk.Button(
+		led_settings_frame,
+		text="Red",
+		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
+		bg=bg_color,
+		fg=green_fg,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		ser.write("gg") # send color to Arduino
+		).grid(row=0, column=4, sticky="w", padx="5", pady="3")
+
+	# create blue color button widget
+	tk.Button(
+		led_settings_frame,
+		text="Red",
+		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
+		bg=bg_color,
+		fg=blue_fg,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		ser.write("bb") # send color to Arduino
+		).grid(row=0, column=5, sticky="w", padx="5", pady="3")
+
+	# create purple color button widget
+	tk.Button(
+		led_settings_frame,
+		text="Red",
+		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
+		bg=bg_color,
+		fg=purple_fg,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=openweb # send color to Arduino
+		).grid(row=0, column=6, sticky="w", padx="5", pady="3")
+
+	# create violet color button widget
+	tk.Button(
+		led_settings_frame,
+		text="Red",
+		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
+		bg=bg_color,
+		fg=violet_fg,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=openweb # send color to Arduino
+		).grid(row=0, column=7, sticky="w", padx="5", pady="3")
 
 	# load led settings window
 	led_settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
 	# command=lambda:load_led_settings_frame()
 	print("LED settings loaded")
 
-# ser = serial.Serial('COM3')
-# # open serial port
 
- 
-# print(ser.name)
-#  # check which port was really used
- 
+# open serial port
+ser = serial.Serial('COM3')
+
+# check which port was really used
+print(ser.name)
+
+# write a string
 # ser.write(b'hello')
-#  # write a string
- 
-# ser.close()
-#  # close port	
+
+# close port
+ser.close()	
+
+
 """
-  
 # Create object 
 root = Tk() 
   
@@ -307,7 +435,7 @@ root.geometry( "200x200" )
 # Change the label text 
 def show(): 
     label.config( text = clicked.get() ) 
-  
+
 # Dropdown menu options 
 options = [ 
     "Monday", 
