@@ -39,6 +39,13 @@ new = 1
 url = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
 url1 = "https://github.com/ClairBearmakes/NanoLab-GUI"
 
+# Set serial port and baudrate
+# port = 'COM4'  # Replace with your serial port
+# baudrate = 9600  # Replace with your Arduino's baudrate (rate of symbol flow)
+
+# Initialize serial connection
+arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
+
 # initiallize app with basic settings
 root = Tk() # root is the main window name
 root.title("Universal NanoLab Settings")
@@ -285,9 +292,25 @@ value_label=0
 def get_current_value():
     return '{: .2f}'.format(current_value.get())
 
-def slider_changed():
+# def slider_changed():
     # value_label.configure(text=get_current_value())
-    ser.write(get_current_value()) # relace with send brightness to Arduino
+    # ser.write(get_current_value()) # relace with send brightness to Arduino
+	# arduino.write(str(get_current_value()))  # Convert to bytes
+
+def greenLED():
+	l_color="2"
+	arduino.write(bytes(l_color))
+	# time.sleep(0.05)
+
+def blueLED():
+	l_color="3"
+	arduino.write(bytes(l_color))
+	# time.sleep(0.05)
+
+def redLED():
+	l_color="1"
+	arduino.write(bytes(l_color))
+	# time.sleep(0.05)
 
 def load_led_settings_frame():
 	clear_widgets(settings_frame)
@@ -299,7 +322,7 @@ def load_led_settings_frame():
 	w1 = Scale(led_settings_frame, from_=0, to=255, orient=HORIZONTAL, variable=current_value)
 	# w1.set(23)
 	w1.grid(row=2, columnspan=7, column=1)
-	Button(led_settings_frame, text='Test', command=slider_changed).grid(row=3, columnspan=7, column=1)
+	Button(led_settings_frame, text='Test').grid(row=3, columnspan=7, column=1) #, command=slider_changed
 
 	# create red color button widget
 	tk.Button(
@@ -313,7 +336,10 @@ def load_led_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		ser.write("rr") # send color to Arduino
+		# ser.write("rr") # send color to Arduino
+		# arduino.write("rr")  # Convert to bytes
+    	# time.sleep(0.05)  # Optional delay
+    	command=redLED
 		).grid(row=0, column=1, sticky="w", padx="5", pady="3")
 
 	# create orange color button widget
@@ -358,7 +384,11 @@ def load_led_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		ser.write("gg") # send color to Arduino
+		# ser.write("gg") # send color to Arduino
+		# arduino.write("gg")  # Convert to bytes
+    	# time.sleep(0.05)  # Optional delay
+    	# l_color="gg",
+    	command=greenLED
 		).grid(row=0, column=4, sticky="w", padx="5", pady="3")
 
 	# create blue color button widget
@@ -373,7 +403,11 @@ def load_led_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		ser.write("bb") # send color to Arduino
+		# ser.write("bb") # send color to Arduino
+		# arduino.write("bb")  # Convert to bytes
+    	# time.sleep(0.05)  # Optional delay
+    	# l_color="bb",
+    	command=blueLED
 		).grid(row=0, column=5, sticky="w", padx="5", pady="3")
 
 	# create purple color button widget
@@ -413,16 +447,16 @@ def load_led_settings_frame():
 
 
 # open serial port
-ser = serial.Serial('COM3')
+# ser = serial.Serial('COM3')
 
 # check which port was really used
-print(ser.name)
+# print(ser.name)
 
 # write a string
 # ser.write(b'hello')
 
 # close port
-ser.close()	
+# ser.close()	
 
 
 """
