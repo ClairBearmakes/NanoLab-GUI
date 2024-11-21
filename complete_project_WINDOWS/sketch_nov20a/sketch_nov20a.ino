@@ -34,25 +34,35 @@ void loop() {
     
     switch (DoThis) {
       
-      case 'r' :
-        pixels->setPixelColor(i, pixels->Color(50, 0, 0));
+      case '1' :
+        pixels->clear();
+          for(i<numPixels; i++;)
+          {
+            pixels->setPixelColor(i, pixels->Color(50, 0, 0));
+            
+          }
         pixels->show();
-        i++;
       break;
 
-      case 'g' :
-        pixels->setPixelColor(i, pixels->Color(0, 50, 0));
+      case '2' :
+        pixels->clear();
+          for(i<numPixels; i++;)
+          {
+            pixels->setPixelColor(i, pixels->Color(0, 50, 0));
+          }
         pixels->show();
-        i++;
       break;
       
-      case 'b' :
-        pixels->setPixelColor(i, pixels->Color(0, 0, 50));
+      case '3' :
+        pixels->clear();
+          for(i<numPixels; i++;)
+          {
+            pixels->setPixelColor(i, pixels->Color(0, 0, 50));
+          }
         pixels->show();
-        i++;
       break;
 
-      case 'c' :
+      case '0' :
         i = 0;
         pixels->clear();
         pixels->show();
