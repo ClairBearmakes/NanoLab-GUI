@@ -9,6 +9,8 @@ import webbrowser
 import serial
 import sys
 import glob
+import time
+import random
 
 # set colours
 menu_bg_color = "#000000"
@@ -25,7 +27,6 @@ yellow_fg = "yellow"
 green_fg = "green"
 blue_fg = "blue"
 purple_fg = "purple"
-violet_fg = "violet"
 
 act_bg_color = "#ffffff"
 act_fg_color = "#808080"
@@ -44,7 +45,6 @@ url1 = "https://github.com/ClairBearmakes/NanoLab-GUI"
 # baudrate = 9600  # Replace with your Arduino's baudrate (rate of symbol flow)
 
 # Initialize serial connection
-arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
 
 # initiallize app with basic settings
 root = Tk() # root is the main window name
@@ -75,7 +75,7 @@ settingsCanvas.grid(rowspan=3, columnspan=1, row=0, column=0, #fill = "both", ex
 # place frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
 settings_frame.grid(rowspan=5, columnspan=3, row=1, column=0, sticky="nesw")
-# led_settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
+led_settings_frame.grid(rowspan=8, columnspan=10, row=1, column=0, sticky="nesw")
 
 # funtion for about button website
 def openweb():
@@ -292,25 +292,51 @@ value_label=0
 def get_current_value():
     return '{: .2f}'.format(current_value.get())
 
-# def slider_changed():
+def slider_changed():
     # value_label.configure(text=get_current_value())
     # ser.write(get_current_value()) # relace with send brightness to Arduino
-	# arduino.write(str(get_current_value()))  # Convert to bytes
+	arduino.write(bytes(get_current_value()))  # Convert to bytes
+
+def redLED():
+	# l_color="1"
+	arduino.write(bytes('RR', 'utf-8'))
+	# time.sleep(0.05)
+
+def orangeLED():
+	arduino.write(bytes('OO', 'utf-8'))
+
+def yellowLED():
+	arduino.write(bytes('YY', 'utf-8'))
 
 def greenLED():
-	l_color="2"
-	arduino.write(bytes(l_color))
+	# l_color="2"
+	arduino.write(bytes('GG', 'utf-8'))
 	# time.sleep(0.05)
 
 def blueLED():
-	l_color="3"
-	arduino.write(bytes(l_color))
+	# l_color="3"
+	arduino.write(bytes('BB', 'utf-8'))
 	# time.sleep(0.05)
 
-def redLED():
-	l_color="1"
-	arduino.write(bytes(l_color))
-	# time.sleep(0.05)
+def purpleLED():
+	arduino.write(bytes('PP', 'utf-8'))
+
+PARTY_list = ["red", "orange", "yellow", "green", "blue", "purple"]
+count = 0
+counter = random.random()
+while (count < counter):
+	for x in PARTY_list:
+  		PARTY_fg = x
+  		print(x)
+  		time.sleep(0.05)
+	if count <= counter:
+  		break
+
+def PARTYLED():
+	arduino.write(bytes("PARTY", 'utf-8'))
+
+def noLED():
+	arduino.write(bytes('CC', 'utf-8'))
 
 def load_led_settings_frame():
 	clear_widgets(settings_frame)
@@ -319,10 +345,20 @@ def load_led_settings_frame():
 	# prevent widgets from modifying the frame
 	led_settings_frame.pack_propagate(False)
 
-	w1 = Scale(led_settings_frame, from_=0, to=255, orient=HORIZONTAL, variable=current_value)
-	# w1.set(23)
-	w1.grid(row=2, columnspan=7, column=1)
-	Button(led_settings_frame, text='Test').grid(row=3, columnspan=7, column=1) #, command=slider_changed
+	# label for the slider
+	slider_label = ttk.Label(
+    	led_settings_frame,
+    	text='Dimming Slider',
+	).grid(row=3, columnspan=7, column=1)
+
+	w1 = Scale(led_settings_frame, from_=0, to=255, length=300, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	w1.set(200)
+	w1.grid(row=4, columnspan=7, column=1)
+	Button(led_settings_frame, text='Test', bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color).grid(row=5, columnspan=7, column=1) #, command=slider_changed
 
 	# create red color button widget
 	tk.Button(
@@ -340,12 +376,12 @@ def load_led_settings_frame():
 		# arduino.write("rr")  # Convert to bytes
     	# time.sleep(0.05)  # Optional delay
     	command=redLED
-		).grid(row=0, column=1, sticky="w", padx="5", pady="3")
+		).grid(row=1, column=1, sticky="w", padx="5", pady="3")
 
 	# create orange color button widget
 	tk.Button(
 		led_settings_frame,
-		text="Red",
+		text="Orange",
 		font=("Ubuntu", 12),
 		height=("0"),
 		width=("7"),
@@ -354,13 +390,13 @@ def load_led_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=openweb # send color to Arduino
-		).grid(row=0, column=2, sticky="w", padx="5", pady="3")
+		command=orangeLED
+		).grid(row=1, column=2, sticky="w", padx="5", pady="3")
 
 	# create yellow color button widget
 	tk.Button(
 		led_settings_frame,
-		text="Red",
+		text="Yellow",
 		font=("Ubuntu", 12),
 		height=("0"),
 		width=("7"),
@@ -369,13 +405,13 @@ def load_led_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=openweb # send color to Arduino
-		).grid(row=0, column=3, sticky="w", padx="5", pady="3")
+		command=yellowLED
+		).grid(row=1, column=3, sticky="w", padx="5", pady="3")
 
 	# create green color button widget
 	tk.Button(
 		led_settings_frame,
-		text="Red",
+		text="Green",
 		font=("Ubuntu", 12),
 		height=("0"),
 		width=("7"),
@@ -384,17 +420,13 @@ def load_led_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# ser.write("gg") # send color to Arduino
-		# arduino.write("gg")  # Convert to bytes
-    	# time.sleep(0.05)  # Optional delay
-    	# l_color="gg",
     	command=greenLED
-		).grid(row=0, column=4, sticky="w", padx="5", pady="3")
+		).grid(row=1, column=4, sticky="w", padx="5", pady="3")
 
 	# create blue color button widget
 	tk.Button(
 		led_settings_frame,
-		text="Red",
+		text="Blue",
 		font=("Ubuntu", 12),
 		height=("0"),
 		width=("7"),
@@ -403,17 +435,13 @@ def load_led_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# ser.write("bb") # send color to Arduino
-		# arduino.write("bb")  # Convert to bytes
-    	# time.sleep(0.05)  # Optional delay
-    	# l_color="bb",
     	command=blueLED
-		).grid(row=0, column=5, sticky="w", padx="5", pady="3")
+		).grid(row=1, column=5, sticky="w", padx="5", pady="3")
 
 	# create purple color button widget
 	tk.Button(
 		led_settings_frame,
-		text="Red",
+		text="Purple",
 		font=("Ubuntu", 12),
 		height=("0"),
 		width=("7"),
@@ -422,23 +450,38 @@ def load_led_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=openweb # send color to Arduino
-		).grid(row=0, column=6, sticky="w", padx="5", pady="3")
+		command=purpleLED
+		).grid(row=1, column=6, sticky="w", padx="5", pady="3")
 
-	# create violet color button widget
+	# create PARTY color button widget
 	tk.Button(
 		led_settings_frame,
-		text="Red",
+		text="PARTY",
+		font=("Ubuntu", 3),
+		height=("0"),
+		width=("7"),
+		bg=bg_color,
+		fg=PARTY_fg,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		command=PARTYLED
+		).grid(row=8, column=10, sticky="w", padx="5", pady="3")
+
+	# create no color button widget
+	tk.Button(
+		led_settings_frame,
+		text="Clear",
 		font=("Ubuntu", 12),
 		height=("0"),
 		width=("7"),
 		bg=bg_color,
-		fg=violet_fg,
+		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=openweb # send color to Arduino
-		).grid(row=0, column=7, sticky="w", padx="5", pady="3")
+		command=noLED
+		).grid(row=1, column=7, sticky="w", padx="5", pady="3")
 
 	# load led settings window
 	led_settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
