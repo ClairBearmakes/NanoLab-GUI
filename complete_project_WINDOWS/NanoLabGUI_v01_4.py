@@ -40,11 +40,8 @@ new = 1
 url = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
 url1 = "https://github.com/ClairBearmakes/NanoLab-GUI"
 
-# Set serial port and baudrate
-# port = 'COM4'  # Replace with your serial port
-# baudrate = 9600  # Replace with your Arduino's baudrate (rate of symbol flow)
-
 # Initialize serial connection
+arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
 
 # initiallize app with basic settings
 root = Tk() # root is the main window name
@@ -295,7 +292,8 @@ def get_current_value():
 def slider_changed():
     # value_label.configure(text=get_current_value())
     # ser.write(get_current_value()) # relace with send brightness to Arduino
-	arduino.write(bytes(get_current_value()))  # Convert to bytes
+	arduino.write(bytes(get_current_value(), 'utf-8'))  # Convert to bytes
+	print(get_current_value())
 
 def redLED():
 	# l_color="1"
@@ -358,7 +356,7 @@ def load_led_settings_frame():
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
-		activeforeground=act_fg_color).grid(row=5, columnspan=7, column=1) #, command=slider_changed
+		activeforeground=act_fg_color, command=slider_changed).grid(row=5, columnspan=7, column=1)
 
 	# create red color button widget
 	tk.Button(
@@ -372,9 +370,6 @@ def load_led_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# ser.write("rr") # send color to Arduino
-		# arduino.write("rr")  # Convert to bytes
-    	# time.sleep(0.05)  # Optional delay
     	command=redLED
 		).grid(row=1, column=1, sticky="w", padx="5", pady="3")
 
