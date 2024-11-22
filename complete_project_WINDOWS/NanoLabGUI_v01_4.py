@@ -292,33 +292,34 @@ def get_current_value():
 def slider_changed():
     # value_label.configure(text=get_current_value())
     # ser.write(get_current_value()) # relace with send brightness to Arduino
-	arduino.write(bytes(get_current_value(), 'utf-8'))  # Convert to bytes
+	# arduino.write(bytes(get_current_value(), 'utf-8'))  # Convert to bytes
 	print(get_current_value())
 
 def redLED():
-	# l_color="1"
 	arduino.write(bytes('RR', 'utf-8'))
-	# time.sleep(0.05)
+	time.sleep(0.05)
 
 def orangeLED():
 	arduino.write(bytes('OO', 'utf-8'))
+	time.sleep(0.05)
 
 def yellowLED():
 	arduino.write(bytes('YY', 'utf-8'))
+	time.sleep(0.05)
 
 def greenLED():
-	# l_color="2"
 	arduino.write(bytes('GG', 'utf-8'))
-	# time.sleep(0.05)
+	time.sleep(0.05)
 
 def blueLED():
-	# l_color="3"
 	arduino.write(bytes('BB', 'utf-8'))
-	# time.sleep(0.05)
+	time.sleep(0.05)
 
 def purpleLED():
 	arduino.write(bytes('PP', 'utf-8'))
+	time.sleep(0.05)
 
+"""
 PARTY_list = ["red", "orange", "yellow", "green", "blue", "purple"]
 count = 0
 counter = random.random()
@@ -329,6 +330,7 @@ while (count < counter):
   		time.sleep(0.05)
 	if count <= counter:
   		break
+"""
 
 def PARTYLED():
 	arduino.write(bytes("PARTY", 'utf-8'))
@@ -448,21 +450,6 @@ def load_led_settings_frame():
 		command=purpleLED
 		).grid(row=1, column=6, sticky="w", padx="5", pady="3")
 
-	# create PARTY color button widget
-	tk.Button(
-		led_settings_frame,
-		text="PARTY",
-		font=("Ubuntu", 3),
-		height=("0"),
-		width=("7"),
-		bg=bg_color,
-		fg=PARTY_fg,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=PARTYLED
-		).grid(row=8, column=10, sticky="w", padx="5", pady="3")
-
 	# create no color button widget
 	tk.Button(
 		led_settings_frame,
@@ -478,10 +465,27 @@ def load_led_settings_frame():
 		command=noLED
 		).grid(row=1, column=7, sticky="w", padx="5", pady="3")
 
-	# load led settings window
-	led_settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
-	# command=lambda:load_led_settings_frame()
-	print("LED settings loaded")
+"""
+	# create PARTY color button widget
+	tk.Button(
+		led_settings_frame,
+		text="PARTY",
+		font=("Ubuntu", 3),
+		height=("0"),
+		width=("7"),
+		bg=bg_color,
+		fg=PARTY_fg,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		command=PARTYLED
+		).grid(row=8, column=10, sticky="w", padx="5", pady="3")
+"""
+
+# load led settings window
+led_settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
+# command=lambda:load_led_settings_frame()
+print("LED settings loaded")
 
 
 # open serial port
