@@ -40,9 +40,6 @@ new = 1
 url = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
 url1 = "https://github.com/ClairBearmakes/NanoLab-GUI"
 
-# Initialize serial connection
-arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
-
 # initiallize app with basic settings
 root = Tk() # root is the main window name
 root.title("Universal NanoLab Settings")
@@ -56,9 +53,9 @@ root.geometry("%dx%d" % (width, height))
 root.eval("tk::PlaceWindow . center")
 
 # create a frame widgets
-menu = tk.Frame(root, width=width, height="50", bg=menu_bg_color)
-settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_color)
-led_settings_frame = tk.Frame(root, width=width, height=height - int(50), bg=bg_color)
+menu = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height="50", bg=menu_bg_color)
+settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+led_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
 
 # canvas
 """
@@ -72,7 +69,14 @@ settingsCanvas.grid(rowspan=3, columnspan=1, row=0, column=0, #fill = "both", ex
 # place frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
 settings_frame.grid(rowspan=5, columnspan=3, row=1, column=0, sticky="nesw")
-led_settings_frame.grid(rowspan=8, columnspan=10, row=1, column=0, sticky="nesw")
+# led_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
+
+
+# Initialize serial connection
+arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
+
+# check which port was really used
+print(arduino.name)
 
 # funtion for about button website
 def openweb():
@@ -319,7 +323,7 @@ def purpleLED():
 	arduino.write(bytes('PP', 'utf-8'))
 	time.sleep(0.05)
 
-"""
+
 PARTY_list = ["red", "orange", "yellow", "green", "blue", "purple"]
 count = 0
 counter = random.random()
@@ -330,13 +334,15 @@ while (count < counter):
   		time.sleep(0.05)
 	if count <= counter:
   		break
-"""
+
 
 def PARTYLED():
 	arduino.write(bytes("PARTY", 'utf-8'))
 
 def noLED():
 	arduino.write(bytes('CC', 'utf-8'))
+
+led_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
 
 def load_led_settings_frame():
 	clear_widgets(settings_frame)
@@ -465,7 +471,7 @@ def load_led_settings_frame():
 		command=noLED
 		).grid(row=1, column=7, sticky="w", padx="5", pady="3")
 
-"""
+
 	# create PARTY color button widget
 	tk.Button(
 		led_settings_frame,
@@ -480,12 +486,6 @@ def load_led_settings_frame():
 		activeforeground=act_fg_color,
 		command=PARTYLED
 		).grid(row=8, column=10, sticky="w", padx="5", pady="3")
-"""
-
-# load led settings window
-led_settings_frame.grid(rowspan=3, columnspan=3, row=1, column=0, sticky="nesw")
-# command=lambda:load_led_settings_frame()
-print("LED settings loaded")
 
 
 # open serial port
