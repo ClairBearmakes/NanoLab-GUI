@@ -11,6 +11,8 @@ int pixelFormat = NEO_GRB + NEO_KHZ800;
 
 int i = 0;
 
+int p = 0;
+
 Adafruit_NeoPixel *pixels;
 
 #define DELAYVAL 500
@@ -34,18 +36,45 @@ void loop() {
     
     switch (DoThis) {
       
-      case '1' :
+      case 'R' :
         pixels->clear();
+        pixels->show();
+
           for(i<numPixels; i++;)
           {
+           
             pixels->setPixelColor(i, pixels->Color(50, 0, 0));
+            
+            delay(10);
+          }
+        pixels->show();
+      break;
+
+      case 'O' :
+        pixels->clear();
+        pixels->show();
+          for(i<numPixels; i++;)
+          {
+            pixels->setPixelColor(i, pixels->Color(50, 10, 0));
             
           }
         pixels->show();
       break;
 
-      case '2' :
+      case 'Y' :
         pixels->clear();
+        pixels->show();
+          for(i<numPixels; i++;)
+          {
+            pixels->setPixelColor(i, pixels->Color(50, 25, 0));
+            
+          }
+        pixels->show();
+      break;
+
+      case 'G' :
+        pixels->clear();
+        pixels->show();
           for(i<numPixels; i++;)
           {
             pixels->setPixelColor(i, pixels->Color(0, 50, 0));
@@ -53,16 +82,31 @@ void loop() {
         pixels->show();
       break;
       
-      case '3' :
+      case 'B' :
         pixels->clear();
+        pixels->show();
           for(i<numPixels; i++;)
           {
             pixels->setPixelColor(i, pixels->Color(0, 0, 50));
           }
         pixels->show();
+        
       break;
 
-      case '0' :
+      case 'P' :
+        pixels->clear();
+        pixels->show();
+          for(i<numPixels; i++;)
+          {
+            pixels->setPixelColor(i, pixels->Color(50, 0, 50));
+            
+          }
+        pixels->show();
+      break;
+
+
+
+      case 'C' :
         i = 0;
         pixels->clear();
         pixels->show();
