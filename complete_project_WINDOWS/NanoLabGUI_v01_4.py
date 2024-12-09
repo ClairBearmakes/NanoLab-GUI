@@ -35,6 +35,47 @@ act_fg_color = "#808080"
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
 pyglet.font.add_file("fonts/Shanti-Regular.ttf")
 
+"""
+# =======================
+# setup window stuff
+
+# Create object
+setup_root = tk.Tk()
+
+# Adjust size
+setup_root.geometry("500x500")
+
+setup_root.tkraise()
+
+def setup():
+	# Create object
+	# setup_root = Tk()
+
+	# Adjust size
+	# setup_root.geometry("500x500")
+
+	# setup_root.tkraise()
+
+	# create setup frame widgets
+	home_frame = tk.Frame(setup_root, width="500", height="500", bg=bg_color)
+
+	# place setup frame widgets into window
+	home_frame.grid(rowspan=4, columnspan=4, row=1, column=0, sticky="nesw")
+
+	# Set Label
+	welcome_label = Label(home_frame, text="Welcome to your NanoLab", font=18)
+	welcome_label.grid()
+
+	# setup_root.after(8000, setup_root.destroy)
+
+setup()
+
+# setup_root.destroy
+"""
+
+# =======================
+# main window stuff
+
 # set about website
 new = 1
 url = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
@@ -45,14 +86,14 @@ root = Tk() # root is the main window name
 root.title("Universal NanoLab Settings")
 
 # getting screen dimentions of display
-width= root.winfo_screenwidth()
-height= root.winfo_screenheight()
+width = root.winfo_screenwidth()
+height = root.winfo_screenheight()
 
 # setting tk window size
 root.geometry("%dx%d" % (width, height))
 # root.eval("tk::PlaceWindow . center")
 
-# create a frame widgets
+# create main frame widgets
 menu = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height="50", bg=menu_bg_color)
 settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
 data_results_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
@@ -62,16 +103,7 @@ fan_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickn
 camera_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
 atmos_sensor_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
 
-# canvas
-"""
-settingsCanvas = tk.Canvas(root, width = width, 
-                 height = height - int(50), bg="blue") 
-
-settingsCanvas.grid(rowspan=3, columnspan=1, row=0, column=0, #fill = "both", expand = True
-	)
-"""
-
-# place frame widgets in window
+# place main frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
 settings_frame.grid(rowspan=4, columnspan=4, row=1, column=0, sticky="nesw")
 data_results_frame.grid(rowspan=2, columnspan=1, row=1, column=0, sticky="nesw")
@@ -105,6 +137,7 @@ def clear_widgets(root):
 		widget.destroy()
 
 def load_menu(): # button bar on top
+	# clear_widgets()
 	menu.tkraise()
 	# prevent widgets from modifying the frame
 	menu.pack_propagate(False)
@@ -351,6 +384,7 @@ def load_w_pump_settings_frame():
 
 
 # LED settings stuff
+
 # slider current value
 current_value = tk.DoubleVar()
 value_label=0
