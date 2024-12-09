@@ -47,7 +47,7 @@ void loop() {
       case 'R' :
         pixels->clear();
         pixels->show();
-          while 
+          
           RVar = Serial.read();
 
           for(i<numPixels; i++;)
