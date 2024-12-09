@@ -50,12 +50,17 @@ height= root.winfo_screenheight()
 
 # setting tk window size
 root.geometry("%dx%d" % (width, height))
-root.eval("tk::PlaceWindow . center")
+# root.eval("tk::PlaceWindow . center")
 
 # create a frame widgets
 menu = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height="50", bg=menu_bg_color)
 settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+data_results_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+w_pump_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
 led_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+fan_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+camera_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+atmos_sensor_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
 
 # canvas
 """
@@ -68,15 +73,20 @@ settingsCanvas.grid(rowspan=3, columnspan=1, row=0, column=0, #fill = "both", ex
 
 # place frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
-settings_frame.grid(rowspan=5, columnspan=3, row=1, column=0, sticky="nesw")
-# led_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
+settings_frame.grid(rowspan=4, columnspan=4, row=1, column=0, sticky="nesw")
+data_results_frame.grid(rowspan=2, columnspan=1, row=1, column=0, sticky="nesw")
+w_pump_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
+led_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
+fan_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
+camera_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
+atmos_sensor_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
 
 
 # Initialize serial connection
-arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
+# arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
 
 # check which port was really used
-print(arduino.name)
+# print(arduino.name)
 
 # funtion for about button website
 def openweb():
@@ -87,7 +97,7 @@ def openweb1():
 	webbrowser.open(url1,new=new)
 
 def open_files():
-    webbrowser.open_new("C:") 
+    webbrowser.open_new("C:") # replace with NanoLab's internal storage
 
 def clear_widgets(root):
 	# select all frame widgets and delete them
@@ -185,7 +195,7 @@ def load_settings_frame():
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
 	# Resize the image using resize() method
-	resize_image = image.resize((100, 100))
+	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
 	logo_widget = tk.Label(settings_frame, image=logo_img, bg=bg_color)
 	logo_widget.image = logo_img
@@ -203,7 +213,7 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=lambda:load_settings_frame(), # load data results frame
+		command=lambda:load_data_results_frame(), # data results frame
 		).grid(row=1, column=1, sticky="w", padx="8", pady="5")
 
 # create water pump settings button widget
@@ -218,7 +228,7 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=lambda:load_settings_frame(), # load water pump settings frame
+		command=lambda:load_w_pump_settings_frame(), # water pump settings frame
 		).grid(row=1, column=2, sticky="w", padx="8", pady="5")
 
 	# create LED settings button widget
@@ -248,7 +258,7 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=lambda:load_settings_frame(), # load fan settings frame
+		command=lambda:load_fan_settings_frame(), # fan settings frame
 		).grid(row=2, column=1, sticky="w", padx="8", pady="5")
 
 	# create camera settings button widget
@@ -263,7 +273,7 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=lambda:load_settings_frame(), # load camera settings frame
+		command=lambda:load_camera_settings_frame(), # camera settings frame
 		).grid(row=2, column=2, sticky="w", padx="8", pady="5")
 
 	# create atmospheric sensor button widget
@@ -278,71 +288,127 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=lambda:load_settings_frame(), # load camera settings frame
+		command=lambda:load_atmos_sensor_frame(), # atmos sensor frame
 		).grid(row=2, column=3, sticky="w", padx="8", pady="5")
+
+	# create send to arduino button widget
+	tk.Button(
+		settings_frame,
+		text="Send settings to your NanoLab",
+		font=("Ubuntu", 20),
+		height=("0"),
+		width=("25"),
+		bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=lambda:load_atmos_sensor_frame(), # command to send settings to NanoLab
+		).grid(row=4, column=3, columnspan=2, sticky="w", padx="8", pady="5")
 
 	# load settings window
 	command=lambda:load_settings_frame()
 	print("settings loaded")
 
+
+def load_data_results_frame(): 
+	clear_widgets(settings_frame)
+	# stack settings frame above frame 1
+	data_results_frame.tkraise()
+	# prevent widgets from modifying the frame
+	data_results_frame.pack_propagate(False)
+
+	# Read the Image
+	image = Image.open("assets/NanoLabs_logo.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((125, 125))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Label(data_results_frame, image=logo_img, bg=bg_color)
+	logo_widget.image = logo_img
+	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
+
+	# load settings window
+	print("data results loaded")
+
+def load_w_pump_settings_frame(): 
+	clear_widgets(settings_frame)
+	# stack settings frame above frame 1
+	w_pump_settings_frame.tkraise()
+	# prevent widgets from modifying the frame
+	w_pump_settings_frame.pack_propagate(False)
+
+	# Read the Image
+	image = Image.open("assets/NanoLabs_logo.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((125, 125))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Label(w_pump_settings_frame, image=logo_img, bg=bg_color)
+	logo_widget.image = logo_img
+	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
+
+	# load settings window
+	print("w pump settings loaded")
+
+
+# LED settings stuff
 # slider current value
 current_value = tk.DoubleVar()
 value_label=0
 
 
 def get_current_value():
-    return '{: .2f}'.format(current_value.get())
+    return '{:.2f}'.format(current_value.get())
 
 def slider_changed():
     # value_label.configure(text=get_current_value())
     # ser.write(get_current_value()) # relace with send brightness to Arduino
 	# arduino.write(bytes(get_current_value(), 'utf-8'))  # Convert to bytes
-	print(get_current_value())
+	print(get_current_value(), 'lol')
+
+LED_color = "RR"
 
 def redLED():
-	arduino.write(bytes('RR', 'utf-8'))
+	arduino.write(bytes('RR', str(get_current_value()), 'utf-8'))
 	time.sleep(0.05)
 
 def orangeLED():
-	arduino.write(bytes('OO', 'utf-8'))
+	arduino.write(bytes('OO', str(get_current_value()), 'utf-8'))
 	time.sleep(0.05)
 
 def yellowLED():
-	arduino.write(bytes('YY', 'utf-8'))
+	arduino.write(bytes('YY', str(get_current_value()), 'utf-8'))
 	time.sleep(0.05)
 
 def greenLED():
-	arduino.write(bytes('GG', 'utf-8'))
+	arduino.write(bytes('GG', str(get_current_value()), 'utf-8'))
 	time.sleep(0.05)
 
 def blueLED():
-	arduino.write(bytes('BB', 'utf-8'))
+	arduino.write(bytes('BB', str(get_current_value()), 'utf-8'))
 	time.sleep(0.05)
 
 def purpleLED():
-	arduino.write(bytes('PP', 'utf-8'))
+	arduino.write(bytes('PP', str(get_current_value()), 'utf-8'))
 	time.sleep(0.05)
 
-
+# randomize color of PARTY button
 PARTY_list = ["red", "orange", "yellow", "green", "blue", "purple"]
 count = 0
 counter = random.random()
 while (count < counter):
 	for x in PARTY_list:
   		PARTY_fg = x
-  		print(x)
+  		# print(x)
   		time.sleep(0.05)
 	if count <= counter:
   		break
 
 
 def PARTYLED():
-	arduino.write(bytes("PARTY", 'utf-8'))
+	arduino.write(bytes("ROYGBPROYGBPROYGBPROYGBP", 'utf-8'))
 
 def noLED():
 	arduino.write(bytes('CC', 'utf-8'))
-
-led_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
 
 def load_led_settings_frame():
 	clear_widgets(settings_frame)
@@ -351,20 +417,14 @@ def load_led_settings_frame():
 	# prevent widgets from modifying the frame
 	led_settings_frame.pack_propagate(False)
 
-	# label for the slider
-	slider_label = ttk.Label(
-    	led_settings_frame,
-    	text='Dimming Slider',
-	).grid(row=3, columnspan=7, column=1)
-
-	w1 = Scale(led_settings_frame, from_=0, to=255, length=300, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
-	w1.set(200)
-	w1.grid(row=4, columnspan=7, column=1)
-	Button(led_settings_frame, text='Test', bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color, command=slider_changed).grid(row=5, columnspan=7, column=1)
+	# Read the Image
+	image = Image.open("assets/NanoLabs_logo.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((125, 125))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Label(led_settings_frame, image=logo_img, bg=bg_color)
+	logo_widget.image = logo_img
+	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
 	# create red color button widget
 	tk.Button(
@@ -471,6 +531,20 @@ def load_led_settings_frame():
 		command=noLED
 		).grid(row=1, column=7, sticky="w", padx="5", pady="3")
 
+	# label for the slider
+	slider_label = ttk.Label(
+    	led_settings_frame,
+    	text='Dimming Slider',
+	).grid(row=3, columnspan=7, column=1)
+
+	w1 = Scale(led_settings_frame, from_=0, to=255, length=300, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	w1.set(200)
+	w1.grid(row=4, columnspan=7, column=1)
+	Button(led_settings_frame, text='Test', bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color, command=slider_changed).grid(row=5, columnspan=7, column=1)
 
 	# create PARTY color button widget
 	tk.Button(
@@ -485,65 +559,65 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=PARTYLED
-		).grid(row=8, column=10, sticky="w", padx="5", pady="3")
+		).grid(row=3, columnspan=2, column=5, sticky="w", padx="5", pady="3")
 
 
-# open serial port
-# ser = serial.Serial('COM3')
+def load_fan_settings_frame(): 
+	clear_widgets(settings_frame)
+	# stack settings frame above frame 1
+	fan_settings_frame.tkraise()
+	# prevent widgets from modifying the frame
+	fan_settings_frame.pack_propagate(False)
 
-# check which port was really used
-# print(ser.name)
+	# Read the Image
+	image = Image.open("assets/NanoLabs_logo.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((125, 125))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Label(fan_settings_frame, image=logo_img, bg=bg_color)
+	logo_widget.image = logo_img
+	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-# write a string
-# ser.write(b'hello')
+	# load settings window
+	print("fan settings loaded")
 
-# close port
-# ser.close()	
+def load_camera_settings_frame(): 
+	clear_widgets(settings_frame)
+	# stack settings frame above frame 1
+	camera_settings_frame.tkraise()
+	# prevent widgets from modifying the frame
+	camera_settings_frame.pack_propagate(False)
 
+	# Read the Image
+	image = Image.open("assets/NanoLabs_logo.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((125, 125))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Label(camera_settings_frame, image=logo_img, bg=bg_color)
+	logo_widget.image = logo_img
+	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-"""
-# Create object 
-root = Tk() 
-  
-# Adjust size 
-root.geometry( "200x200" ) 
-  
-# Change the label text 
-def show(): 
-    label.config( text = clicked.get() ) 
+	# load settings window
+	print("camera settings loaded")
 
-# Dropdown menu options 
-options = [ 
-    "Monday", 
-    "Tuesday", 
-    "Wednesday", 
-    "Thursday", 
-    "Friday", 
-    "Saturday", 
-    "Sunday"
-] 
-  
-# datatype of menu text 
-clicked = StringVar() 
-  
-# initial menu text 
-clicked.set( "Monday" ) 
-  
-# Create Dropdown menu 
-drop = OptionMenu( root , clicked , *options ) 
-drop.pack() 
-  
-# Create button, it will change label text 
-button = Button( root , text = "click Me" , command = show ).pack() 
-  
-# Create Label 
-label = Label( root , text = " " ) 
-label.pack() 
-  
-# Execute tkinter 
-root.mainloop() 
->>>>>>> 166714e53ff6049772b27556e12ad84e35987ea2
-"""
+def load_atmos_sensor_frame(): 
+	clear_widgets(atmos_sensor_frame)
+	# stack settings frame above frame 1
+	atmos_sensor_frame.tkraise()
+	# prevent widgets from modifying the frame
+	atmos_sensor_frame.pack_propagate(False)
+
+	# Read the Image
+	image = Image.open("assets/NanoLabs_logo.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((125, 125))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Label(atmos_sensor_frame, image=logo_img, bg=bg_color)
+	logo_widget.image = logo_img
+	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
+
+	# load settings window
+	print("atmos sensor frame loaded")
 
 # load the first frame and button bar
 load_menu()
