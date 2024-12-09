@@ -58,6 +58,7 @@ void loop() {
             
           
           }
+          RVar = 0;
         pixels->show();
       break;
 
