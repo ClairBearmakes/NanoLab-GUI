@@ -8,9 +8,10 @@ import pyglet
 import webbrowser
 import serial
 import sys
-import glob
 import time
 import random
+from tkcalendar import Calendar
+from datetime import date 
 
 # set colours
 menu_bg_color = "#000000"
@@ -94,7 +95,7 @@ root.geometry("%dx%d" % (width, height))
 # root.eval("tk::PlaceWindow . center")
 
 # create main frame widgets
-menu = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height="50", bg=menu_bg_color)
+menu = tk.Frame(root, width=width, height="50", bg=menu_bg_color)
 settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
 data_results_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
 w_pump_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
@@ -105,8 +106,8 @@ atmos_sensor_frame = tk.Frame(root, highlightbackground="black", highlightthickn
 
 # place main frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
-settings_frame.grid(rowspan=4, columnspan=4, row=1, column=0, sticky="nesw")
-data_results_frame.grid(rowspan=2, columnspan=1, row=1, column=0, sticky="nesw")
+settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
+data_results_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
 w_pump_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
 led_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
 fan_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
