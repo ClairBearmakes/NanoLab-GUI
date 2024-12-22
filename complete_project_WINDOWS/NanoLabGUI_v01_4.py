@@ -92,6 +92,14 @@ cur_month = todays_date.month
 cur_day = todays_date.day
 cur_year = todays_date.year
 
+# lists
+w_pump_set = ["50mL", "5d/w"]
+LED_set = ["red", "105"]
+fan_set = ["90%", "30m/3d/w"]
+cam_set = ["1/w"]
+atmos_sen_set = ["2/d"]
+all_set = [w_pump_set, LED_set, fan_set, cam_set, atmos_sen_set]
+
 # initiallize app with basic settings
 root = Tk() # root is the main window name
 root.title("Universal NanoLab Settings")
@@ -142,6 +150,10 @@ def openweb1():
 
 def open_files():
     webbrowser.open_new("C:") # replace with NanoLab's internal storage
+
+def send_settings():
+	print(all_set)
+	arduino.write(bytes(str(all_set), 'utf-8'))
 
 def clear_widgets(root):
 	# select all frame widgets and delete them
@@ -348,7 +360,7 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=lambda:load_atmos_sensor_frame(), # command to send settings to NanoLab
+		command=send_settings # command to send settings to NanoLab
 		).grid(row=4, column=3, columnspan=2, sticky="w", padx="8", pady="5")
 
 	# load settings window
