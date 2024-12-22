@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
-import sqlite3
+# import sqlite3
 from numpy import random
 import pyglet
 import webbrowser
@@ -82,9 +82,20 @@ new = 1
 url = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
 url1 = "https://github.com/ClairBearmakes/NanoLab-GUI"
 
+# creating the date object of today's date 
+todays_date = date.today() 
+  
+# printing todays date 
+print("Current date: ", todays_date) 
+
+cur_month = todays_date.month
+cur_day = todays_date.day
+cur_year = todays_date.year
+
 # initiallize app with basic settings
 root = Tk() # root is the main window name
 root.title("Universal NanoLab Settings")
+root.configure(bg="white")
 
 # getting screen dimentions of display
 width = root.winfo_screenwidth()
@@ -96,13 +107,13 @@ root.geometry("%dx%d" % (width, height))
 
 # create main frame widgets
 menu = tk.Frame(root, width=width, height="50", bg=menu_bg_color)
-settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-data_results_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-w_pump_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-led_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-fan_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-camera_settings_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-atmos_sensor_frame = tk.Frame(root, highlightbackground="black", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+data_results_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+w_pump_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+led_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+fan_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+camera_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+atmos_sensor_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
 
 # place main frame widgets in window
 menu.grid(row=0, column=0, sticky=tk.E+tk.W)
@@ -380,6 +391,23 @@ def load_w_pump_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
+	# Add Calendar
+	cal = Calendar(w_pump_settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day)
+
+	cal.grid(row=1, column=1, sticky="w", padx="8", pady="5")
+
+	def grad_date():
+		date.config(text = "Selected Date is: " + cal.get_date())
+
+	# Add Button and Label
+	Button(w_pump_settings_frame, text = "Get Date",
+	command = grad_date).grid(row=2, column=1, padx="8", pady="5")
+
+	date = Label(w_pump_settings_frame, text = "")
+	date.grid(row=3, column=1, padx="8", pady="5")
+
 	# load settings window
 	print("w pump settings loaded")
 
@@ -613,6 +641,51 @@ def load_fan_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
+	# slider current value
+	# current_value = tk.DoubleVar()
+	# value_label=0
+
+	# def get_current_value():
+    	# return '{:.2f}'.format(current_value.get())
+
+	# def slider_changed():
+	    # value_label.configure(text=get_current_value())
+	    # ser.write(get_current_value()) # relace with send brightness to Arduino
+		# arduino.write(bytes(get_current_value(), 'utf-8'))  # Convert to bytes
+		## print(get_current_value(), 'lol')
+
+	# label for the slider
+	slider_label = ttk.Label(
+    	fan_settings_frame,
+    	text='Fan Strength',
+	).grid(row=1, columnspan=3, column=1)
+
+	w1 = Scale(fan_settings_frame, from_=0, to=100, length=250, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	w1.set(70)
+	w1.grid(row=2, columnspan=7, column=1)
+	Button(fan_settings_frame, text='Test', bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color, command=slider_changed).grid(row=3, columnspan=3, column=1)
+
+	# Add Calendar
+	cal = Calendar(fan_settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day)
+
+	cal.grid(row=4, column=1, padx="8", pady="5")
+
+	def grad_date():
+		date.config(text = "Selected Date is: " + cal.get_date())
+
+	# Add Button and Label
+	Button(fan_settings_frame, text = "Get Date",
+	command = grad_date).grid(row=5, column=1, padx="8", pady="5")
+
+	date = Label(fan_settings_frame, text = "")
+	date.grid(row=6, column=1, padx="8", pady="5")
+
 	# load settings window
 	print("fan settings loaded")
 
@@ -632,6 +705,23 @@ def load_camera_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
+	# Add Calendar
+	cal = Calendar(camera_settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day)
+
+	cal.grid(row=1, column=1, sticky="w", padx="8", pady="5")
+
+	def grad_date():
+		date.config(text = "Selected Date is: " + cal.get_date())
+
+	# Add Button and Label
+	Button(camera_settings_frame, text = "Get Date",
+	command = grad_date).grid(row=2, column=1, padx="8", pady="5")
+
+	date = Label(camera_settings_frame, text = "")
+	date.grid(row=3, column=1, padx="8", pady="5")
+
 	# load settings window
 	print("camera settings loaded")
 
@@ -650,6 +740,23 @@ def load_atmos_sensor_frame():
 	logo_widget = tk.Label(atmos_sensor_frame, image=logo_img, bg=bg_color)
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
+
+	# Add Calendar
+	cal = Calendar(atmos_sensor_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day)
+
+	cal.grid(row=1, column=1, sticky="w", padx="8", pady="5")
+
+	def grad_date():
+		date.config(text = "Selected Date is: " + cal.get_date())
+
+	# Add Button and Label
+	Button(atmos_sensor_frame, text = "Get Date",
+	command = grad_date).grid(row=2, column=1, padx="8", pady="5")
+
+	date = Label(atmos_sensor_frame, text = "")
+	date.grid(row=3, column=1, padx="8", pady="5")
 
 	# load settings window
 	print("atmos sensor frame loaded")
