@@ -117,17 +117,18 @@ root.geometry("%dx%d" % (width, height))
 # root.eval("tk::PlaceWindow . center")
 
 # create main frame widgets
-menu = tk.Frame(root, width=width, height="50", bg=menu_bg_color)
-settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-data_results_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-w_pump_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-led_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-fan_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-camera_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
-atmos_sensor_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(50), bg=bg_color)
+menu = tk.Frame(root, width=width, height="45", bg=menu_bg_color)
+settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
+data_results_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
+w_pump_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
+led_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
+fan_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
+camera_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
+atmos_sensor_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
 
 # place main frame widgets in window
-menu.grid(row=0, column=0, sticky=tk.E+tk.W)
+menu.grid(row=0, column=0, sticky="nsew")
+menu.grid_rowconfigure(0, minsize=35)
 settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
 data_results_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
 w_pump_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
@@ -163,20 +164,20 @@ def send_settings():
 
 def clear_widgets(root):
 	# select all frame widgets and delete them
-	for widget in root.winfo_children():
-		widget.destroy()
+	for frame in root.winfo_children():
+		frame.destroy()
 
 def load_menu(): # button bar on top
 	# clear_widgets()
 	menu.tkraise()
 	# prevent widgets from modifying the frame
-	menu.pack_propagate(False)
+	menu.grid_propagate(False)
 
 	tk.Button( # 'back' button widget (replace with back icon)
 		menu,
 		text="Back",
 		font=("Ubuntu", 12),
-		height=("0"),
+		height=("1"),
 		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
@@ -191,7 +192,7 @@ def load_menu(): # button bar on top
 		menu,
 		text="About",
 		font=("Ubuntu", 12),
-		height=("0"),
+		height=("1"),
 		width=("7"),
 		bg=menu_bg_color,
 		fg=menu_fg_color,
@@ -247,13 +248,20 @@ def load_menu(): # button bar on top
 		activeforeground=menu_act_fg_color,
 		# command=lambda:load_menu() # open a log of what is happening right now
 		).grid(row=0, column=4, sticky="w", padx="5", pady="3")
+
+	print("loaded menu")
 	
 def load_settings_frame():
-	clear_widgets(led_settings_frame)
-	# stack settings frame above frame 1
+	# clear_widgets(data_results_frame)
+	# clear_widgets(w_pump_settings_frame)
+	# clear_widgets(led_settings_frame)
+	# clear_widgets(fan_settings_frame)
+	# clear_widgets(camera_settings_frame)
+	# clear_widgets(atmos_sensor_frame)
+	# raise settings frame to the top
 	settings_frame.tkraise()
 	# prevent widgets from modifying the frame
-	settings_frame.pack_propagate(False)
+	settings_frame.grid_propagate(False)
 
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
@@ -373,16 +381,16 @@ def load_settings_frame():
 		).grid(row=4, column=3, columnspan=2, sticky="w", padx="8", pady="5")
 
 	# load settings window
-	command=lambda:load_settings_frame()
+	# command=lambda:load_settings_frame()
 	print("settings loaded")
 
 
 def load_data_results_frame(): 
-	clear_widgets(settings_frame)
-	# stack settings frame above frame 1
+	# clear_widgets(settings_frame)
+	# raise data results frame to the top
 	data_results_frame.tkraise()
 	# prevent widgets from modifying the frame
-	data_results_frame.pack_propagate(False)
+	data_results_frame.grid_propagate(False)
 
 
 # graph
@@ -489,11 +497,11 @@ def load_data_results_frame():
 	print("data results loaded")
 
 def load_w_pump_settings_frame(): 
-	clear_widgets(settings_frame)
-	# stack settings frame above frame 1
+	# clear_widgets(settings_frame)
+	# raise water pump frame to the top
 	w_pump_settings_frame.tkraise()
 	# prevent widgets from modifying the frame
-	w_pump_settings_frame.pack_propagate(False)
+	w_pump_settings_frame.grid_propagate(False)
 
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
@@ -590,11 +598,11 @@ def noLED():
 	arduino.write(bytes('CC', 'utf-8'))
 
 def load_led_settings_frame():
-	clear_widgets(settings_frame)
-	# stack settings frame above frame 1
+	# clear_widgets(settings_frame)
+	# raise LED settings frame to the top
 	led_settings_frame.tkraise()
 	# prevent widgets from modifying the frame
-	led_settings_frame.pack_propagate(False)
+	led_settings_frame.grid_propagate(False)
 
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
@@ -744,13 +752,14 @@ def load_led_settings_frame():
 		command=PARTYLED
 		).grid(row=3, columnspan=3, column=3, sticky="n", padx="5", pady="3")
 
+	print("LED settings loaded")
 
 def load_fan_settings_frame(): 
-	clear_widgets(settings_frame)
-	# stack settings frame above frame 1
+	# clear_widgets(settings_frame)
+	# raise fan settings frame to the top
 	fan_settings_frame.tkraise()
 	# prevent widgets from modifying the frame
-	fan_settings_frame.pack_propagate(False)
+	fan_settings_frame.grid_propagate(False)
 
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
@@ -814,11 +823,11 @@ def load_fan_settings_frame():
 	print("fan settings loaded")
 
 def load_camera_settings_frame(): 
-	clear_widgets(settings_frame)
-	# stack settings frame above frame 1
+	# clear_widgets(settings_frame)
+	# raise camera settings frame to the top
 	camera_settings_frame.tkraise()
 	# prevent widgets from modifying the frame
-	camera_settings_frame.pack_propagate(False)
+	camera_settings_frame.grid_propagate(False)
 
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
@@ -853,11 +862,11 @@ def load_camera_settings_frame():
 	print("camera settings loaded")
 
 def load_atmos_sensor_frame(): 
-	clear_widgets(atmos_sensor_frame)
-	# stack settings frame above frame 1
+	# clear_widgets(settings_frame)
+	# raise atmospheric sensor frame to the top
 	atmos_sensor_frame.tkraise()
 	# prevent widgets from modifying the frame
-	atmos_sensor_frame.pack_propagate(False)
+	atmos_sensor_frame.grid_propagate(False)
 
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
