@@ -12,8 +12,7 @@ import random
 from tkcalendar import Calendar
 from datetime import date 
 from matplotlib.figure import Figure 
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, 
-NavigationToolbar2Tk) 
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk) 
 
 # set normal colours
 menu_bg_color = "#000000"
@@ -159,8 +158,8 @@ def show_graph_opt():
     print(clicked.get()) 
 
 def send_settings():
-	print(all_set)
-	arduino.write(bytes(str(all_set), 'utf-8'))
+	print(repr(all_set))
+	arduino.write(bytes(str(repr(all_set)), 'utf-8'))
 
 def clear_widgets(root):
 	# select all frame widgets and delete them
