@@ -157,6 +157,9 @@ def open_files():
 def show_graph_opt(): 
     print(clicked.get()) 
 
+def get_current_value():
+    return '{:.2f}'.format(current_value.get())
+
 def send_settings():
 	print(repr(all_set))
 	arduino.write(bytes(str(repr(all_set)), 'utf-8'))
@@ -541,9 +544,10 @@ def load_w_pump_settings_frame():
 current_value = tk.DoubleVar()
 value_label=0
 
-
+"""
 def get_current_value():
     return '{:.2f}'.format(current_value.get())
+"""
 
 def slider_changed():
     # value_label.configure(text=get_current_value())
@@ -727,9 +731,9 @@ def load_led_settings_frame():
     	font=("Ubuntu", 12),
 	).grid(row=4, columnspan=8, column=1)
 
-	w1 = Scale(led_settings_frame, from_=0, to=255, length=570, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
-	w1.set(200)
-	w1.grid(row=5, columnspan=8, column=1)
+	led_slider = Scale(led_settings_frame, from_=0, to=255, length=570, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	led_slider.set(200)
+	led_slider.grid(row=5, columnspan=8, column=1)
 	Button(led_settings_frame, text='Test', bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
@@ -773,17 +777,18 @@ def load_fan_settings_frame():
 	fan_settings_title.grid(row=0, columnspan=5, column=1, padx="8", pady="5")
 
 	# slider current value
-	# current_value = tk.DoubleVar()
-	# value_label=0
+	current_value = tk.DoubleVar()
+	value_label=0
 
-	# def get_current_value():
-    	# return '{:.2f}'.format(current_value.get())
+	def get_current_value():
+		return '{:.2f}'.format(current_value.get())
 
-	# def slider_changed():
-	    # value_label.configure(text=get_current_value())
+	def slider_changed():
+	    # value_label = text=get_current_value()
 	    # ser.write(get_current_value()) # relace with send brightness to Arduino
 		# arduino.write(bytes(get_current_value(), 'utf-8'))  # Convert to bytes
-		## print(get_current_value(), 'lol')
+		# return '{:.2f}'.format(current_value.get())
+		print('fan strength', str(get_current_value()))
 
 	# label for the slider
 	slider_label = ttk.Label(
@@ -792,14 +797,16 @@ def load_fan_settings_frame():
     	font=("Ubuntu", 12)
 	).grid(row=1, columnspan=3, column=1)
 
-	w1 = Scale(fan_settings_frame, from_=0, to=100, length=250, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
-	w1.set(70)
-	w1.grid(row=2, columnspan=7, column=1)
+	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=250, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	fan_strength_slider.set(70)
+	fan_strength_slider.grid(row=2, columnspan=7, column=1)
 	Button(fan_settings_frame, text='Test', bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
-		activeforeground=act_fg_color, command=slider_changed).grid(row=1, columnspan=3, column=1, padx="8", pady="5", sticky="e")
+		activeforeground=act_fg_color, 
+		command=slider_changed
+		).grid(row=1, columnspan=3, column=1, padx="8", pady="5", sticky="e")
 
 	# Add Calendar
 	cal = Calendar(fan_settings_frame, selectmode = 'day',
@@ -840,22 +847,30 @@ def load_camera_settings_frame():
 	cam_settings_title = Label(camera_settings_frame, bg="white", text = "Camera Settings", font=("Ubuntu", 30))
 	cam_settings_title.grid(row=0, columnspan=5, column=1, padx="8", pady="5")
 
+	Button(camera_settings_frame, text='Test', bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color, 
+		# command=slider_changed #make it take a picture and output it
+		).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
+
 	# Add Calendar
 	cal = Calendar(camera_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
 
-	cal.grid(row=1, column=1, sticky="w", padx="8", pady="5")
+	cal.grid(row=2, column=1, sticky="w", padx="8", pady="5")
 
 	def grad_date():
 		date.config(text = "Selected Date is: " + cal.get_date())
 
 	# Add Button and Label
 	Button(camera_settings_frame, text = "Get Date",
-	command = grad_date).grid(row=2, column=1, padx="8", pady="5")
+	command = grad_date).grid(row=3, column=1, padx="8", pady="5")
 
 	date = Label(camera_settings_frame, text = "")
-	date.grid(row=3, column=1, padx="8", pady="5")
+	date.grid(row=4, column=1, padx="8", pady="5")
 
 	# load settings window
 	print("camera settings loaded")
