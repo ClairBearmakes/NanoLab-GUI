@@ -549,7 +549,7 @@ def slider_changed():
     # value_label.configure(text=get_current_value())
     # ser.write(get_current_value()) # relace with send brightness to Arduino
 	# arduino.write(bytes(get_current_value(), 'utf-8'))  # Convert to bytes
-	print(get_current_value(), 'lol')
+	print('brightness', get_current_value())
 
 LED_color = "RR"
 
