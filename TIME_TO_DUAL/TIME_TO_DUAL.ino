@@ -124,7 +124,7 @@ correctedToday = 0; }
     switch (hours) {
 
     case 4:
-      while (minutes >= Ptime){ //turns the pump on for whatever Ptime is = too
+      while (minutes >= Ptime){ //turns the pump on for whatever Ptime is = to
         digitalWrite(pump, HIGH);
       }
       digitalWrite(pump, LOW);
@@ -147,7 +147,7 @@ correctedToday = 0; }
 
   }
 
-  if (Serial.available() > 0) { //Serial functions, it waits for the serial port to be avilible 
+  if (Serial.available() > 0) { //Serial functions, it waits for the serial port to be available 
     int DoThis = Serial.read(); // then switches case based on set the character sent
 
     switch (DoThis) {
