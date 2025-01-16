@@ -1,6 +1,7 @@
 //Written by Ruben Marc Speybrouck
 #include <Adafruit_NeoPixel.h>
 
+int Ptime = 15;
 
 int pin = 6;
 
@@ -14,6 +15,9 @@ Adafruit_NeoPixel *pixels;
 
 #define DELAYVAL 500
 
+int pump = 9;
+
+int fan = 9;
 
 unsigned long timeNow = 0;
 
@@ -45,13 +49,16 @@ int correctedToday = 1; // do not change this variable, one means that the time 
 
 void setup() { // put your setup code here, to run once:
 
+pinMode(pump, OUTPUT);
+
 pixels = new Adafruit_NeoPixel(numPixels, pin, pixelFormat);
 
 pixels->begin();
 
 Serial.begin(9600); 
 
-pixels->fill(pixels->Color(84, 64, 205));
+pixels->fill(pixels->Color(84, 64, 205)); //this is the colour the lights glow
+                                          //i found the rgb on reddit if its not optimal than ¯\_(ツ)_/¯
 
 }
 
@@ -115,15 +122,28 @@ correctedToday = 0; }
 //let the sketch know that a new day has started for what concerns correction, if this line was not here the arduiono // would continue to correct for an entire hour that is 24 - startingHour.
 
     switch (hours) {
-    
-    case >=6 :
 
-    pixels->setBrightness(255);
+    case 4:
+      while (minutes >= Ptime){ //turns the pump on for whatever Ptime is = too
+        digitalWrite(pump, HIGH);
+      }
+      digitalWrite(pump, LOW);
 
-    pixels->show();
+      break;
 
+    case 6: //this turns the light ring on
+      pixels->setBrightness(255);
+      pixels->show();
     break;
 
+    case 8: //fan on 
+      digitalWrite(fan, high);
+    break;
+
+    case 18: //this turns the light ring off
+      pixels->setBrightness(0);
+      pixels->show();
+    break; 
 
   }
 
