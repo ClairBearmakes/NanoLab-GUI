@@ -248,7 +248,7 @@ def load_menu(): # button bar on top
 		# command=lambda:load_menu() # open a log of what is happening right now
 		).grid(row=0, column=4, sticky="w", padx="5", pady="3")
 
-	print("loaded menu")
+	# print("loaded menu")
 	
 def load_settings_frame():
 	# clear_widgets(data_results_frame)
@@ -381,7 +381,7 @@ def load_settings_frame():
 
 	# load settings window
 	# command=lambda:load_settings_frame()
-	print("settings loaded")
+	# print("settings loaded")
 
 
 def load_data_results_frame(): 
