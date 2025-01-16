@@ -137,7 +137,7 @@ correctedToday = 0; }
     break;
 
     case 8: //fan on 
-      digitalWrite(fan, high);
+      digitalWrite(fan, HIGH);
     break;
 
     case 18: //this turns the light ring off
