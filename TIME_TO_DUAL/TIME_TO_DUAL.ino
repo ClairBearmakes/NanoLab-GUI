@@ -1,4 +1,4 @@
-//Written by Ruben Marc Speybrouck
+//Schedualing code written by Ruben Marc Speybrouck
 #include <Adafruit_NeoPixel.h>
 
 int Ptime = 15;
