@@ -1,9 +1,9 @@
-//Schedualing code written by Ruben Marc Speybrouck
+//Written by Ruben Marc Speybrouck
 #include <Adafruit_NeoPixel.h>
 
 int Ptime = 15;
 
-int pin = 6;
+int pin = 4;
 
 int numPixels =16;
 
@@ -15,9 +15,9 @@ Adafruit_NeoPixel *pixels;
 
 #define DELAYVAL 500
 
-int pump = 9;
+int pump = 16;
 
-int fan = 9;
+int fan = 17;
 
 unsigned long timeNow = 0;
 
@@ -25,13 +25,13 @@ unsigned long timeLast = 0;
 
 //Time start Settings:
 
-int startingHour = 12;
+int startingHour = 5;
 
 // set your starting hour here, not below at int hour. This ensures accurate daily correction of time
 
 int seconds = 0;
 
-int minutes = 33;
+int minutes = 58;
 
 int hours = startingHour;
 
@@ -55,7 +55,7 @@ pixels = new Adafruit_NeoPixel(numPixels, pin, pixelFormat);
 
 pixels->begin();
 
-Serial.begin(9600); 
+Serial.begin(115200); 
 
 pixels->fill(pixels->Color(84, 64, 205)); //this is the colour the lights glow
                                           //i found the rgb on reddit if its not optimal than ¯\_(ツ)_/¯
@@ -124,7 +124,7 @@ correctedToday = 0; }
     switch (hours) {
 
     case 4:
-      while (minutes >= Ptime){ //turns the pump on for whatever Ptime is = to
+      while (minutes >= Ptime){ //turns the pump on for whatever Ptime is = too
         digitalWrite(pump, HIGH);
       }
       digitalWrite(pump, LOW);
@@ -140,6 +140,7 @@ correctedToday = 0; }
       digitalWrite(fan, HIGH);
     break;
 
+
     case 18: //this turns the light ring off
       pixels->setBrightness(0);
       pixels->show();
@@ -147,10 +148,15 @@ correctedToday = 0; }
 
   }
 
-  if (Serial.available() > 0) { //Serial functions, it waits for the serial port to be available 
+  if (Serial.available() > 0) { //Serial functions, it waits for the serial port to be avilible 
     int DoThis = Serial.read(); // then switches case based on set the character sent
 
     switch (DoThis) {
+
+      case 'L' : 
+      pixels->setBrightness(50);
+      pixels->show();
+      break;
 
       case 'T' :
     Serial.print("The time is: ");
