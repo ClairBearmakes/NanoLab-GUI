@@ -164,6 +164,18 @@ def send_settings():
 	print(repr(all_set))
 	arduino.write(bytes(str(repr(all_set)), 'utf-8'))
 
+def take_picture():
+	print("*click*")
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #take picture and save it
+
+def take_atmos_reading():
+	print("read atmos")
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #take atmos reading and save it
+
+def test_pump():
+	print("pump")
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #pump some water
+
 def clear_widgets(root):
 	# select all frame widgets and delete them
 	for frame in root.winfo_children():
@@ -517,22 +529,30 @@ def load_w_pump_settings_frame():
 	w_pump_title = Label(w_pump_settings_frame, bg="white", text = "Water Pump Settings", font=("Ubuntu", 30))
 	w_pump_title.grid(row=0, columnspan=5, column=1, padx="8", pady="5")
 
+	Button(w_pump_settings_frame, text='Test', bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color, 
+		command=test_pump #pump some water
+		).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
+
 	# Add Calendar
 	cal = Calendar(w_pump_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
 
-	cal.grid(row=1, column=1, sticky="w", padx="8", pady="5")
+	cal.grid(row=2, column=1, sticky="w", padx="8", pady="5")
 
 	def grad_date():
 		date.config(text = "Selected Date is: " + cal.get_date())
 
 	# Add Button and Label
 	Button(w_pump_settings_frame, text = "Get Date",
-	command = grad_date).grid(row=2, column=1, padx="8", pady="5")
+	command = grad_date).grid(row=3, column=1, padx="8", pady="5")
 
 	date = Label(w_pump_settings_frame, text = "")
-	date.grid(row=3, column=1, padx="8", pady="5")
+	date.grid(row=4, column=1, padx="8", pady="5")
 
 	# load settings window
 	print("w pump settings loaded")
@@ -852,7 +872,7 @@ def load_camera_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color, 
-		# command=slider_changed #make it take a picture and output it
+		command=take_picture
 		).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
 
 	# Add Calendar
@@ -894,22 +914,30 @@ def load_atmos_sensor_frame():
 	atmos_sensor_title = Label(atmos_sensor_frame, bg="white", text = "Atmospheric Sensor Settings", font=("Ubuntu", 30))
 	atmos_sensor_title.grid(row=0, columnspan=5, column=1, padx="8", pady="5")
 
+	Button(atmos_sensor_frame, text='Test', bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color, 
+		command=take_atmos_reading
+		).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
+
 	# Add Calendar
 	cal = Calendar(atmos_sensor_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
 
-	cal.grid(row=1, column=1, sticky="w", padx="8", pady="5")
+	cal.grid(row=2, column=1, padx="8", pady="5")
 
 	def grad_date():
 		date.config(text = "Selected Date is: " + cal.get_date())
 
 	# Add Button and Label
 	Button(atmos_sensor_frame, text = "Get Date",
-	command = grad_date).grid(row=2, column=1, padx="8", pady="5")
+	command = grad_date).grid(row=3, column=1, padx="8", pady="5")
 
 	date = Label(atmos_sensor_frame, text = "")
-	date.grid(row=3, column=1, padx="8", pady="5")
+	date.grid(row=4, column=1, padx="8", pady="5")
 
 	# load settings window
 	print("atmos sensor frame loaded")
