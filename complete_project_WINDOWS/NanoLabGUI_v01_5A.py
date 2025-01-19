@@ -1,3 +1,7 @@
+
+# Code writen by Asher Powell at Warren Tech North
+# Version 1.5 Alpha
+
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
