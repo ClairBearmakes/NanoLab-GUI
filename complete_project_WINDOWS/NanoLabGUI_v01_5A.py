@@ -38,7 +38,7 @@ purple_fg = "purple"
 act_bg_color = "#ffffff"
 act_fg_color = "#808080"
 
-dev_mode = True
+dev_mode = False
 
 
 """
@@ -532,13 +532,15 @@ def load_w_pump_settings_frame():
 	w_pump_title = Label(w_pump_settings_frame, bg="white", text = "Water Pump Settings", font=("Ubuntu", 30))
 	w_pump_title.grid(row=0, columnspan=5, column=1, padx="8", pady="5")
 
-	Button(w_pump_settings_frame, text='Test', bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color, 
-		command=test_pump #pump some water
-		).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
+	if dev_mode == True:
+		Button(w_pump_settings_frame, text='Test', bg=bg_color,
+			fg=fg_color,
+			cursor="hand2",
+			activebackground=act_bg_color,
+			activeforeground=act_fg_color, 
+			command=test_pump #pump some water
+			).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
+		
 
 	# Add Calendar
 	cal = Calendar(w_pump_settings_frame, selectmode = 'day',
@@ -757,11 +759,12 @@ def load_led_settings_frame():
 	led_slider = Scale(led_settings_frame, from_=0, to=255, length=570, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
 	led_slider.set(200)
 	led_slider.grid(row=5, columnspan=8, column=1)
-	Button(led_settings_frame, text='Test', bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color, command=slider_changed).grid(row=6, columnspan=8, column=1)
+	if dev_mode == True:
+		Button(led_settings_frame, text='Test', bg=bg_color,
+			fg=fg_color,
+			cursor="hand2",
+			activebackground=act_bg_color,
+			activeforeground=act_fg_color, command=slider_changed).grid(row=6, columnspan=8, column=1)
 
 	# create PARTY color button widget
 	tk.Button(
@@ -823,13 +826,14 @@ def load_fan_settings_frame():
 	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=250, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
 	fan_strength_slider.set(70)
 	fan_strength_slider.grid(row=2, columnspan=7, column=1)
-	Button(fan_settings_frame, text='Test', bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color, 
-		command=slider_changed
-		).grid(row=1, columnspan=3, column=1, padx="8", pady="5", sticky="e")
+	if dev_mode == True:
+		Button(fan_settings_frame, text='Test', bg=bg_color,
+			fg=fg_color,
+			cursor="hand2",
+			activebackground=act_bg_color,
+			activeforeground=act_fg_color, 
+			command=slider_changed
+			).grid(row=1, columnspan=3, column=1, padx="8", pady="5", sticky="e")
 
 	# Add Calendar
 	cal = Calendar(fan_settings_frame, selectmode = 'day',
@@ -869,14 +873,15 @@ def load_camera_settings_frame():
 
 	cam_settings_title = Label(camera_settings_frame, bg="white", text = "Camera Settings", font=("Ubuntu", 30))
 	cam_settings_title.grid(row=0, columnspan=5, column=1, padx="8", pady="5")
-
-	Button(camera_settings_frame, text='Test', bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color, 
-		command=take_picture
-		).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
+	
+	if dev_mode == True:
+		Button(camera_settings_frame, text='Test', bg=bg_color,
+			fg=fg_color,
+			cursor="hand2",
+			activebackground=act_bg_color,
+			activeforeground=act_fg_color, 
+			command=take_picture
+			).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
 
 	# Add Calendar
 	cal = Calendar(camera_settings_frame, selectmode = 'day',
@@ -917,13 +922,14 @@ def load_atmos_sensor_frame():
 	atmos_sensor_title = Label(atmos_sensor_frame, bg="white", text = "Atmospheric Sensor Settings", font=("Ubuntu", 30))
 	atmos_sensor_title.grid(row=0, columnspan=5, column=1, padx="8", pady="5")
 
-	Button(atmos_sensor_frame, text='Test', bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color, 
-		command=take_atmos_reading
-		).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
+	if dev_mode == True:
+		Button(atmos_sensor_frame, text='Test', bg=bg_color,
+			fg=fg_color,
+			cursor="hand2",
+			activebackground=act_bg_color,
+			activeforeground=act_fg_color, 
+			command=take_atmos_reading
+			).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
 
 	# Add Calendar
 	cal = Calendar(atmos_sensor_frame, selectmode = 'day',
