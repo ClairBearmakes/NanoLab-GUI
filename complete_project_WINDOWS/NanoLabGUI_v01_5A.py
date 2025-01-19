@@ -42,7 +42,7 @@ purple_fg = "purple"
 act_bg_color = "#ffffff"
 act_fg_color = "#808080"
 
-dev_mode = False
+dev_mode = True
 
 
 """
@@ -487,33 +487,29 @@ def load_data_results_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		# command=lambda:load_menu() # export the graph
-		).grid(row=1, column=2, sticky="w", padx="5", pady="3")
+		).grid(row=1, column=1, sticky="e", padx="5", pady="3")
 
-	"""
 	# Dropdown to choose kind of graph
 	# Dropdown menu options 
 	options = [ 
-	    "COM1", 
-	    "COM2", 
-	    "COM3", 
-	    "COM4", 
-	    "COM5", 
-	    "COM6"
+	    "Graph", 
+	    "Line Graph", 
+	    "Bar Graph", 
 	] 
 
 	clicked = StringVar()
 
 	# initial menu text 
-	clicked.set("COM")
+	clicked.set("Graph")
 
 	# Create Dropdown menu 
 	drop = OptionMenu(data_results_frame, clicked, *options) 
-	drop.grid(row=1, column=4)
+	drop.grid(row=1, column=3, sticky="e")
 
 	# Create button, it will print port 
-	button = Button(data_results_frame, text = "Port" , command = show_graph_opt ).grid(row=2, column=4)
-	"""
-
+	button = Button(data_results_frame, text = "Choose", font=("Ubuntu", 12), height=("0"), width=("7"), bg=bg_color, fg=fg_color, activebackground=act_bg_color, activeforeground=act_fg_color, command = show_graph_opt)
+	button.grid(row=1, column=4, sticky="w")
+	
 	# load settings window
 	print("data results loaded")
 
@@ -543,27 +539,39 @@ def load_w_pump_settings_frame():
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color, 
 			command=test_pump #pump some water
-			).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
+			).grid(row=1, columnspan=1, column=1, padx="8", pady="5", sticky="w")
 		
 
-	# Add Calendar
-	cal = Calendar(w_pump_settings_frame, selectmode = 'day',
+	# Add start and end calendars
+	start_label = Label(w_pump_settings_frame, text = "Start Date:")
+	start_label.grid(row=2, column=1, padx="8", pady="5")
+
+	start_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
 
-	cal.grid(row=2, column=1, sticky="w", padx="8", pady="5")
+	start_cal.grid(row=3, column=1, padx="8", pady="5")
 
-	def grad_date():
-		date.config(text = "Selected Date is: " + cal.get_date())
+	end_label = Label(w_pump_settings_frame, text = "End Date:")
+	end_label.grid(row=2, column=2, padx="8", pady="5")
+
+	end_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day)
+
+	end_cal.grid(row=3, column=2, padx="8", pady="5")
 
 	# Add Button and Label
-	Button(w_pump_settings_frame, text = "Get Date",
-	command = grad_date).grid(row=3, column=1, padx="8", pady="5")
+	def grad_date():
+		date.config(text = "Selected Dates are: " + start_cal.get_date() + "-" + end_cal.get_date())
+
+	Button(w_pump_settings_frame, text = "Get Dates",
+	command = grad_date).grid(row=4, columnspan=2, column=1, padx="8", pady="5")
 
 	date = Label(w_pump_settings_frame, text = "")
-	date.grid(row=4, column=1, padx="8", pady="5")
+	date.grid(row=5, columnspan=2, column=1, padx="8", pady="5")
 
-	# load settings window
+	# load window
 	print("w pump settings loaded")
 
 
@@ -785,6 +793,35 @@ def load_led_settings_frame():
 		command=PARTYLED
 		).grid(row=3, columnspan=3, column=3, sticky="n", padx="5", pady="3")
 
+	# Add start and end calendars
+	start_label = Label(led_settings_frame, text = "Start Date:")
+	start_label.grid(row=7, columnspan=4, column=1, padx="8", pady="5")
+
+	start_cal = Calendar(led_settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day)
+
+	start_cal.grid(row=8, columnspan=4, column=1, padx="8", pady="5")
+
+	end_label = Label(led_settings_frame, text = "End Date:")
+	end_label.grid(row=7, columnspan=4, column=5, padx="8", pady="5")
+
+	end_cal = Calendar(led_settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day)
+
+	end_cal.grid(row=8, columnspan=4, column=5, padx="8", pady="5", sticky="e")
+
+	# Add Button and Label
+	def grad_date():
+		date.config(text = "Selected Dates are: " + start_cal.get_date() + "-" + end_cal.get_date())
+
+	Button(led_settings_frame, text = "Get Dates",
+	command = grad_date).grid(row=9, columnspan=8, column=1, padx="8", pady="5")
+
+	date = Label(led_settings_frame, text = "")
+	date.grid(row=10, columnspan=8, column=1, padx="8", pady="5")
+
 	print("LED settings loaded")
 
 def load_fan_settings_frame(): 
@@ -829,7 +866,8 @@ def load_fan_settings_frame():
 
 	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=250, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
 	fan_strength_slider.set(70)
-	fan_strength_slider.grid(row=2, columnspan=7, column=1)
+	fan_strength_slider.grid(row=2, columnspan=8, column=1)
+
 	if dev_mode == True:
 		Button(fan_settings_frame, text='Test', bg=bg_color,
 			fg=fg_color,
@@ -837,24 +875,36 @@ def load_fan_settings_frame():
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color, 
 			command=slider_changed
-			).grid(row=1, columnspan=3, column=1, padx="8", pady="5", sticky="e")
+			).grid(row=1, columnspan=3, column=1, padx="8", pady="5", sticky="w")
 
-	# Add Calendar
-	cal = Calendar(fan_settings_frame, selectmode = 'day',
+	# Add start and end calendars
+	start_label = Label(fan_settings_frame, text = "Start Date:")
+	start_label.grid(row=3, column=1, padx="8", pady="5")
+
+	start_cal = Calendar(fan_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
 
-	cal.grid(row=3, column=1, padx="8", pady="5")
+	start_cal.grid(row=4, column=1, padx="8", pady="5")
 
-	def grad_date():
-		date.config(text = "Selected Date is: " + cal.get_date())
+	end_label = Label(fan_settings_frame, text = "End Date:")
+	end_label.grid(row=3, column=2, padx="8", pady="5")
+
+	end_cal = Calendar(fan_settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day)
+
+	end_cal.grid(row=4, column=2, padx="8", pady="5")
 
 	# Add Button and Label
-	Button(fan_settings_frame, text = "Get Date",
-	command = grad_date).grid(row=4, column=1, padx="8", pady="5")
+	def grad_date():
+		date.config(text = "Selected Dates are: " + start_cal.get_date() + "-" + end_cal.get_date())
+
+	Button(fan_settings_frame, text = "Get Dates",
+	command = grad_date).grid(row=5, columnspan=2, column=1, padx="8", pady="5")
 
 	date = Label(fan_settings_frame, text = "")
-	date.grid(row=5, column=1, padx="8", pady="5")
+	date.grid(row=6, columnspan=2, column=1, padx="8", pady="5")
 
 	# load settings window
 	print("fan settings loaded")
@@ -885,24 +935,36 @@ def load_camera_settings_frame():
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color, 
 			command=take_picture
-			).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
+			).grid(row=2, columnspan=1, column=1, padx="8", pady="5", sticky="w")
 
-	# Add Calendar
-	cal = Calendar(camera_settings_frame, selectmode = 'day',
+	# Add start and end calendars
+	start_label = Label(camera_settings_frame, text = "Start Date:")
+	start_label.grid(row=2, column=1, padx="8", pady="5")
+
+	start_cal = Calendar(camera_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
 
-	cal.grid(row=2, column=1, sticky="w", padx="8", pady="5")
+	start_cal.grid(row=3, column=1, padx="8", pady="5")
 
-	def grad_date():
-		date.config(text = "Selected Date is: " + cal.get_date())
+	end_label = Label(camera_settings_frame, text = "End Date:")
+	end_label.grid(row=2, column=2, padx="8", pady="5")
+
+	end_cal = Calendar(camera_settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day)
+
+	end_cal.grid(row=3, column=2, padx="8", pady="5")
 
 	# Add Button and Label
-	Button(camera_settings_frame, text = "Get Date",
-	command = grad_date).grid(row=3, column=1, padx="8", pady="5")
+	def grad_date():
+		date.config(text = "Selected Dates are: " + start_cal.get_date() + "-" + end_cal.get_date())
+
+	Button(camera_settings_frame, text = "Get Dates",
+	command = grad_date).grid(row=4, columnspan=2, column=1, padx="8", pady="5")
 
 	date = Label(camera_settings_frame, text = "")
-	date.grid(row=4, column=1, padx="8", pady="5")
+	date.grid(row=5, columnspan=2, column=1, padx="8", pady="5")
 
 	# load settings window
 	print("camera settings loaded")
@@ -933,24 +995,36 @@ def load_atmos_sensor_frame():
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color, 
 			command=take_atmos_reading
-			).grid(row=1, columnspan=1, column=1, padx="8", pady="5")
+			).grid(row=2, columnspan=1, column=1, padx="8", pady="5", sticky="w")
 
-	# Add Calendar
-	cal = Calendar(atmos_sensor_frame, selectmode = 'day',
+	# Add start and end calendars
+	start_label = Label(atmos_sensor_frame, text = "Start Date:")
+	start_label.grid(row=2, column=1, padx="8", pady="5")
+
+	start_cal = Calendar(atmos_sensor_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
 
-	cal.grid(row=2, column=1, padx="8", pady="5")
+	start_cal.grid(row=3, column=1, padx="8", pady="5")
 
-	def grad_date():
-		date.config(text = "Selected Date is: " + cal.get_date())
+	end_label = Label(atmos_sensor_frame, text = "End Date:")
+	end_label.grid(row=2, column=2, padx="8", pady="5")
+
+	end_cal = Calendar(atmos_sensor_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day)
+
+	end_cal.grid(row=3, column=2, padx="8", pady="5")
 
 	# Add Button and Label
-	Button(atmos_sensor_frame, text = "Get Date",
-	command = grad_date).grid(row=3, column=1, padx="8", pady="5")
+	def grad_date():
+		date.config(text = "Selected Dates are: " + start_cal.get_date() + "-" + end_cal.get_date())
+
+	Button(atmos_sensor_frame, text = "Get Dates",
+	command = grad_date).grid(row=4, columnspan=2, column=1, padx="8", pady="5")
 
 	date = Label(atmos_sensor_frame, text = "")
-	date.grid(row=4, column=1, padx="8", pady="5")
+	date.grid(row=5, columnspan=2, column=1, padx="8", pady="5")
 
 	# load settings window
 	print("atmos sensor frame loaded")
