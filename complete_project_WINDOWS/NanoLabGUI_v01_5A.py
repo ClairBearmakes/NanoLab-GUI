@@ -135,13 +135,13 @@ atmos_sensor_frame = tk.Frame(root, highlightbackground="grey", highlightthickne
 # place main frame widgets in window
 menu.grid(row=0, column=0, sticky="nsew")
 menu.grid_rowconfigure(0, minsize=35)
-settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
-data_results_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
-w_pump_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
-led_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
-fan_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
-camera_settings_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
-atmos_sensor_frame.grid(rowspan=4, columnspan=5, row=1, column=0, sticky="nesw")
+settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+data_results_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+led_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+fan_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+camera_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+atmos_sensor_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 
 # Initialize serial connection
@@ -194,7 +194,8 @@ def load_menu(): # button bar on top
 	# prevent widgets from modifying the frame
 	menu.grid_propagate(False)
 
-	tk.Button( # 'back' button widget (replace with back icon)
+	# create back button widget
+	tk.Button(
 		menu,
 		text="Back",
 		font=("Ubuntu", 12),
@@ -510,7 +511,7 @@ def load_data_results_frame():
 	button = Button(data_results_frame, text = "Choose", font=("Ubuntu", 12), height=("0"), width=("7"), bg=bg_color, fg=fg_color, activebackground=act_bg_color, activeforeground=act_fg_color, command = show_graph_opt)
 	button.grid(row=1, column=4, sticky="w")
 	
-	# load settings window
+	# load window
 	print("data results loaded")
 
 def load_w_pump_settings_frame(): 
@@ -519,6 +520,9 @@ def load_w_pump_settings_frame():
 	w_pump_settings_frame.tkraise()
 	# prevent widgets from modifying the frame
 	w_pump_settings_frame.grid_propagate(False)
+
+	# set the hardware of the current screen
+	hardware = "water pump"
 
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
@@ -544,39 +548,84 @@ def load_w_pump_settings_frame():
 
 	# Add start and end calendars
 	start_label = Label(w_pump_settings_frame, text = "Start Date:")
-	start_label.grid(row=2, column=1, padx="8", pady="5")
+	start_label.grid(row=1, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
 
-	start_cal.grid(row=3, column=1, padx="8", pady="5")
+	start_cal.grid(row=2, column=1, padx="8", pady="5")
 
 	end_label = Label(w_pump_settings_frame, text = "End Date:")
-	end_label.grid(row=2, column=2, padx="8", pady="5")
+	end_label.grid(row=1, column=2, padx="8", pady="5")
 
 	end_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
 
-	end_cal.grid(row=3, column=2, padx="8", pady="5")
+	end_cal.grid(row=2, column=2, padx="8", pady="5")
 
 	# Add Button and Label
+	start_date = start_cal.get_date()
+	end_date = end_cal.get_date()
 	def grad_date():
-		date.config(text = "Selected Dates are: " + start_cal.get_date() + "-" + end_cal.get_date())
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	Button(w_pump_settings_frame, text = "Get Dates",
-	command = grad_date).grid(row=4, columnspan=2, column=1, padx="8", pady="5")
+	Button(w_pump_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=3, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
 	date = Label(w_pump_settings_frame, text = "")
-	date.grid(row=5, columnspan=2, column=1, padx="8", pady="5")
+	date.grid(row=3, columnspan=1, column=2, padx="8", pady="5", sticky="w")
+
+
+	# frequency stuff
+	# declaring string variables for storing frequencys
+	fre1_in = tk.StringVar()
+	fre2_in = tk.StringVar()
+	 
+	# defining a function that will get the two frequencys and print them
+	def fre_set(): # eventually set to take all values of screen/component and save those
+
+	    fre1 = fre1_in.get()
+	    fre2 = fre2_in.get()
+	    
+	    print(hardware + " will run from: " + start_date + "-" + end_date + " " + fre1 + " times/ " + fre2)
+	    
+	    fre1_in.set("")
+	    
+	    
+	# creating a label for frequency input using widget Label
+	fre_label = tk.Label(w_pump_settings_frame, text = 'Frequency of ' + hardware + ": ", font=('calibre', 10, 'bold'))
+	fre_label.grid(row=5, column=1, sticky="w")
+
+	# creating a entry for input
+	fre1_entry = tk.Entry(w_pump_settings_frame,textvariable = fre1_in, font=('calibre', 10, 'normal'))
+	fre1_entry.grid(row=5, columnspan=2, column=1)
+
+	# creating a dropdown for frequency2
+	# Dropdown menu options 
+	fre2_options = [ 
+	    "hour", 
+	    "day", 
+	    "week", 
+	    "month"
+	] 
+
+	# initial menu text 
+	fre2_in.set("day")
+
+	# Create Dropdown menu 
+	fre2_drop = tk.OptionMenu(w_pump_settings_frame, fre2_in, *fre2_options) 
+	fre2_drop.grid(row=5, column=2)
+	 
+	# creating a button that will call the fre_set function  
+	sub_btn=tk.Button(w_pump_settings_frame,text = 'Save', command = fre_set)
+	sub_btn.grid(row=5, column=2, padx="7", pady="5", sticky="e")
 
 	# load window
 	print("w pump settings loaded")
 
 
 # LED settings stuff
-
 # slider current value
 current_value = tk.DoubleVar()
 value_label=0
@@ -644,6 +693,9 @@ def load_led_settings_frame():
 	# prevent widgets from modifying the frame
 	led_settings_frame.grid_propagate(False)
 
+	# set the hardware of the current screen
+	hardware = "LED"
+
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
 	# Resize the image using resize() method
@@ -669,7 +721,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
     	command=redLED
-		).grid(row=1, column=2, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=10, sticky="w", padx="5", pady="3")
 
 	# create orange color button widget
 	tk.Button(
@@ -684,7 +736,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=orangeLED
-		).grid(row=1, column=3, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=11, sticky="w", padx="5", pady="3")
 
 	# create yellow color button widget
 	tk.Button(
@@ -699,7 +751,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=yellowLED
-		).grid(row=1, column=4, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=12, sticky="w", padx="5", pady="3")
 
 	# create green color button widget
 	tk.Button(
@@ -714,7 +766,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
     	command=greenLED
-		).grid(row=1, column=5, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=13, sticky="w", padx="5", pady="3")
 
 	# create blue color button widget
 	tk.Button(
@@ -729,7 +781,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
     	command=blueLED
-		).grid(row=1, column=6, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=14, sticky="w", padx="5", pady="3")
 
 	# create purple color button widget
 	tk.Button(
@@ -744,7 +796,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=purpleLED
-		).grid(row=1, column=7, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=15, sticky="w", padx="5", pady="3")
 
 	# create no color button widget
 	tk.Button(
@@ -759,24 +811,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=noLED
-		).grid(row=1, column=8, sticky="w", padx="5", pady="3")
-
-	# label for the slider
-	slider_label = ttk.Label(
-    	led_settings_frame,
-    	text='Dimming Slider',
-    	font=("Ubuntu", 12),
-	).grid(row=4, columnspan=8, column=1)
-
-	led_slider = Scale(led_settings_frame, from_=0, to=255, length=570, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
-	led_slider.set(200)
-	led_slider.grid(row=5, columnspan=8, column=1)
-	if dev_mode == True:
-		Button(led_settings_frame, text='Test', bg=bg_color,
-			fg=fg_color,
-			cursor="hand2",
-			activebackground=act_bg_color,
-			activeforeground=act_fg_color, command=slider_changed).grid(row=6, columnspan=8, column=1)
+		).grid(row=2, column=16, sticky="w", padx="5", pady="3")
 
 	# create PARTY color button widget
 	tk.Button(
@@ -791,37 +826,102 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=PARTYLED
-		).grid(row=3, columnspan=3, column=3, sticky="n", padx="5", pady="3")
+		).grid(row=3, columnspan=3, column=11, sticky="n", padx="5", pady="3")
+
+	# label for the slider
+	slider_label = ttk.Label(
+    	led_settings_frame,
+    	text='Dimming Slider',
+    	font=("Ubuntu", 12),
+	).grid(row=3, columnspan=8, column=10, sticky="n",)
+
+	led_slider = Scale(led_settings_frame, from_=0, to=255, length=570, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	led_slider.set(200)
+	led_slider.grid(row=3, columnspan=8, column=10, sticky="s",)
+	if dev_mode == True:
+		Button(led_settings_frame, text='Test', bg=bg_color,
+			fg=fg_color,
+			cursor="hand2",
+			activebackground=act_bg_color,
+			activeforeground=act_fg_color, command=slider_changed).grid(row=4, columnspan=8, column=10, sticky="n",)
 
 	# Add start and end calendars
 	start_label = Label(led_settings_frame, text = "Start Date:")
-	start_label.grid(row=7, columnspan=4, column=1, padx="8", pady="5")
+	start_label.grid(row=1, columnspan=4, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(led_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
 
-	start_cal.grid(row=8, columnspan=4, column=1, padx="8", pady="5")
+	start_cal.grid(rowspan=4, row=2, columnspan=4, column=1, padx="8", pady="5")
 
 	end_label = Label(led_settings_frame, text = "End Date:")
-	end_label.grid(row=7, columnspan=4, column=5, padx="8", pady="5")
+	end_label.grid(row=1, columnspan=4, column=5, padx="8", pady="5")
 
 	end_cal = Calendar(led_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
 
-	end_cal.grid(row=8, columnspan=4, column=5, padx="8", pady="5", sticky="e")
+	end_cal.grid(rowspan=4, row=2, columnspan=4, column=5, padx="8", pady="5", sticky="e")
 
 	# Add Button and Label
+	start_date = start_cal.get_date()
+	end_date = end_cal.get_date()
 	def grad_date():
-		date.config(text = "Selected Dates are: " + start_cal.get_date() + "-" + end_cal.get_date())
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	Button(led_settings_frame, text = "Get Dates",
-	command = grad_date).grid(row=9, columnspan=8, column=1, padx="8", pady="5")
+	Button(led_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=9, columnspan=4, column=1, padx="8", pady="5", sticky="e")
 
 	date = Label(led_settings_frame, text = "")
-	date.grid(row=10, columnspan=8, column=1, padx="8", pady="5")
+	date.grid(row=9, columnspan=4, column=5, padx="8", pady="5", sticky="w")
 
+	# """
+	# frequency stuff
+	# declaring string variables for storing frequencys
+	fre1_in = tk.StringVar()
+	fre2_in = tk.StringVar()
+	 
+	# defining a function that will get the two frequencys and print them
+	def fre_set(): # eventually set to take all values of screen/component and save those
+
+	    fre1 = fre1_in.get()
+	    fre2 = fre2_in.get()
+	    
+	    print(hardware + " will run from: " + start_date + "-" + end_date + " " + fre1 + " times/ " + fre2)
+	    
+	    fre1_in.set("")
+	    
+	    
+	# creating a label for frequency input using widget Label
+	fre_label = tk.Label(led_settings_frame, text = 'Frequency of ' + hardware + ": ", font=('calibre', 10, 'bold'))
+	fre_label.grid(row=10, columnspan=1, column=2, sticky="w")
+
+	# creating a entry for input
+	fre1_entry = tk.Entry(led_settings_frame,textvariable = fre1_in, font=('calibre', 10, 'normal'))
+	fre1_entry.grid(row=10, columnspan=1, column=4, padx="7", pady="5", sticky="w")
+
+	# creating a dropdown for frequency2
+	# Dropdown menu options 
+	fre2_options = [ 
+	    "hour", 
+	    "day", 
+	    "week", 
+	    "month"
+	] 
+
+	# initial menu text 
+	fre2_in.set("day")
+
+	# Create Dropdown menu 
+	fre2_drop = tk.OptionMenu(led_settings_frame, fre2_in, *fre2_options) 
+	fre2_drop.grid(row=10, columnspan=1, column=5, padx="7", pady="5", sticky="w")
+	 
+	# creating a button that will call the fre_set function  
+	sub_btn=tk.Button(led_settings_frame,text = 'Save', command = fre_set)
+	sub_btn.grid(row=10, columnspan=1, column=5, padx="7", pady="5", sticky="e")
+	# """
+
+	# load window
 	print("LED settings loaded")
 
 def load_fan_settings_frame(): 
@@ -830,6 +930,9 @@ def load_fan_settings_frame():
 	fan_settings_frame.tkraise()
 	# prevent widgets from modifying the frame
 	fan_settings_frame.grid_propagate(False)
+
+	# set the hardware of the current screen
+	hardware = "fan"
 
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
@@ -897,16 +1000,62 @@ def load_fan_settings_frame():
 	end_cal.grid(row=4, column=2, padx="8", pady="5")
 
 	# Add Button and Label
+	start_date = start_cal.get_date()
+	end_date = end_cal.get_date()
 	def grad_date():
-		date.config(text = "Selected Dates are: " + start_cal.get_date() + "-" + end_cal.get_date())
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	Button(fan_settings_frame, text = "Get Dates",
-	command = grad_date).grid(row=5, columnspan=2, column=1, padx="8", pady="5")
+	Button(fan_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=5, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
 	date = Label(fan_settings_frame, text = "")
-	date.grid(row=6, columnspan=2, column=1, padx="8", pady="5")
+	date.grid(row=5, columnspan=1, column=2, padx="8", pady="5", sticky="w")
 
-	# load settings window
+
+	# frequency stuff
+	# declaring string variables for storing frequencys
+	fre1_in = tk.StringVar()
+	fre2_in = tk.StringVar()
+	 
+	# defining a function that will get the two frequencys and print them
+	def fre_set(): # eventually set to take all values of screen/component and save those
+
+	    fre1 = fre1_in.get()
+	    fre2 = fre2_in.get()
+	    
+	    print(hardware + " will run from: " + start_date + "-" + end_date + " " + fre1 + " times/ " + fre2)
+	    
+	    fre1_in.set("")
+	    
+	    
+	# creating a label for frequency input using widget Label
+	fre_label = tk.Label(fan_settings_frame, text = 'Frequency of ' + hardware + ": ", font=('calibre', 10, 'bold'))
+	fre_label.grid(row=6, column=1, sticky="w")
+
+	# creating a entry for input
+	fre1_entry = tk.Entry(fan_settings_frame,textvariable = fre1_in, font=('calibre', 10, 'normal'))
+	fre1_entry.grid(row=6, columnspan=2, column=1)
+
+	# creating a dropdown for frequency2
+	# Dropdown menu options 
+	fre2_options = [ 
+	    "hour", 
+	    "day", 
+	    "week", 
+	    "month"
+	] 
+
+	# initial menu text 
+	fre2_in.set("day")
+
+	# Create Dropdown menu 
+	fre2_drop = tk.OptionMenu(fan_settings_frame, fre2_in, *fre2_options) 
+	fre2_drop.grid(row=6, column=2)
+	 
+	# creating a button that will call the fre_set function  
+	sub_btn=tk.Button(fan_settings_frame,text = 'Save', command = fre_set)
+	sub_btn.grid(row=6, column=2, padx="7", pady="5", sticky="e")
+
+	# load window
 	print("fan settings loaded")
 
 def load_camera_settings_frame(): 
@@ -915,6 +1064,9 @@ def load_camera_settings_frame():
 	camera_settings_frame.tkraise()
 	# prevent widgets from modifying the frame
 	camera_settings_frame.grid_propagate(False)
+
+	# set the hardware of the current screen
+	hardware = "camera"
 
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
@@ -957,16 +1109,62 @@ def load_camera_settings_frame():
 	end_cal.grid(row=3, column=2, padx="8", pady="5")
 
 	# Add Button and Label
+	start_date = start_cal.get_date()
+	end_date = end_cal.get_date()
 	def grad_date():
-		date.config(text = "Selected Dates are: " + start_cal.get_date() + "-" + end_cal.get_date())
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	Button(camera_settings_frame, text = "Get Dates",
-	command = grad_date).grid(row=4, columnspan=2, column=1, padx="8", pady="5")
+	Button(camera_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=4, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
 	date = Label(camera_settings_frame, text = "")
-	date.grid(row=5, columnspan=2, column=1, padx="8", pady="5")
+	date.grid(row=4, columnspan=1, column=2, padx="8", pady="5", sticky="w")
 
-	# load settings window
+
+	# frequency stuff
+	# declaring string variables for storing frequencys
+	fre1_in = tk.StringVar()
+	fre2_in = tk.StringVar()
+	 
+	# defining a function that will get the two frequencys and print them
+	def fre_set(): # eventually set to take all values of screen/component and save those
+
+	    fre1 = fre1_in.get()
+	    fre2 = fre2_in.get()
+	    
+	    print(hardware + " will run from: " + start_date + "-" + end_date + " " + fre1 + " times/ " + fre2)
+	    
+	    fre1_in.set("")
+	    
+	    
+	# creating a label for frequency input using widget Label
+	fre_label = tk.Label(camera_settings_frame, text = 'Frequency of ' + hardware + ": ", font=('calibre', 10, 'bold'))
+	fre_label.grid(row=5, column=1, sticky="w")
+
+	# creating a entry for input
+	fre1_entry = tk.Entry(camera_settings_frame,textvariable = fre1_in, font=('calibre', 10, 'normal'))
+	fre1_entry.grid(row=5, columnspan=2, column=1)
+
+	# creating a dropdown for frequency2
+	# Dropdown menu options 
+	fre2_options = [ 
+	    "hour", 
+	    "day", 
+	    "week", 
+	    "month"
+	] 
+
+	# initial menu text 
+	fre2_in.set("day")
+
+	# Create Dropdown menu 
+	fre2_drop = tk.OptionMenu(camera_settings_frame, fre2_in, *fre2_options) 
+	fre2_drop.grid(row=5, column=2)
+	 
+	# creating a button that will call the fre_set function  
+	sub_btn=tk.Button(camera_settings_frame,text = 'Save', command = fre_set)
+	sub_btn.grid(row=5, column=2, padx="7", pady="5", sticky="e")
+
+	# load window
 	print("camera settings loaded")
 
 def load_atmos_sensor_frame(): 
@@ -975,6 +1173,9 @@ def load_atmos_sensor_frame():
 	atmos_sensor_frame.tkraise()
 	# prevent widgets from modifying the frame
 	atmos_sensor_frame.grid_propagate(False)
+
+	# set the hardware of the current screen
+	hardware = "atmospheric sensor"
 
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
@@ -999,34 +1200,81 @@ def load_atmos_sensor_frame():
 
 	# Add start and end calendars
 	start_label = Label(atmos_sensor_frame, text = "Start Date:")
-	start_label.grid(row=2, column=1, padx="8", pady="5")
+	start_label.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(atmos_sensor_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
-
-	start_cal.grid(row=3, column=1, padx="8", pady="5")
+	start_cal.grid(row=3, columnspan=2, column=1, padx="8", pady="5", sticky="w")
 
 	end_label = Label(atmos_sensor_frame, text = "End Date:")
-	end_label.grid(row=2, column=2, padx="8", pady="5")
+	end_label.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
 
 	end_cal = Calendar(atmos_sensor_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
-
-	end_cal.grid(row=3, column=2, padx="8", pady="5")
+	end_cal.grid(row=3, columnspan=2, column=3, padx="8", pady="5", sticky="w")
 
 	# Add Button and Label
+	start_date = ""
+	end_date = ""
 	def grad_date():
-		date.config(text = "Selected Dates are: " + start_cal.get_date() + "-" + end_cal.get_date())
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
+		# start_date = start_cal.get_date()
+		# end_date = end_cal.get_date()
+		print('next_date="{}"'.format(end_cal.selection_get()))
 
-	Button(atmos_sensor_frame, text = "Get Dates",
-	command = grad_date).grid(row=4, columnspan=2, column=1, padx="8", pady="5")
+	Button(atmos_sensor_frame, text = "Selected dates are: ", command = grad_date).grid(row=4, columnspan=2, column=1, padx="8", pady="5", sticky="e")
 
 	date = Label(atmos_sensor_frame, text = "")
-	date.grid(row=5, columnspan=2, column=1, padx="8", pady="5")
+	date.grid(row=4, columnspan=2, column=3, padx="8", pady="5", sticky="w")
 
-	# load settings window
+
+	# frequency stuff
+	# declaring string variables for storing frequencys
+	fre1_in = tk.StringVar()
+	fre2_in = tk.StringVar()
+	 
+	# defining a function that will get the two frequencys and print them
+	def fre_set(): # eventually set to take all values of screen/component and save those
+
+	    fre1 = fre1_in.get()
+	    fre2 = fre2_in.get()
+	    
+	    print(hardware + " will run from: " + start_date + "-" + end_date + " " + fre1 + " times/ " + fre2)
+	    
+	    fre1_in.set("")
+	    
+	    
+	# creating a label for frequency input using widget Label
+	fre_label = tk.Label(atmos_sensor_frame, text = 'Frequency of ' + hardware + ": ", font=('calibre', 10, 'bold'))
+	fre_label.grid(row=5, column=1, sticky="w")
+
+	# creating a entry for input
+	fre1_entry = tk.Entry(atmos_sensor_frame,textvariable = fre1_in, font=('calibre', 10, 'normal'))
+	fre1_entry.grid(row=5, columnspan=1, column=2, padx="7", pady="5", sticky="w")
+
+	# creating a dropdown for frequency2
+	# Dropdown menu options 
+	fre2_options = [ 
+	    "hour", 
+	    "day", 
+	    "week", 
+	    "month"
+	] 
+
+	# initial menu text 
+	fre2_in.set("day")
+
+	# Create Dropdown menu 
+	fre2_drop = tk.OptionMenu(atmos_sensor_frame, fre2_in, *fre2_options) 
+	fre2_drop.grid(row=5, columnspan=3, column=2, padx="7", pady="5", sticky="")
+	 
+	# creating a button that will call the fre_set function  
+	sub_btn=tk.Button(atmos_sensor_frame,text = 'Save', command = fre_set)
+	sub_btn.grid(row=5, columnspan=2, column=3, padx="7", pady="5", sticky="")
+
+	# load window
 	print("atmos sensor frame loaded")
 
 # load the first frame and button bar
