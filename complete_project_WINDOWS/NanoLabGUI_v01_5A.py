@@ -42,7 +42,7 @@ purple_fg = "purple"
 act_bg_color = "#ffffff"
 act_fg_color = "#808080"
 
-dev_mode = True
+dev_mode = True # if True will show log button and test buttons
 
 
 """
@@ -224,21 +224,6 @@ def load_menu(): # button bar on top
 		command=openweb
 		).grid(row=0, column=1, sticky="w", padx="5", pady="3")
 
-	# create storage button widget
-	tk.Button(
-		menu,
-		text="Storage",
-		font=("Ubuntu", 12),
-		height=("0"),
-		width=("7"),
-		bg=menu_bg_color,
-		fg=menu_fg_color,
-		cursor="hand2",
-		activebackground=menu_act_bg_color,
-		activeforeground=menu_act_fg_color,
-		command=open_files # open file explorer
-		).grid(row=0, column=2, sticky="w", padx="5", pady="3")
-
 	# create updates button widget
 	tk.Button(
 		menu,
@@ -254,12 +239,12 @@ def load_menu(): # button bar on top
 		# webbrowser.open(url1, new=new),
 		command = openweb1
 		# command=lambda:load_menu() # open site with changes to code/app
-		).grid(row=0, column=3, sticky="w", padx="5", pady="3")
+		).grid(row=0, column=2, sticky="w", padx="5", pady="3")
 
-	# create log button widget
+	# create storage button widget
 	tk.Button(
 		menu,
-		text="Log",
+		text="Storage",
 		font=("Ubuntu", 12),
 		height=("0"),
 		width=("7"),
@@ -268,8 +253,24 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
-		# command=lambda:load_menu() # open a log of what is happening right now
-		).grid(row=0, column=4, sticky="w", padx="5", pady="3")
+		command=open_files # open file explorer
+		).grid(row=0, column=3, sticky="w", padx="5", pady="3")
+
+	if dev_mode == True:
+		# create log button widget
+		tk.Button(
+			menu,
+			text="Log",
+			font=("Ubuntu", 12),
+			height=("0"),
+			width=("7"),
+			bg=menu_bg_color,
+			fg=menu_fg_color,
+			cursor="hand2",
+			activebackground=menu_act_bg_color,
+			activeforeground=menu_act_fg_color,
+			# command=lambda:load_menu() # open a log of what is happening right now
+			).grid(row=0, column=4, sticky="w", padx="5", pady="3")
 
 	# print("loaded menu")
 	
@@ -297,22 +298,7 @@ def load_settings_frame():
 	settings_title = Label(settings_frame, bg="white", text = "Main Settings", font=("Ubuntu", 30))
 	settings_title.grid(row=0, column=2, padx="8", pady="5")
 
-	# create data results button widget
-	tk.Button(
-		settings_frame,
-		text="Data Results",
-		font=("Ubuntu", 20),
-		height=("2"),
-		width=("17"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=lambda:load_data_results_frame(), # data results frame
-		).grid(row=1, column=1, sticky="w", padx="8", pady="5")
-
-# create water pump settings button widget
+	# create water pump settings button widget
 	tk.Button(
 		settings_frame,
 		text="Water Pump Settings",
@@ -325,7 +311,7 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_w_pump_settings_frame(), # water pump settings frame
-		).grid(row=1, column=2, sticky="w", padx="8", pady="5")
+		).grid(row=1, column=1, sticky="sw", padx="8", pady="5")
 
 	# create LED settings button widget
 	tk.Button(
@@ -340,7 +326,7 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_led_settings_frame(), # LED settings frame
-		).grid(row=1, column=3, sticky="w", padx="8", pady="5")
+		).grid(row=1, column=2, sticky="sw", padx="8", pady="5")
 
 	# create fan settings button widget
 	tk.Button(
@@ -355,7 +341,7 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_fan_settings_frame(), # fan settings frame
-		).grid(row=2, column=1, sticky="w", padx="8", pady="5")
+		).grid(row=1, column=3, sticky="sw", padx="8", pady="5")
 
 	# create camera settings button widget
 	tk.Button(
@@ -370,7 +356,7 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_camera_settings_frame(), # camera settings frame
-		).grid(row=2, column=2, sticky="w", padx="8", pady="5")
+		).grid(row=2, column=1, sticky="sw", padx="8", pady="5")
 
 	# create atmospheric sensor button widget
 	tk.Button(
@@ -385,7 +371,22 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_atmos_sensor_frame(), # atmos sensor frame
-		).grid(row=2, column=3, sticky="w", padx="8", pady="5")
+		).grid(row=2, column=2, sticky="sw", padx="8", pady="5")
+
+	# create data results button widget
+	tk.Button(
+		settings_frame,
+		text="Data Results",
+		font=("Ubuntu", 20),
+		height=("2"),
+		width=("17"),
+		bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		command=lambda:load_data_results_frame(), # data results frame
+		).grid(row=2, column=3, sticky="sw", padx="8", pady="5")
 
 	# create send to arduino button widget
 	tk.Button(
@@ -547,6 +548,9 @@ def load_w_pump_settings_frame():
 		
 
 	# Add start and end calendars
+	def grad_date():
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
+
 	start_label = Label(w_pump_settings_frame, text = "Start Date:")
 	start_label.grid(row=1, column=1, padx="8", pady="5")
 
@@ -566,11 +570,6 @@ def load_w_pump_settings_frame():
 	end_cal.grid(row=2, column=2, padx="8", pady="5")
 
 	# Add Button and Label
-	start_date = start_cal.get_date()
-	end_date = end_cal.get_date()
-	def grad_date():
-		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
-
 	Button(w_pump_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=3, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
 	date = Label(w_pump_settings_frame, text = "")
@@ -588,8 +587,7 @@ def load_w_pump_settings_frame():
 	    fre1 = fre1_in.get()
 	    fre2 = fre2_in.get()
 	    
-	    print(hardware + " will run from: " + start_date + "-" + end_date + " " + fre1 + " times/ " + fre2)
-	    
+	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + " " + fre1 + " times/ " + fre2)	    
 	    fre1_in.set("")
 	    
 	    
@@ -846,6 +844,9 @@ def load_led_settings_frame():
 			activeforeground=act_fg_color, command=slider_changed).grid(row=4, columnspan=8, column=10, sticky="n",)
 
 	# Add start and end calendars
+	def grad_date():
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
+
 	start_label = Label(led_settings_frame, text = "Start Date:")
 	start_label.grid(row=1, columnspan=4, column=1, padx="8", pady="5")
 
@@ -865,11 +866,6 @@ def load_led_settings_frame():
 	end_cal.grid(rowspan=4, row=2, columnspan=4, column=5, padx="8", pady="5", sticky="e")
 
 	# Add Button and Label
-	start_date = start_cal.get_date()
-	end_date = end_cal.get_date()
-	def grad_date():
-		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
-
 	Button(led_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=9, columnspan=4, column=1, padx="8", pady="5", sticky="e")
 
 	date = Label(led_settings_frame, text = "")
@@ -887,7 +883,7 @@ def load_led_settings_frame():
 	    fre1 = fre1_in.get()
 	    fre2 = fre2_in.get()
 	    
-	    print(hardware + " will run from: " + start_date + "-" + end_date + " " + fre1 + " times/ " + fre2)
+	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + " " + fre1 + " times/ " + fre2)
 	    
 	    fre1_in.set("")
 	    
@@ -981,6 +977,9 @@ def load_fan_settings_frame():
 			).grid(row=1, columnspan=3, column=1, padx="8", pady="5", sticky="w")
 
 	# Add start and end calendars
+	def grad_date():
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
+
 	start_label = Label(fan_settings_frame, text = "Start Date:")
 	start_label.grid(row=3, column=1, padx="8", pady="5")
 
@@ -1000,11 +999,6 @@ def load_fan_settings_frame():
 	end_cal.grid(row=4, column=2, padx="8", pady="5")
 
 	# Add Button and Label
-	start_date = start_cal.get_date()
-	end_date = end_cal.get_date()
-	def grad_date():
-		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
-
 	Button(fan_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=5, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
 	date = Label(fan_settings_frame, text = "")
@@ -1022,7 +1016,7 @@ def load_fan_settings_frame():
 	    fre1 = fre1_in.get()
 	    fre2 = fre2_in.get()
 	    
-	    print(hardware + " will run from: " + start_date + "-" + end_date + " " + fre1 + " times/ " + fre2)
+	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + " " + fre1 + " times/ " + fre2)
 	    
 	    fre1_in.set("")
 	    
@@ -1090,6 +1084,9 @@ def load_camera_settings_frame():
 			).grid(row=2, columnspan=1, column=1, padx="8", pady="5", sticky="w")
 
 	# Add start and end calendars
+	def grad_date():
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
+
 	start_label = Label(camera_settings_frame, text = "Start Date:")
 	start_label.grid(row=2, column=1, padx="8", pady="5")
 
@@ -1109,11 +1106,6 @@ def load_camera_settings_frame():
 	end_cal.grid(row=3, column=2, padx="8", pady="5")
 
 	# Add Button and Label
-	start_date = start_cal.get_date()
-	end_date = end_cal.get_date()
-	def grad_date():
-		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
-
 	Button(camera_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=4, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
 	date = Label(camera_settings_frame, text = "")
@@ -1131,7 +1123,7 @@ def load_camera_settings_frame():
 	    fre1 = fre1_in.get()
 	    fre2 = fre2_in.get()
 	    
-	    print(hardware + " will run from: " + start_date + "-" + end_date + " " + fre1 + " times/ " + fre2)
+	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + " " + fre1 + " times/ " + fre2)
 	    
 	    fre1_in.set("")
 	    
@@ -1199,6 +1191,11 @@ def load_atmos_sensor_frame():
 			).grid(row=2, columnspan=1, column=1, padx="8", pady="5", sticky="w")
 
 	# Add start and end calendars
+	def grad_date():
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
+		# print(start_cal.get_date())
+		# print(end_cal.get_date())
+
 	start_label = Label(atmos_sensor_frame, text = "Start Date:")
 	start_label.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
@@ -1216,18 +1213,10 @@ def load_atmos_sensor_frame():
 	end_cal.grid(row=3, columnspan=2, column=3, padx="8", pady="5", sticky="w")
 
 	# Add Button and Label
-	start_date = ""
-	end_date = ""
-	def grad_date():
-		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
-		# start_date = start_cal.get_date()
-		# end_date = end_cal.get_date()
-		print('next_date="{}"'.format(end_cal.selection_get()))
-
-	Button(atmos_sensor_frame, text = "Selected dates are: ", command = grad_date).grid(row=4, columnspan=2, column=1, padx="8", pady="5", sticky="e")
+	Button(atmos_sensor_frame, text = "Selected dates are: ", command = grad_date).grid(row=4, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
 	date = Label(atmos_sensor_frame, text = "")
-	date.grid(row=4, columnspan=2, column=3, padx="8", pady="5", sticky="w")
+	date.grid(row=4, columnspan=1, column=2, padx="8", pady="5", sticky="w")
 
 
 	# frequency stuff
@@ -1241,7 +1230,7 @@ def load_atmos_sensor_frame():
 	    fre1 = fre1_in.get()
 	    fre2 = fre2_in.get()
 	    
-	    print(hardware + " will run from: " + start_date + "-" + end_date + " " + fre1 + " times/ " + fre2)
+	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + " " + fre1 + " times/ " + fre2)
 	    
 	    fre1_in.set("")
 	    
@@ -1252,7 +1241,7 @@ def load_atmos_sensor_frame():
 
 	# creating a entry for input
 	fre1_entry = tk.Entry(atmos_sensor_frame,textvariable = fre1_in, font=('calibre', 10, 'normal'))
-	fre1_entry.grid(row=5, columnspan=1, column=2, padx="7", pady="5", sticky="w")
+	fre1_entry.grid(row=5, columnspan=2, column=2, padx="7", pady="5", sticky="w")
 
 	# creating a dropdown for frequency2
 	# Dropdown menu options 
@@ -1268,11 +1257,11 @@ def load_atmos_sensor_frame():
 
 	# Create Dropdown menu 
 	fre2_drop = tk.OptionMenu(atmos_sensor_frame, fre2_in, *fre2_options) 
-	fre2_drop.grid(row=5, columnspan=3, column=2, padx="7", pady="5", sticky="")
+	fre2_drop.grid(row=5, columnspan=1, column=4, padx="7", pady="5", sticky="w")
 	 
 	# creating a button that will call the fre_set function  
 	sub_btn=tk.Button(atmos_sensor_frame,text = 'Save', command = fre_set)
-	sub_btn.grid(row=5, columnspan=2, column=3, padx="7", pady="5", sticky="")
+	sub_btn.grid(row=5, columnspan=1, column=4, padx="7", pady="5", sticky="e")
 
 	# load window
 	print("atmos sensor frame loaded")

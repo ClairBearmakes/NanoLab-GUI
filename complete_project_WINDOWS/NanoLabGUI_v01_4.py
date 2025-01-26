@@ -934,6 +934,7 @@ def load_atmos_sensor_frame():
 
 	def grad_date():
 		date.config(text = "Selected Date is: " + cal.get_date())
+		print(cal.get_date())
 
 	# Add Button and Label
 	Button(atmos_sensor_frame, text = "Get Date",
