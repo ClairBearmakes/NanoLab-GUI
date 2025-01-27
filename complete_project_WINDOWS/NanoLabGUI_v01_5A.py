@@ -131,6 +131,7 @@ led_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickne
 fan_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
 camera_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
 atmos_sensor_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
+set_preview_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
 
 # place main frame widgets in window
 menu.grid(row=0, column=0, sticky="nsew")
@@ -142,6 +143,7 @@ led_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 fan_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 camera_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 atmos_sensor_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+set_preview_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 
 # Initialize serial connection
@@ -167,10 +169,6 @@ def show_graph_opt():
 def get_current_value():
     return '{:.2f}'.format(current_value.get())
 
-def send_settings():
-	print(repr(all_set))
-	arduino.write(bytes(str(repr(all_set)), 'utf-8'))
-
 def take_picture():
 	print("*click*")
 	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #take picture and save it
@@ -182,6 +180,12 @@ def take_atmos_reading():
 def test_pump():
 	print("pump")
 	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #pump some water
+
+def send_settings():
+	print(repr(all_set))
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8'))
+	# something to check Arduino got it
+	print("experiment started")
 
 def clear_widgets(root):
 	# select all frame widgets and delete them
@@ -400,7 +404,7 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		command=send_settings # command to send settings to NanoLab
+		command=lambda:load_set_preview_frame(), # settings preview frame
 		).grid(row=4, column=3, columnspan=2, sticky="w", padx="8", pady="5")
 
 	# load settings window
@@ -459,7 +463,7 @@ def load_data_results_frame():
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
 	data_r_title = Label(data_results_frame, bg="white", text = "Data Results", font=("Ubuntu", 30))
-	data_r_title.grid(row=0, columnspan=6, column=1, padx="8", pady="5")
+	data_r_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	# create update button widget
 	tk.Button(
@@ -535,7 +539,7 @@ def load_w_pump_settings_frame():
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
 	w_pump_title = Label(w_pump_settings_frame, bg="white", text = "Water Pump Settings", font=("Ubuntu", 30))
-	w_pump_title.grid(row=0, columnspan=5, column=1, padx="8", pady="5")
+	w_pump_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	if dev_mode == True:
 		Button(w_pump_settings_frame, text='Test', bg=bg_color,
@@ -704,7 +708,7 @@ def load_led_settings_frame():
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
 	led_settings_title = Label(led_settings_frame, bg="white", text = "LED Settings", font=("Ubuntu", 30))
-	led_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
+	led_settings_title.grid(row=0, columnspan=12, column=1, padx="8", pady="5")
 
 	# create red color button widget
 	tk.Button(
@@ -871,7 +875,6 @@ def load_led_settings_frame():
 	date = Label(led_settings_frame, text = "")
 	date.grid(row=9, columnspan=4, column=5, padx="8", pady="5", sticky="w")
 
-	# """
 	# frequency stuff
 	# declaring string variables for storing frequencys
 	fre1_in = tk.StringVar()
@@ -915,7 +918,6 @@ def load_led_settings_frame():
 	# creating a button that will call the fre_set function  
 	sub_btn=tk.Button(led_settings_frame,text = 'Save', command = fre_set)
 	sub_btn.grid(row=10, columnspan=1, column=5, padx="7", pady="5", sticky="e")
-	# """
 
 	# load window
 	print("LED settings loaded")
@@ -940,7 +942,7 @@ def load_fan_settings_frame():
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
 	fan_settings_title = Label(fan_settings_frame, bg="white", text = "Fan Settings", font=("Ubuntu", 30))
-	fan_settings_title.grid(row=0, columnspan=5, column=1, padx="8", pady="5")
+	fan_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	# slider current value
 	current_value = tk.DoubleVar()
@@ -1072,7 +1074,7 @@ def load_camera_settings_frame():
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
 	cam_settings_title = Label(camera_settings_frame, bg="white", text = "Camera Settings", font=("Ubuntu", 30))
-	cam_settings_title.grid(row=0, columnspan=5, column=1, padx="8", pady="5")
+	cam_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 	
 	if dev_mode == True:
 		Button(camera_settings_frame, text='Test', bg=bg_color,
@@ -1179,7 +1181,7 @@ def load_atmos_sensor_frame():
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
 	atmos_sensor_title = Label(atmos_sensor_frame, bg="white", text = "Atmospheric Sensor Settings", font=("Ubuntu", 30))
-	atmos_sensor_title.grid(row=0, columnspan=5, column=1, padx="8", pady="5")
+	atmos_sensor_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	if dev_mode == True:
 		Button(atmos_sensor_frame, text='Test', bg=bg_color,
@@ -1266,7 +1268,42 @@ def load_atmos_sensor_frame():
 	# load window
 	print("atmos sensor frame loaded")
 
-# load the first frame and button bar
+def load_set_preview_frame(): # preview of settings
+	# clear_widgets()
+	set_preview_frame.tkraise()
+	# prevent widgets from modifying the frame
+	set_preview_frame.grid_propagate(False)
+
+	# Read the Image
+	image = Image.open("assets/NanoLabs_logo.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((125, 125))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Label(set_preview_frame, image=logo_img, bg=bg_color)
+	logo_widget.image = logo_img
+	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
+
+	set_preview_title = Label(set_preview_frame, bg="white", text = "Preview Your Settings", font=("Ubuntu", 30))
+	set_preview_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
+
+	# create back button widget
+	tk.Button(
+		set_preview_frame,
+		text="Send",
+		font=("Ubuntu", 12),
+		height=("1"),
+		width=("7"),
+		bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		command=send_settings # command to send settings to NanoLab
+		).grid(row=1, column=1, sticky="w", padx="5", pady="3")
+
+	print("settings preview loaded")
+
+# load the menu (button bar on top) and the settings frame
 load_menu()
 load_settings_frame()
 
