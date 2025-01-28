@@ -66,17 +66,6 @@ setup2_frame = tk.Frame(setup_root, highlightbackground="grey", highlightthickne
 setup1_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 setup2_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 
-def raise_setup1():
-	setup2_frame.tkraise()
-
-
-def finish_setup():
-	setup_root.destroy()
-	# run main app
-	# root.mainloop()
-	# load_menu()
-	# load_settings_frame()
-
 
 def load_setup1():
 	setup1_frame.tkraise()
@@ -140,7 +129,7 @@ def load_setup2():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# command=finish_setup()
+		command=setup_root.destroy
 		).grid(row=5, column=6, sticky="", padx="5", pady="3")
 
 	print("second screen loaded")
@@ -1368,9 +1357,9 @@ def load_set_preview_frame(): # preview of settings
 	print("settings preview loaded")
 
 # run main app
-# load_menu()
-# load_settings_frame()
-# root.mainloop()
+load_menu()
+load_settings_frame()
+root.mainloop()
 
 # main window end
 # =======================
