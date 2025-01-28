@@ -2,9 +2,9 @@
 # Code writen by Asher Powell at Warren Tech North
 # Version 1.5 
 
+# import dependencies
 import tkinter as tk
 from tkinter import *
-from tkinter import ttk
 from PIL import Image, ImageTk
 from numpy import random
 import pyglet
@@ -20,7 +20,6 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 
 # load custom fonts
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
-pyglet.font.add_file("fonts/Shanti-Regular.ttf")
 
 # set normal colours
 menu_bg_color = "#000000"
@@ -28,7 +27,9 @@ menu_fg_color = "#ffffff"
 menu_act_bg_color = "#000000"
 menu_act_fg_color = "#808080"
 bg_color = "#ffffff"
-fg_color = "#000000" # normal
+fg_color = "#000000"
+act_bg_color = "#ffffff"
+act_fg_color = "#808080"
 
 # set LED screen colors
 led_bg = "#ECECEC"
@@ -39,10 +40,8 @@ green_fg = "green"
 blue_fg = "blue"
 purple_fg = "purple"
 
-act_bg_color = "#ffffff"
-act_fg_color = "#808080"
-
 dev_mode = True # if True will show log button and test buttons
+
 
 #"""
 # =======================
@@ -134,13 +133,14 @@ def load_setup2():
 
 	print("second screen loaded")
 
-# run app
+# run setup screen
 load_setup1()
 setup_root.mainloop()
 
 # setup end
 # =======================
 #"""
+
 
 # =======================
 # main window stuff
