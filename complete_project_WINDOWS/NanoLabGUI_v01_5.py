@@ -1,6 +1,6 @@
 
 # Code writen by Asher Powell at Warren Tech North
-# Version 1.5 Alpha
+# Version 1.5 
 
 import tkinter as tk
 from tkinter import *
@@ -163,12 +163,6 @@ def openweb1():
 def open_files():
     webbrowser.open_new("C:") # replace with NanoLab's internal storage
 
-def show_graph_opt(): 
-    print(clicked.get()) 
-
-def get_current_value():
-    return '{:.2f}'.format(current_value.get())
-
 def take_picture():
 	print("*click*")
 	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #take picture and save it
@@ -179,7 +173,7 @@ def take_atmos_reading():
 
 def test_pump():
 	print("pump")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #pump some water
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #pump some water and respond
 
 def send_settings():
 	print(repr(all_set))
@@ -240,9 +234,7 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
-		# webbrowser.open(url1, new=new),
-		command = openweb1
-		# command=lambda:load_menu() # open site with changes to code/app
+		command = openweb1 # open GitHub with changes to code/app
 		).grid(row=0, column=2, sticky="w", padx="5", pady="3")
 
 	# create storage button widget
@@ -257,7 +249,7 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
-		command=open_files # open file explorer
+		command=open_files # open file explorer to microSD card on NanoLab
 		).grid(row=0, column=3, sticky="w", padx="5", pady="3")
 
 	if dev_mode == True:
@@ -273,7 +265,7 @@ def load_menu(): # button bar on top
 			cursor="hand2",
 			activebackground=menu_act_bg_color,
 			activeforeground=menu_act_fg_color,
-			# command=lambda:load_menu() # open a log of what is happening right now
+			# command=lambda:load_menu() # open a log of what is happening right now on the Arduino
 			).grid(row=0, column=4, sticky="w", padx="5", pady="3")
 
 	# print("loaded menu")
@@ -405,119 +397,9 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_set_preview_frame(), # settings preview frame
-		).grid(row=4, column=3, columnspan=2, sticky="w", padx="8", pady="5")
+		).grid(row=4, column=3, columnspan=2, sticky="sw", padx="8", pady="5")
 
-	# load settings window
-	# command=lambda:load_settings_frame()
 	# print("settings loaded")
-
-
-def load_data_results_frame(): 
-	# clear_widgets(settings_frame)
-	# raise data results frame to the top
-	data_results_frame.tkraise()
-	# prevent widgets from modifying the frame
-	data_results_frame.grid_propagate(False)
-
-
-# graph
-	def load_plot1(): 
-
-	    # the figure that will contain the plot 
-	    fig = Figure(figsize = (6, 4), 
-	                dpi = 100) 
-
-	    # list of squares 
-	    y = [i**2 for i in range(101)] 
-
-	    # adding the subplot 
-	    plot1 = fig.add_subplot(111) 
-
-	    # plotting the graph 
-	    plot1.plot(y) 
-
-	    # creating the Tkinter canvas 
-	    # containing the Matplotlib figure 
-	    canvas = FigureCanvasTkAgg(fig, 
-	                            master = data_results_frame) 
-	    canvas.draw() 
-
-	    # placing the canvas on the Tkinter window 
-	    canvas.get_tk_widget().grid(row=3, columnspan=4, column=1) 
-
-	    # creating the Matplotlib toolbar 
-	    # toolbar = NavigationToolbar2Tk(canvas, data_results_frame) 
-	    # toolbar.update() 
-
-	    # placing the toolbar on the Tkinter window 
-	    # canvas.get_tk_widget().grid(row=2, columnspan=4, column=1)
-
-
-	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
-	# Resize the image using resize() method
-	resize_image = image.resize((125, 125))
-	logo_img = ImageTk.PhotoImage(resize_image)
-	logo_widget = tk.Label(data_results_frame, image=logo_img, bg=bg_color)
-	logo_widget.image = logo_img
-	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
-
-	data_r_title = Label(data_results_frame, bg="white", text = "Data Results", font=("Ubuntu", 30))
-	data_r_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
-
-	# create update button widget
-	tk.Button(
-		data_results_frame,
-		text="Update",
-		font=("Ubuntu", 12),
-		height=("0"),
-		width=("7"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command = load_plot1(), # update the graph
-		).grid(row=1, column=1, sticky="w", padx="5", pady="3")
-
-	# create export button widget
-	tk.Button(
-		data_results_frame,
-		text="Export",
-		font=("Ubuntu", 12),
-		height=("0"),
-		width=("7"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		# command=lambda:load_menu() # export the graph
-		).grid(row=1, column=1, sticky="e", padx="5", pady="3")
-
-	# Dropdown to choose kind of graph
-	# Dropdown menu options 
-	options = [ 
-	    "Graph", 
-	    "Line Graph", 
-	    "Bar Graph", 
-	] 
-
-	clicked = StringVar()
-
-	# initial menu text 
-	clicked.set("Graph")
-
-	# Create Dropdown menu 
-	drop = OptionMenu(data_results_frame, clicked, *options) 
-	drop.grid(row=1, column=3, sticky="e")
-
-	# Create button, it will print port 
-	button = Button(data_results_frame, text = "Choose", font=("Ubuntu", 12), height=("0"), width=("7"), bg=bg_color, fg=fg_color, activebackground=act_bg_color, activeforeground=act_fg_color, command = show_graph_opt)
-	button.grid(row=1, column=4, sticky="w")
-	
-	# load window
-	print("data results loaded")
 
 def load_w_pump_settings_frame(): 
 	# clear_widgets(settings_frame)
@@ -546,7 +428,8 @@ def load_w_pump_settings_frame():
 			fg=fg_color,
 			cursor="hand2",
 			activebackground=act_bg_color,
-			activeforeground=act_fg_color, 
+			activeforeground=act_fg_color,
+			font=("Ubuntu", 12),  
 			command=test_pump #pump some water
 			).grid(row=1, columnspan=1, column=1, padx="8", pady="5", sticky="w")
 		
@@ -555,29 +438,28 @@ def load_w_pump_settings_frame():
 	def grad_date():
 		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	start_label = Label(w_pump_settings_frame, text = "Start Date:")
-	start_label.grid(row=1, column=1, padx="8", pady="5")
+	start_label = Label(w_pump_settings_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	start_label.grid(row=1, columnspan=2, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
+	start_cal.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
-	start_cal.grid(row=2, column=1, padx="8", pady="5")
-
-	end_label = Label(w_pump_settings_frame, text = "End Date:")
-	end_label.grid(row=1, column=2, padx="8", pady="5")
+	end_label = Label(w_pump_settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	end_label.grid(row=1, columnspan=2, column=3, padx="8", pady="5")
 
 	end_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
-
-	end_cal.grid(row=2, column=2, padx="8", pady="5")
+	end_cal.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
 
 	# Add Button and Label
-	Button(w_pump_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=3, columnspan=1, column=1, padx="8", pady="5", sticky="e")
+	Button(w_pump_settings_frame, text = "Selected dates are: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = grad_date
+		).grid(row=3, columnspan=2, column=1, padx="8", pady="5", sticky="e")
 
-	date = Label(w_pump_settings_frame, text = "")
-	date.grid(row=3, columnspan=1, column=2, padx="8", pady="5", sticky="w")
+	date = Label(w_pump_settings_frame, text = "", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	date.grid(row=3, columnspan=2, column=3, padx="8", pady="5", sticky="w")
 
 
 	# frequency stuff
@@ -596,12 +478,12 @@ def load_w_pump_settings_frame():
 	    
 	    
 	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(w_pump_settings_frame, text = 'Frequency of ' + hardware + ": ", font=('calibre', 10, 'bold'))
+	fre_label = tk.Label(w_pump_settings_frame, text = 'Frequency of ' + hardware + ": ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	fre_label.grid(row=5, column=1, sticky="w")
 
 	# creating a entry for input
-	fre1_entry = tk.Entry(w_pump_settings_frame,textvariable = fre1_in, font=('calibre', 10, 'normal'))
-	fre1_entry.grid(row=5, columnspan=2, column=1)
+	fre1_entry = tk.Entry(w_pump_settings_frame, textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width="5")
+	fre1_entry.grid(row=5, columnspan=1, column=2, sticky="e")
 
 	# creating a dropdown for frequency2
 	# Dropdown menu options 
@@ -616,14 +498,14 @@ def load_w_pump_settings_frame():
 	fre2_in.set("day")
 
 	# Create Dropdown menu 
-	fre2_drop = tk.OptionMenu(w_pump_settings_frame, fre2_in, *fre2_options) 
-	fre2_drop.grid(row=5, column=2)
+	fre2_drop = tk.OptionMenu(w_pump_settings_frame, fre2_in, *fre2_options)
+	fre2_drop.config(font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre2_drop.grid(row=5, columnspan=2, column=3, sticky="w", padx="7")
 	 
 	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(w_pump_settings_frame,text = 'Save', command = fre_set)
-	sub_btn.grid(row=5, column=2, padx="7", pady="5", sticky="e")
+	sub_btn=tk.Button(w_pump_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
+	sub_btn.grid(row=5, columnspan=2, column=3, padx="7", pady="5", sticky="")
 
-	# load window
 	print("w pump settings loaded")
 
 
@@ -632,10 +514,8 @@ def load_w_pump_settings_frame():
 current_value = tk.DoubleVar()
 value_label=0
 
-"""
 def get_current_value():
-    return '{:.2f}'.format(current_value.get())
-"""
+	return '{:.2f}'.format(current_value.get())
 
 def slider_changed():
     # value_label.configure(text=get_current_value())
@@ -831,73 +711,79 @@ def load_led_settings_frame():
 		).grid(row=3, columnspan=3, column=11, sticky="n", padx="5", pady="3")
 
 	# label for the slider
-	slider_label = ttk.Label(
+	slider_label = tk.Label(
     	led_settings_frame,
     	text='Dimming Slider',
     	font=("Ubuntu", 12),
-	).grid(row=3, columnspan=8, column=10, sticky="n",)
+    	bg=bg_color,
+		fg=fg_color
+	).grid(row=3, columnspan=8, column=10, sticky="s", padx="0", pady="0")
 
 	led_slider = Scale(led_settings_frame, from_=0, to=255, length=570, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
 	led_slider.set(200)
-	led_slider.grid(row=3, columnspan=8, column=10, sticky="s",)
+	led_slider.grid(row=4, columnspan=8, column=10, sticky="n")
+
 	if dev_mode == True:
 		Button(led_settings_frame, text='Test', bg=bg_color,
 			fg=fg_color,
 			cursor="hand2",
 			activebackground=act_bg_color,
-			activeforeground=act_fg_color, command=slider_changed).grid(row=4, columnspan=8, column=10, sticky="n",)
+			activeforeground=act_fg_color,
+			font=("Ubuntu", 12),  
+			command=slider_changed).grid(row=5, columnspan=8, column=10, sticky="n")
 
 	# Add start and end calendars
 	def grad_date():
 		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	start_label = Label(led_settings_frame, text = "Start Date:")
+	start_label = Label(led_settings_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	start_label.grid(row=1, columnspan=4, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(led_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
-
 	start_cal.grid(rowspan=4, row=2, columnspan=4, column=1, padx="8", pady="5")
 
-	end_label = Label(led_settings_frame, text = "End Date:")
+	end_label = Label(led_settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	end_label.grid(row=1, columnspan=4, column=5, padx="8", pady="5")
 
 	end_cal = Calendar(led_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
 			day = cur_day)
-
 	end_cal.grid(rowspan=4, row=2, columnspan=4, column=5, padx="8", pady="5", sticky="e")
 
 	# Add Button and Label
-	Button(led_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=9, columnspan=4, column=1, padx="8", pady="5", sticky="e")
+	Button(led_settings_frame, text = "Selected dates are: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = grad_date).grid(row=9, columnspan=4, column=1, padx="8", pady="5", sticky="e")
 
-	date = Label(led_settings_frame, text = "")
+	date = Label(led_settings_frame, text = "", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	date.grid(row=9, columnspan=4, column=5, padx="8", pady="5", sticky="w")
 
 	# frequency stuff
 	# declaring string variables for storing frequencys
 	fre1_in = tk.StringVar()
 	fre2_in = tk.StringVar()
+	time_in = tk.StringVar()
 	 
 	# defining a function that will get the two frequencys and print them
 	def fre_set(): # eventually set to take all values of screen/component and save those
 
 	    fre1 = fre1_in.get()
 	    fre2 = fre2_in.get()
+	    time = time_in.get()
 	    
-	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + " " + fre1 + " times/ " + fre2)
+	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + "" + " for " + time + " hours " + fre1 + " times/ " + fre2)
 	    
 	    fre1_in.set("")
+	    time_in.set("6")
 	    
-	    
+
 	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(led_settings_frame, text = 'Frequency of ' + hardware + ": ", font=('calibre', 10, 'bold'))
+	fre_label = tk.Label(led_settings_frame, text = 'Frequency of ' + hardware + ": ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	fre_label.grid(row=10, columnspan=1, column=2, sticky="w")
 
 	# creating a entry for input
-	fre1_entry = tk.Entry(led_settings_frame,textvariable = fre1_in, font=('calibre', 10, 'normal'))
-	fre1_entry.grid(row=10, columnspan=1, column=4, padx="7", pady="5", sticky="w")
+	fre1_entry = tk.Entry(led_settings_frame,textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=3)
+	fre1_entry.grid(row=10, columnspan=1, column=4, padx="7", pady="5", sticky="e")
 
 	# creating a dropdown for frequency2
 	# Dropdown menu options 
@@ -912,12 +798,19 @@ def load_led_settings_frame():
 	fre2_in.set("day")
 
 	# Create Dropdown menu 
-	fre2_drop = tk.OptionMenu(led_settings_frame, fre2_in, *fre2_options) 
-	fre2_drop.grid(row=10, columnspan=1, column=5, padx="7", pady="5", sticky="w")
+	fre2_drop = tk.OptionMenu(led_settings_frame, fre2_in, *fre2_options)
+	fre2_drop.config(font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre2_drop.grid(row=10, columnspan=1, column=5, padx="7", pady="5", sticky="e")
 	 
 	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(led_settings_frame,text = 'Save', command = fre_set)
-	sub_btn.grid(row=10, columnspan=1, column=5, padx="7", pady="5", sticky="e")
+	sub_btn = tk.Button(led_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
+	sub_btn.grid(row=12, columnspan=1, column=1, padx="7", pady="5", sticky="w")
+
+	time_label = tk.Label(led_settings_frame, text = 'Time (in hours) that ' + hardware + "s will run for: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	time_label.grid(row=11, columnspan=4, column=1, sticky="w")
+
+	time_entry = tk.Entry(led_settings_frame,textvariable = time_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=2)
+	time_entry.grid(row=11, columnspan=2, column=4, padx="7", pady="5", sticky="")
 
 	# load window
 	print("LED settings loaded")
@@ -959,15 +852,17 @@ def load_fan_settings_frame():
 		print('fan strength', str(get_current_value()))
 
 	# label for the slider
-	slider_label = ttk.Label(
+	slider_label = tk.Label(
     	fan_settings_frame,
-    	text='Fan Strength',
-    	font=("Ubuntu", 12)
-	).grid(row=1, columnspan=3, column=1)
+    	text='Fan Strength (%)',
+    	font=("Ubuntu", 12), 
+		bg=bg_color,
+		fg=fg_color
+	).grid(row=1, columnspan=3, column=1, sticky="n")
 
-	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=250, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=700, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
 	fan_strength_slider.set(70)
-	fan_strength_slider.grid(row=2, columnspan=8, column=1)
+	fan_strength_slider.grid(row=2, columnspan=8, column=1, sticky="n")
 
 	if dev_mode == True:
 		Button(fan_settings_frame, text='Test', bg=bg_color,
@@ -975,6 +870,7 @@ def load_fan_settings_frame():
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color, 
+			font=("Ubuntu", 12), 
 			command=slider_changed
 			).grid(row=1, columnspan=3, column=1, padx="8", pady="5", sticky="w")
 
@@ -982,7 +878,7 @@ def load_fan_settings_frame():
 	def grad_date():
 		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	start_label = Label(fan_settings_frame, text = "Start Date:")
+	start_label = Label(fan_settings_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	start_label.grid(row=3, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(fan_settings_frame, selectmode = 'day',
@@ -991,7 +887,7 @@ def load_fan_settings_frame():
 
 	start_cal.grid(row=4, column=1, padx="8", pady="5")
 
-	end_label = Label(fan_settings_frame, text = "End Date:")
+	end_label = Label(fan_settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	end_label.grid(row=3, column=2, padx="8", pady="5")
 
 	end_cal = Calendar(fan_settings_frame, selectmode = 'day',
@@ -1001,9 +897,9 @@ def load_fan_settings_frame():
 	end_cal.grid(row=4, column=2, padx="8", pady="5")
 
 	# Add Button and Label
-	Button(fan_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=5, columnspan=1, column=1, padx="8", pady="5", sticky="e")
+	Button(fan_settings_frame, text = "Selected dates are: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = grad_date).grid(row=5, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
-	date = Label(fan_settings_frame, text = "")
+	date = Label(fan_settings_frame, text = "", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	date.grid(row=5, columnspan=1, column=2, padx="8", pady="5", sticky="w")
 
 
@@ -1024,11 +920,11 @@ def load_fan_settings_frame():
 	    
 	    
 	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(fan_settings_frame, text = 'Frequency of ' + hardware + ": ", font=('calibre', 10, 'bold'))
+	fre_label = tk.Label(fan_settings_frame, text = 'Frequency of ' + hardware + ": ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	fre_label.grid(row=6, column=1, sticky="w")
 
 	# creating a entry for input
-	fre1_entry = tk.Entry(fan_settings_frame,textvariable = fre1_in, font=('calibre', 10, 'normal'))
+	fre1_entry = tk.Entry(fan_settings_frame,textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=18)
 	fre1_entry.grid(row=6, columnspan=2, column=1)
 
 	# creating a dropdown for frequency2
@@ -1044,11 +940,12 @@ def load_fan_settings_frame():
 	fre2_in.set("day")
 
 	# Create Dropdown menu 
-	fre2_drop = tk.OptionMenu(fan_settings_frame, fre2_in, *fre2_options) 
+	fre2_drop = tk.OptionMenu(fan_settings_frame, fre2_in, *fre2_options)
+	fre2_drop.config(font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	fre2_drop.grid(row=6, column=2)
 	 
 	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(fan_settings_frame,text = 'Save', command = fre_set)
+	sub_btn=tk.Button(fan_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=6, column=2, padx="7", pady="5", sticky="e")
 
 	# load window
@@ -1082,6 +979,7 @@ def load_camera_settings_frame():
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color, 
+			font=("Ubuntu", 12), 
 			command=take_picture
 			).grid(row=2, columnspan=1, column=1, padx="8", pady="5", sticky="w")
 
@@ -1089,7 +987,7 @@ def load_camera_settings_frame():
 	def grad_date():
 		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	start_label = Label(camera_settings_frame, text = "Start Date:")
+	start_label = Label(camera_settings_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	start_label.grid(row=2, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(camera_settings_frame, selectmode = 'day',
@@ -1098,7 +996,7 @@ def load_camera_settings_frame():
 
 	start_cal.grid(row=3, column=1, padx="8", pady="5")
 
-	end_label = Label(camera_settings_frame, text = "End Date:")
+	end_label = Label(camera_settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	end_label.grid(row=2, column=2, padx="8", pady="5")
 
 	end_cal = Calendar(camera_settings_frame, selectmode = 'day',
@@ -1108,9 +1006,9 @@ def load_camera_settings_frame():
 	end_cal.grid(row=3, column=2, padx="8", pady="5")
 
 	# Add Button and Label
-	Button(camera_settings_frame, text = "Selected dates are: ", command = grad_date).grid(row=4, columnspan=1, column=1, padx="8", pady="5", sticky="e")
+	Button(camera_settings_frame, text = "Selected dates are: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = grad_date).grid(row=4, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
-	date = Label(camera_settings_frame, text = "")
+	date = Label(camera_settings_frame, text = "", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	date.grid(row=4, columnspan=1, column=2, padx="8", pady="5", sticky="w")
 
 
@@ -1131,11 +1029,11 @@ def load_camera_settings_frame():
 	    
 	    
 	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(camera_settings_frame, text = 'Frequency of ' + hardware + ": ", font=('calibre', 10, 'bold'))
+	fre_label = tk.Label(camera_settings_frame, text = 'Frequency of ' + hardware + ": ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	fre_label.grid(row=5, column=1, sticky="w")
 
 	# creating a entry for input
-	fre1_entry = tk.Entry(camera_settings_frame,textvariable = fre1_in, font=('calibre', 10, 'normal'))
+	fre1_entry = tk.Entry(camera_settings_frame,textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=18)
 	fre1_entry.grid(row=5, columnspan=2, column=1)
 
 	# creating a dropdown for frequency2
@@ -1151,11 +1049,12 @@ def load_camera_settings_frame():
 	fre2_in.set("day")
 
 	# Create Dropdown menu 
-	fre2_drop = tk.OptionMenu(camera_settings_frame, fre2_in, *fre2_options) 
+	fre2_drop = tk.OptionMenu(camera_settings_frame, fre2_in, *fre2_options)
+	fre2_drop.config(font=("Ubuntu", 12), bg=bg_color, fg=fg_color) 
 	fre2_drop.grid(row=5, column=2)
 	 
 	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(camera_settings_frame,text = 'Save', command = fre_set)
+	sub_btn=tk.Button(camera_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=5, column=2, padx="7", pady="5", sticky="e")
 
 	# load window
@@ -1189,6 +1088,7 @@ def load_atmos_sensor_frame():
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color, 
+			font=("Ubuntu", 12), 
 			command=take_atmos_reading
 			).grid(row=2, columnspan=1, column=1, padx="8", pady="5", sticky="w")
 
@@ -1198,7 +1098,7 @@ def load_atmos_sensor_frame():
 		# print(start_cal.get_date())
 		# print(end_cal.get_date())
 
-	start_label = Label(atmos_sensor_frame, text = "Start Date:")
+	start_label = Label(atmos_sensor_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	start_label.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(atmos_sensor_frame, selectmode = 'day',
@@ -1206,7 +1106,7 @@ def load_atmos_sensor_frame():
 			day = cur_day)
 	start_cal.grid(row=3, columnspan=2, column=1, padx="8", pady="5", sticky="w")
 
-	end_label = Label(atmos_sensor_frame, text = "End Date:")
+	end_label = Label(atmos_sensor_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	end_label.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
 
 	end_cal = Calendar(atmos_sensor_frame, selectmode = 'day',
@@ -1215,10 +1115,10 @@ def load_atmos_sensor_frame():
 	end_cal.grid(row=3, columnspan=2, column=3, padx="8", pady="5", sticky="w")
 
 	# Add Button and Label
-	Button(atmos_sensor_frame, text = "Selected dates are: ", command = grad_date).grid(row=4, columnspan=1, column=1, padx="8", pady="5", sticky="e")
+	Button(atmos_sensor_frame, text = "Selected dates are: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command=grad_date).grid(row=4, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
-	date = Label(atmos_sensor_frame, text = "")
-	date.grid(row=4, columnspan=1, column=2, padx="8", pady="5", sticky="w")
+	date = Label(atmos_sensor_frame, text = "", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	date.grid(row=4, columnspan=3, column=2, padx="8", pady="5", sticky="w")
 
 
 	# frequency stuff
@@ -1238,11 +1138,11 @@ def load_atmos_sensor_frame():
 	    
 	    
 	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(atmos_sensor_frame, text = 'Frequency of ' + hardware + ": ", font=('calibre', 10, 'bold'))
+	fre_label = tk.Label(atmos_sensor_frame, text = 'Frequency of ' + hardware + ": ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	fre_label.grid(row=5, column=1, sticky="w")
 
 	# creating a entry for input
-	fre1_entry = tk.Entry(atmos_sensor_frame,textvariable = fre1_in, font=('calibre', 10, 'normal'))
+	fre1_entry = tk.Entry(atmos_sensor_frame,textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=10)
 	fre1_entry.grid(row=5, columnspan=2, column=2, padx="7", pady="5", sticky="w")
 
 	# creating a dropdown for frequency2
@@ -1258,15 +1158,109 @@ def load_atmos_sensor_frame():
 	fre2_in.set("day")
 
 	# Create Dropdown menu 
-	fre2_drop = tk.OptionMenu(atmos_sensor_frame, fre2_in, *fre2_options) 
-	fre2_drop.grid(row=5, columnspan=1, column=4, padx="7", pady="5", sticky="w")
+	fre2_drop = tk.OptionMenu(atmos_sensor_frame, fre2_in, *fre2_options)
+	fre2_drop.config(font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre2_drop.grid(row=5, columnspan=2, column=3, padx="7", pady="5", sticky="")
 	 
 	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(atmos_sensor_frame,text = 'Save', command = fre_set)
+	sub_btn=tk.Button(atmos_sensor_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=5, columnspan=1, column=4, padx="7", pady="5", sticky="e")
 
 	# load window
 	print("atmos sensor frame loaded")
+
+def load_data_results_frame(): 
+	# clear_widgets(settings_frame)
+	# raise data results frame to the top
+	data_results_frame.tkraise()
+	# prevent widgets from modifying the frame
+	data_results_frame.grid_propagate(False)
+
+	# Read the Image
+	image = Image.open("assets/NanoLabs_logo.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((125, 125))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Label(data_results_frame, image=logo_img, bg=bg_color)
+	logo_widget.image = logo_img
+	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
+
+	data_r_title = Label(data_results_frame, bg="white", text = "Data Results", font=("Ubuntu", 30))
+	data_r_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
+
+	# graph
+	def load_plot1(): 
+
+	    # the figure that will contain the plot 
+	    fig = Figure(figsize = (6, 4), 
+	                dpi = 100) 
+
+	    # list of squares 
+	    y = [i**2 for i in range(101)] 
+
+	    # adding the subplot 
+	    plot1 = fig.add_subplot(111) 
+
+	    # plotting the graph 
+	    plot1.plot(y) 
+
+	    # creating the Tkinter canvas containing the Matplotlib figure
+	    canvas = FigureCanvasTkAgg(fig, master = data_results_frame)    
+	    canvas.draw() 
+
+	    # placing the canvas on the Tkinter window 
+	    canvas.get_tk_widget().grid(row=3, columnspan=4, column=1) 
+
+	    # creating the Matplotlib toolbar 
+	    toolbar = NavigationToolbar2Tk(canvas, data_results_frame)
+	    toolbar.config() 
+	    toolbar.update() 
+
+	    # placing the toolbar on the Tkinter window 
+	    toolbar.grid(row=1, columnspan=1, column=2, sticky="w")
+
+	# create update button widget
+	tk.Button(
+		data_results_frame,
+		text="Update",
+		font=("Ubuntu", 12),
+		height=("0"),
+		width=("7"),
+		bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		command=load_plot1(), # update the graph
+		).grid(row=1, column=1, sticky="w", padx="5", pady="3")
+
+	# Dropdown to choose kind of graph
+	def show_graph_new(): 
+		print(clicked.get())
+
+	# Dropdown menu options 
+	options = [ 
+	    "Graph", 
+	    "Line Graph", 
+	    "Bar Graph" 
+	] 
+
+	clicked = StringVar()
+
+	# initial menu text 
+	clicked.set("Graph")
+
+	# Create Dropdown menu 
+	drop = OptionMenu(data_results_frame, clicked, *options)
+	drop.config(bg=bg_color, fg=fg_color) 
+	drop.grid(row=1, column=3, sticky="e")
+
+	# Create button that updates graph
+	button = Button(data_results_frame, text = "Choose", font=("Ubuntu", 12), height=("0"), width=("7"), 
+	bg=bg_color, fg=fg_color, activebackground=act_bg_color, activeforeground=act_fg_color, command = show_graph_new)
+	button.grid(row=1, column=4, sticky="w")
+	
+	print("data results loaded")
 
 def load_set_preview_frame(): # preview of settings
 	# clear_widgets()
