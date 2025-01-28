@@ -1,0 +1,15 @@
+python
+tkinter as tk
+from tkinter import *
+from PIL import Image, ImageTk
+from numpy import random
+pyglet
+webbrowser
+serial
+sys
+time
+random
+from tkcalendar import Calendar
+from datetime import date 
+from matplotlib.figure import Figure 
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk) 

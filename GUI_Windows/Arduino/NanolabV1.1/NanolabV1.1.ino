@@ -30,7 +30,8 @@ void setup() {
 
   Serial.begin(9600);
 
-  
+  pixels->fill(pixels->Color(214, 83, 211), 0, 15); //this is the colour the lights glow
+                                          //i found the rgb on reddit if its not optimal than ¯\_(ツ)_/¯
 
   
 }
@@ -45,35 +46,25 @@ void loop() {
     switch (DoThis) {
       
       case 'R' :
-        pixels->clear();
-        pixels->show();
-          
-          RVar = Serial.read();
-
-          for(i<numPixels; i++;)
-          {
-           
-            pixels->setPixelColor(i, pixels->Color(RVar, GVar, BVar));
-            
-            
-          
-          }
-          RVar = 0;
-        pixels->show();
+     
+      pixels->fill(pixels->Color(214, 83, 211), 0, 15);
+      pixels->show();
+      
       break;
-
+      
+      case 'T' :
+     
+      Serial.println(pixels->getPixelColor(0));
+      
+      break;
+      
       case 'C' :
         pixels->clear();
         pixels->show();
+        
+         
 
-          RVar = Serial.read();
-
-          {
-           
-            pixels->setPixelColor(i, pixels->Color(0, 0, 0));
-          
-          }
-        pixels->show();
+        
         break;
 
 
