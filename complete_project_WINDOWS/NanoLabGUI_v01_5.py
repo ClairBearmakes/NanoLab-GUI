@@ -44,8 +44,7 @@ act_fg_color = "#808080"
 
 dev_mode = True # if True will show log button and test buttons
 
-
-"""
+#"""
 # =======================
 # setup window stuff
 
@@ -53,35 +52,106 @@ dev_mode = True # if True will show log button and test buttons
 setup_root = tk.Tk()
 
 # Adjust size
-setup_root.geometry("500x500")
+setup_root.geometry("800x600") # width by height 
+su_width = 800
+su_height = 600
 
 setup_root.tkraise()
 
-def setup():
-	# Create object
-	# setup_root = Tk()
+# create setup frames
+setup1_frame = tk.Frame(setup_root, highlightbackground="grey", highlightthickness=1, width=su_width, height=su_height, bg=bg_color)
+setup2_frame = tk.Frame(setup_root, highlightbackground="grey", highlightthickness=1, width=su_width, height=su_height, bg=bg_color)
 
-	# Adjust size
-	# setup_root.geometry("500x500")
+# place frames into setup window
+setup1_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
+setup2_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 
-	# setup_root.tkraise()
+def raise_setup1():
+	setup2_frame.tkraise()
 
-	# create setup frame widgets
-	home_frame = tk.Frame(setup_root, width="500", height="500", bg=bg_color)
 
-	# place setup frame widgets into window
-	home_frame.grid(rowspan=4, columnspan=4, row=1, column=0, sticky="nesw")
+def finish_setup():
+	setup_root.destroy()
+	# run main app
+	# root.mainloop()
+	# load_menu()
+	# load_settings_frame()
+
+
+def load_setup1():
+	setup1_frame.tkraise()
+	# prevent widgets from modifying the frame
+	setup1_frame.grid_propagate(False)
 
 	# Set Label
-	welcome_label = Label(home_frame, text="Welcome to your NanoLab", font=18)
-	welcome_label.grid()
+	welcome_label = Label(setup1_frame, text="Welcome to your NanoLab", font=("Ubuntu-Bold", 20), bg=bg_color)
+	welcome_label.grid(row=0, columnspan=4, column=3, sticky="")
 
-	# setup_root.after(8000, setup_root.destroy)
+	# go to next frame
+	tk.Button(
+		setup1_frame,
+		text="Next",
+		font=("Ubuntu", 12),
+		height=("1"),
+		width=("7"),
+		bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		command=lambda:load_setup2()
+		).grid(row=5, column=7, sticky="", padx="5", pady="3")
 
-setup()
+	print("first screen loaded")
 
-# setup_root.destroy
-"""
+def load_setup2():
+	setup2_frame.tkraise()
+	# prevent widgets from modifying the frame
+	setup2_frame.grid_propagate(False)
+
+	# Set Label
+	welcome2_label = Label(setup2_frame, text="Pick Your Version", font=("Ubuntu", 20), bg=bg_color)
+	welcome2_label.grid(row=0, columnspan=4, column=3, sticky="")
+
+	# go back a frame
+	tk.Button(
+		setup2_frame,
+		text="Back",
+		font=("Ubuntu", 12),
+		height=("1"),
+		width=("7"),
+		bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		command=lambda:load_setup1()
+		).grid(row=5, column=5, sticky="", padx="5", pady="3")
+
+	# finish setup
+	tk.Button(
+		setup2_frame,
+		text="Done",
+		font=("Ubuntu", 12),
+		height=("1"),
+		width=("7"),
+		bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		# command=finish_setup()
+		).grid(row=5, column=6, sticky="", padx="5", pady="3")
+
+	print("second screen loaded")
+
+# run app
+load_setup1()
+setup_root.mainloop()
+
+# setup end
+# =======================
+#"""
 
 # =======================
 # main window stuff
@@ -1297,9 +1367,10 @@ def load_set_preview_frame(): # preview of settings
 
 	print("settings preview loaded")
 
-# load the menu (button bar on top) and the settings frame
-load_menu()
-load_settings_frame()
+# run main app
+# load_menu()
+# load_settings_frame()
+# root.mainloop()
 
-# run app
-root.mainloop()
+# main window end
+# =======================
