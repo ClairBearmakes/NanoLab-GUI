@@ -1,0 +1,1 @@
+w_pump_set = ['50mL', '5d/w'] LED_set = ['red', '105'] fan_set = ['90%', '30m/3d/w'] cam_set = ['1/w'] atmos_sen_set = ['2/d']

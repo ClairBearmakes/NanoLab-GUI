@@ -209,13 +209,17 @@ cur_month = todays_date.month
 cur_day = todays_date.day
 cur_year = todays_date.year
 
-# lists
+# lists # move to respective places
 w_pump_set = ["50mL", "5d/w"]
 LED_set = ["red", "105"]
 fan_set = ["90%", "30m/3d/w"]
 cam_set = ["1/w"]
 atmos_sen_set = ["2/d"]
-all_set = [w_pump_set, LED_set, fan_set, cam_set, atmos_sen_set]
+#all_set1 = [w_pump_set, LED_set, fan_set, cam_set, atmos_sen_set]
+all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
+with open("variablesfile.txt", 'w') as f:
+	f.write(all_set + '\n')
+	#f.write(str(all_set1))
 
 # initiallize app with basic settings
 root = Tk() # root is the main window name
