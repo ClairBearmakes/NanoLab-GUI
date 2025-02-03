@@ -59,7 +59,6 @@ setup2_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 # define variables
 selected = False
 box_type = ""
-hydro_bg_color = "#ffffff"
 
 def type_hydro():
 	box_type = "HydroFuge"
@@ -97,7 +96,7 @@ def load_setup1():
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
-	hydro_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, command=type_hydro)
+	hydro_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, highlightcolor="red", command=type_hydro)
 	hydro_logo_widget.image = logo_img
 	hydro_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
 
@@ -111,7 +110,7 @@ def load_setup1():
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
-	uni_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, command=type_uni)
+	uni_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, state='disabled', command=type_uni)
 	uni_logo_widget.image = logo_img
 	uni_logo_widget.grid(row=2, columnspan=3, column=4, sticky="", padx="8", pady="5")
 
@@ -201,13 +200,17 @@ cur_month = todays_date.month
 cur_day = todays_date.day
 cur_year = todays_date.year
 
-# lists
+# lists # move to respective places
 w_pump_set = ["50mL", "5d/w"]
 LED_set = ["red", "105"]
 fan_set = ["90%", "30m/3d/w"]
 cam_set = ["1/w"]
 atmos_sen_set = ["2/d"]
-all_set = [w_pump_set, LED_set, fan_set, cam_set, atmos_sen_set]
+#all_set1 = [w_pump_set, LED_set, fan_set, cam_set, atmos_sen_set]
+all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
+with open("variablesfile.txt", 'w') as f:
+	f.write(all_set + '\n')
+	#f.write(str(all_set1))
 
 # initiallize app with basic settings
 root = Tk() # root is the main window name
@@ -817,7 +820,7 @@ def load_led_settings_frame():
 		fg=fg_color
 	).grid(row=3, columnspan=8, column=10, sticky="s", padx="0", pady="0")
 
-	led_slider = Scale(led_settings_frame, from_=0, to=255, length=570, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	led_slider = Scale(led_settings_frame, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
 	led_slider.set(200)
 	led_slider.grid(row=4, columnspan=8, column=10, sticky="n")
 
@@ -958,7 +961,7 @@ def load_fan_settings_frame():
 		fg=fg_color
 	).grid(row=1, columnspan=3, column=1, sticky="n")
 
-	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=700, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=700, resolution=10, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
 	fan_strength_slider.set(70)
 	fan_strength_slider.grid(row=2, columnspan=8, column=1, sticky="n")
 

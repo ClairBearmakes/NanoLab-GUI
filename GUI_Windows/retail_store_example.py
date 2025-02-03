@@ -39,3 +39,7 @@ cursor.execute("DELETE FROM purchases WHERE purchase_id - 54")
 cursor.execute("SELECT * FROM purchases")
 results = cursor.fetchall()
 print(results)
+
+cursor.execute("SELECT * FROM stores purchases")
+results = cursor.fetchall()
+print(results)
