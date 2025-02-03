@@ -835,7 +835,7 @@ def load_led_settings_frame():
 		fg=fg_color
 	).grid(row=3, columnspan=8, column=10, sticky="s", padx="0", pady="0")
 
-	led_slider = Scale(led_settings_frame, from_=0, to=255, length=570, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	led_slider = Scale(led_settings_frame, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
 	led_slider.set(200)
 	led_slider.grid(row=4, columnspan=8, column=10, sticky="n")
 
@@ -976,7 +976,7 @@ def load_fan_settings_frame():
 		fg=fg_color
 	).grid(row=1, columnspan=3, column=1, sticky="n")
 
-	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=700, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=700, resolution=10, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
 	fan_strength_slider.set(70)
 	fan_strength_slider.grid(row=2, columnspan=8, column=1, sticky="n")
 
