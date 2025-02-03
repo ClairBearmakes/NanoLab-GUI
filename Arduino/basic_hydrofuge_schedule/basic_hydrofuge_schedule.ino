@@ -10,7 +10,7 @@
 
 int fan = 8;  //fan pin
 
-int pump = 6;  //pump pin
+
 
 int numPixels = 16;  //Led / neopixel settings
 int led = 9;
@@ -26,7 +26,7 @@ void setup() {
   Serial.begin(9600);
 
   pinMode(8, INPUT_PULLUP);  //Use to halt motor movement (ground)
-  pinMode(pump, OUTPUT);
+  
   pinMode(fan, OUTPUT);
   
   //NeoPixels ********************************************//
@@ -50,9 +50,11 @@ void setup() {
   setTime(5, 59, 40, 1, 1, 11);  // set time to Saturday 8:29:00am Jan 1 2011
   // create the alarms, to trigger at specific times
   Alarm.alarmRepeat(4, 0, 0, pumpOn);
+  Alarm.alarmRepeat(12, 0, 0, pumpOn);
+  Alarm.alarmRepeat(18, 0, 0, pumpOn);
   Alarm.alarmRepeat(5, 0, 0, fanOn);
   Alarm.alarmRepeat(6, 0, 0, ledOn);
-  Alarm.alarmRepeat(18, 0, 0, ledFanOff);
+  Alarm.alarmRepeat(18, 30, 0, ledFanOff);
 
 
 
@@ -72,10 +74,10 @@ void setup() {
   Serial.println();
 }
 
-#define LEFT_MOTOR 0
+#define PUMP_MOTOR 0
 #define RIGHT_MOTOR 1
 
-void () {}
+void loop() {}
   //load bearing void loop dont ask why idfk
 
 
@@ -84,13 +86,13 @@ void () {}
 void pumpOn() {
   //pump needs to turn on 30s and then wait to let the plant soak up water
   //and then run in reverse to drain
-  myMotorDriver.setDrive(LEFT_MOTOR, 0, 50);
+  myMotorDriver.setDrive(PUMP_MOTOR, 0, 50);
   delay(30000);
-  myMotorDriver.setDrive(LEFT_MOTOR, 0, 0);
+  myMotorDriver.setDrive(PUMP_MOTOR, 0, 0);
   delay(120000);
-  myMotorDriver.setDrive(LEFT_MOTOR, 1, 50);
+  myMotorDriver.setDrive(PUMP_MOTOR, 1, 50);
   delay(30000);
-  myMotorDriver.setDrive(LEFT_MOTOR, 0, 0);
+  myMotorDriver.setDrive(PUMP_MOTOR, 0, 0);
 }
 
 
