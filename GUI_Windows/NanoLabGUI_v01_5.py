@@ -68,7 +68,6 @@ setup2_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 # define variables
 selected = False
 box_type = ""
-hydro_bg_color = "#ffffff"
 
 def type_hydro():
 	box_type = "HydroFuge"
@@ -106,7 +105,7 @@ def load_setup1():
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
-	hydro_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, command=type_hydro)
+	hydro_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, highlightcolor="red", command=type_hydro)
 	hydro_logo_widget.image = logo_img
 	hydro_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
 
@@ -120,7 +119,7 @@ def load_setup1():
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
-	uni_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, command=type_uni)
+	uni_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, state='disabled', command=type_uni)
 	uni_logo_widget.image = logo_img
 	uni_logo_widget.grid(row=2, columnspan=3, column=4, sticky="", padx="8", pady="5")
 
