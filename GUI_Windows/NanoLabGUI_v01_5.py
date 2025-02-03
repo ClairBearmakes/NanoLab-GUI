@@ -106,7 +106,7 @@ def load_setup1():
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
-	hydro_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=hydro_bg_color, command=type_hydro)
+	hydro_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, command=type_hydro)
 	hydro_logo_widget.image = logo_img
 	hydro_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
 
@@ -116,7 +116,7 @@ def load_setup1():
 
 	# Universal
 	# Read the Image
-	image = Image.open("assets/Coming Soon 2.png")
+	image = Image.open("assets/Coming Soon.png")
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -200,11 +200,6 @@ setup_root.mainloop()
 # =======================
 # main window stuff
 
-# set about website
-new = 1
-url = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
-url1 = "https://github.com/ClairBearmakes/NanoLab-GUI"
-
 # creating the date object of today's date 
 todays_date = date.today() 
   
@@ -267,13 +262,16 @@ set_preview_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 # check which port was really used
 # print(arduino.name)
 
-# funtion for about button website
-def openweb():
-    webbrowser.open(url,new=new)
+# set websites
+nano_site = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
+github = "https://github.com/ClairBearmakes/NanoLab-GUI"
 
-# function for update button website
-def openweb1():
-	webbrowser.open(url1,new=new)
+# funtions for website buttons
+def opennanosite():
+    webbrowser.open_new(nano_site)
+
+def opengithub():
+	webbrowser.open_new(github)
 
 def open_files():
     webbrowser.open_new("C:") # replace with NanoLab's internal storage
@@ -334,7 +332,7 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
-		command = openweb
+		command = opennanosite
 		).grid(row=0, column=1, sticky="w", padx="5", pady="3")
 
 	# create updates button widget
@@ -349,7 +347,7 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
-		command = openweb1 # open GitHub with changes to code/app
+		command = opengithub
 		).grid(row=0, column=2, sticky="w", padx="5", pady="3")
 
 	# create storage button widget
