@@ -31,15 +31,6 @@ fg_color = "#000000"
 act_bg_color = "#ffffff"
 act_fg_color = "#808080"
 
-# set LED screen colors
-led_bg = "#ECECEC"
-red_fg = "red"
-orange_fg = "orange"
-yellow_fg = "yellow"
-green_fg = "green"
-blue_fg = "blue"
-purple_fg = "purple"
-
 dev_mode = True # if True will show log button and test buttons # Make a beta test review sheet to go with this or separate thing?
 
 
@@ -636,7 +627,14 @@ def slider_changed():
 	# arduino.write(bytes(get_current_value(), 'utf-8'))  # Convert to bytes
 	print('brightness', get_current_value())
 
-LED_color = "RR"
+# set LED screen colors
+led_bg = "#ECECEC"
+red_fg = "red"
+orange_fg = "orange"
+yellow_fg = "yellow"
+green_fg = "green"
+blue_fg = "blue"
+purple_fg = "purple"
 
 def redLED():
 	arduino.write(bytes('RR', str(get_current_value()), 'utf-8'))
@@ -661,19 +659,6 @@ def blueLED():
 def purpleLED():
 	arduino.write(bytes('PP', str(get_current_value()), 'utf-8'))
 	time.sleep(0.05)
-
-# randomize color of PARTY button
-PARTY_list = ["red", "orange", "yellow", "green", "blue", "purple"]
-count = 0
-counter = random.random()
-while (count < counter):
-	for x in PARTY_list:
-  		PARTY_fg = x
-  		# print(x)
-  		time.sleep(0.05)
-	if count <= counter:
-  		break
-
 
 def PARTYLED():
 	arduino.write(bytes("ROYGBPROYGBPROYGBPROYGBP", 'utf-8'))
@@ -816,7 +801,7 @@ def load_led_settings_frame():
 		height=("0"),
 		width=("4"),
 		bg=bg_color,
-		fg=PARTY_fg,
+		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
