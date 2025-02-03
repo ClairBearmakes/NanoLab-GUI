@@ -3,7 +3,7 @@
 #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
 #endif
 
-int pin = 6;
+int pin = 9;
 
 int numPixels =16; 
 
@@ -30,7 +30,7 @@ void setup() {
 
   Serial.begin(9600);
 
-  pixels->fill(pixels->Color(214, 83, 211), 0, 15); //this is the colour the lights glow
+  pixels->fill(pixels->Color(214, 83, 211), 0, 16); //this is the colour the lights glow
                                           //i found the rgb on reddit if its not optimal than ¯\_(ツ)_/¯
 
   
@@ -61,8 +61,12 @@ void loop() {
       case 'C' :
         pixels->clear();
         pixels->show();
-        
-         
+        pixels->clear();
+        pixels->show();
+        pixels->clear();
+        pixels->show();
+        pixels->clear();
+        pixels->show();
 
         
         break;

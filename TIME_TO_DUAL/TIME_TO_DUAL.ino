@@ -159,6 +159,7 @@ void loop() { // put your main code here, to run repeatedly:
           ////////
           while (minutes >= Ptime){ //turns the pump on for whatever Ptime is = too
             digitalWrite(pump, HIGH);
+            Ptime ++;
           }
           digitalWrite(pump, LOW);
 
