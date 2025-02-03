@@ -40,7 +40,7 @@ green_fg = "green"
 blue_fg = "blue"
 purple_fg = "purple"
 
-dev_mode = True # if True will show log button and test buttons
+dev_mode = True # if True will show log button and test buttons # Make a beta test review sheet to go with this or separate thing?
 
 
 #"""
@@ -51,9 +51,9 @@ dev_mode = True # if True will show log button and test buttons
 setup_root = tk.Tk()
 
 # Adjust size
-setup_root.geometry("800x600") # width by height 
-su_width = 800
-su_height = 600
+setup_root.geometry("600x550") # width by height 
+su_width = 600
+su_height = 550
 
 setup_root.tkraise()
 
@@ -65,6 +65,27 @@ setup2_frame = tk.Frame(setup_root, highlightbackground="grey", highlightthickne
 setup1_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 setup2_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 
+# define variables
+selected = False
+box_type = ""
+hydro_bg_color = "#ffffff"
+
+def type_hydro():
+	box_type = "HydroFuge"
+	print(box_type + " selected")
+	selected = True
+	hydro_bg_color = "green"
+
+def type_uni():
+	box_type = "Universal"
+	print(box_type + " selected")
+	selected = True
+
+"""
+def load_main():
+	if selected == True:
+		setup_root.destroy
+"""
 
 def load_setup1():
 	setup1_frame.tkraise()
@@ -72,13 +93,45 @@ def load_setup1():
 	setup1_frame.grid_propagate(False)
 
 	# Set Label
-	welcome_label = Label(setup1_frame, text="Welcome to your NanoLab", font=("Ubuntu-Bold", 20), bg=bg_color)
-	welcome_label.grid(row=0, columnspan=4, column=3, sticky="")
+	welcome_label = Label(setup1_frame, text="Welcome to your NanoLab!", font=("Ubuntu-Bold", 20), bg=bg_color)
+	welcome_label.grid(row=0, columnspan=8, column=0, sticky="")
 
-	# go to next frame
+	welcome_label = Label(setup1_frame, text="Pick Your Version", font=("Ubuntu-Bold", 18), bg=bg_color)
+	welcome_label.grid(row=1, columnspan=8, column=0, sticky="")
+
+	# add image button of HydroFuge and a "coming soon" for Universal
+	# HydroFuge
+	# Read the Image
+	image = Image.open("assets/Universal NanoLab.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((270, 320))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	hydro_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=hydro_bg_color, command=type_hydro)
+	hydro_logo_widget.image = logo_img
+	hydro_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
+
+	# add HydroFuge label under button
+	hydrofuge_label = Label(setup1_frame, text="HydroFuge", font=("Ubuntu", 12), bg=bg_color)
+	hydrofuge_label.grid(row=3, columnspan=3, column=1, sticky="", padx="5", pady="3")
+
+	# Universal
+	# Read the Image
+	image = Image.open("assets/Coming Soon 2.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((270, 320))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	uni_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, command=type_uni)
+	uni_logo_widget.image = logo_img
+	uni_logo_widget.grid(row=2, columnspan=3, column=4, sticky="", padx="8", pady="5")
+
+	# add Universal label under button
+	hydrofuge_label = Label(setup1_frame, text="Universal (Coming Soon)", font=("Ubuntu", 12), bg=bg_color)
+	hydrofuge_label.grid(row=3, columnspan=3, column=4, sticky="", padx="5", pady="3")
+
+	# Finish setup or go to next frame
 	tk.Button(
 		setup1_frame,
-		text="Next",
+		text="Done", # Next
 		font=("Ubuntu", 12),
 		height=("1"),
 		width=("7"),
@@ -87,11 +140,12 @@ def load_setup1():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		command=lambda:load_setup2()
-		).grid(row=5, column=7, sticky="", padx="5", pady="3")
+		command=setup_root.destroy # lambda:load_setup2()
+		).grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
 
 	print("first screen loaded")
 
+"""
 def load_setup2():
 	setup2_frame.tkraise()
 	# prevent widgets from modifying the frame
@@ -132,6 +186,7 @@ def load_setup2():
 		).grid(row=5, column=6, sticky="", padx="5", pady="3")
 
 	print("second screen loaded")
+"""
 
 # run setup screen
 load_setup1()
@@ -176,21 +231,22 @@ root.configure(bg="white")
 # getting screen dimentions of display
 width = root.winfo_screenwidth()
 height = root.winfo_screenheight()
+menu_height = 55
 
 # setting tk window size
 root.geometry("%dx%d" % (width, height))
 # root.eval("tk::PlaceWindow . center")
 
 # create main frame widgets
-menu = tk.Frame(root, width=width, height="45", bg=menu_bg_color)
-settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
-data_results_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
-w_pump_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
-led_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
-fan_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
-camera_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
-atmos_sensor_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
-set_preview_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - int(45), bg=bg_color)
+menu = tk.Frame(root, width=width, height=menu_height, bg=menu_bg_color)
+settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - menu_height, bg=bg_color)
+data_results_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - menu_height, bg=bg_color)
+w_pump_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - menu_height, bg=bg_color)
+led_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - menu_height, bg=bg_color)
+fan_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - menu_height, bg=bg_color)
+camera_settings_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - menu_height, bg=bg_color)
+atmos_sensor_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - menu_height, bg=bg_color)
+set_preview_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - menu_height, bg=bg_color)
 
 # place main frame widgets in window
 menu.grid(row=0, column=0, sticky="nsew")
@@ -278,7 +334,7 @@ def load_menu(): # button bar on top
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=menu_act_fg_color,
-		command=openweb
+		command = openweb
 		).grid(row=0, column=1, sticky="w", padx="5", pady="3")
 
 	# create updates button widget
@@ -350,16 +406,16 @@ def load_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	settings_title = Label(settings_frame, bg="white", text = "Main Settings", font=("Ubuntu", 30))
-	settings_title.grid(row=0, column=2, padx="8", pady="5")
+	settings_title = Label(settings_frame, bg="white", text = "Main Settings", font=("Ubuntu", 48))
+	settings_title.grid(row=0, columnspan=3, column=1, padx="8", pady="5")
 
 	# create water pump settings button widget
 	tk.Button(
 		settings_frame,
 		text="Water Pump Settings",
-		font=("Ubuntu", 20),
+		font=("Ubuntu", 22),
 		height=("2"),
-		width=("17"),
+		width=("18"),
 		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
@@ -372,9 +428,9 @@ def load_settings_frame():
 	tk.Button(
 		settings_frame,
 		text="LED Settings",
-		font=("Ubuntu", 20),
+		font=("Ubuntu", 22),
 		height=("2"),
-		width=("17"),
+		width=("18"),
 		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
@@ -387,9 +443,9 @@ def load_settings_frame():
 	tk.Button(
 		settings_frame,
 		text="Fan Settings",
-		font=("Ubuntu", 20),
+		font=("Ubuntu", 22),
 		height=("2"),
-		width=("17"),
+		width=("18"),
 		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
@@ -402,9 +458,9 @@ def load_settings_frame():
 	tk.Button(
 		settings_frame,
 		text="Camera Settings",
-		font=("Ubuntu", 20),
+		font=("Ubuntu", 22),
 		height=("2"),
-		width=("17"),
+		width=("18"),
 		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
@@ -417,9 +473,9 @@ def load_settings_frame():
 	tk.Button(
 		settings_frame,
 		text="Atmospheric Sensor",
-		font=("Ubuntu", 20),
+		font=("Ubuntu", 22),
 		height=("2"),
-		width=("17"),
+		width=("18"),
 		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
@@ -432,9 +488,9 @@ def load_settings_frame():
 	tk.Button(
 		settings_frame,
 		text="Data Results",
-		font=("Ubuntu", 20),
+		font=("Ubuntu", 22),
 		height=("2"),
-		width=("17"),
+		width=("18"),
 		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
@@ -447,7 +503,7 @@ def load_settings_frame():
 	tk.Button(
 		settings_frame,
 		text="Send settings to your NanoLab",
-		font=("Ubuntu", 20),
+		font=("Ubuntu", 22),
 		height=("0"),
 		width=("25"),
 		bg=bg_color,
@@ -833,7 +889,7 @@ def load_led_settings_frame():
 	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + "" + " for " + time + " hours " + fre1 + " times/ " + fre2)
 	    
 	    fre1_in.set("")
-	    time_in.set("6")
+	    time_in.set("")
 	    
 
 	# creating a label for frequency input using widget Label

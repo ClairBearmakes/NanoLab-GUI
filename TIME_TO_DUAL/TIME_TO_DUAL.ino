@@ -109,7 +109,7 @@ correctedToday = 1; }
 
 //every time 24 hours have passed since the initial starting time and it has not been reset this day before, add milliseconds or delay the program with some milliseconds.
 
-//Change these varialbes according to the error of your board.
+//Change these variables according to the error of your board.
 
 // The only way to find out how far off your boards internal clock is, is by uploading this sketch at exactly the same time as the real time, letting it run for a few days
 
