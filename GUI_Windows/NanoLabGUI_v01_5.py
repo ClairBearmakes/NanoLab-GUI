@@ -5,6 +5,7 @@
 # import dependencies
 import tkinter as tk
 from tkinter import *
+from tkinter import colorchooser
 from PIL import Image, ImageTk
 from numpy import random
 import pyglet
@@ -38,10 +39,16 @@ dev_mode = True # if True will show log button and test buttons # Make a beta te
 # =======================
 # setup window stuff
 
-# Create object
+# create object
 setup_root = tk.Tk()
 
-# Adjust size
+# set logo
+setup_root.iconbitmap("assets/Universal logo.ico")
+# small_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #16
+# large_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #32
+# setup_root.iconphoto(False, large_icon, small_icon)
+
+# adjust size
 setup_root.geometry("600x550") # width by height 
 su_width = 600
 su_height = 550
@@ -208,7 +215,8 @@ cam_set = ["1/w"]
 atmos_sen_set = ["2/d"]
 #all_set1 = [w_pump_set, LED_set, fan_set, cam_set, atmos_sen_set]
 all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
-with open("variablesfile.txt", 'w') as f:
+
+with open("data/variablesfile.txt", 'w') as f:
 	f.write(all_set + '\n')
 	#f.write(str(all_set1))
 
@@ -216,6 +224,11 @@ with open("variablesfile.txt", 'w') as f:
 root = Tk() # root is the main window name
 root.title("Universal NanoLab Settings")
 root.configure(bg="white")
+# set logo
+root.iconbitmap("assets/Universal logo.ico")
+# small_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #16
+# large_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #32
+# root.iconphoto(True, large_icon, small_icon)
 
 # getting screen dimentions of display
 width = root.winfo_screenwidth()
@@ -633,8 +646,8 @@ def slider_changed():
 # set LED screen colors
 led_bg = "#ECECEC"
 red_fg = "red"
-orange_fg = "orange"
-yellow_fg = "yellow"
+orange_fg = "#834e02"
+yellow_fg = "#787934"
 green_fg = "green"
 blue_fg = "blue"
 purple_fg = "purple"
@@ -811,6 +824,18 @@ def load_led_settings_frame():
 		command=PARTYLED
 		).grid(row=3, columnspan=3, column=11, sticky="n", padx="5", pady="3")
 
+	# RGB color picker
+	def choose_color():
+		# variable to store hexadecimal code of color
+		color_code = colorchooser.askcolor(title ="Choose color", initialcolor="#7714b9")
+		rgb_code = color_code[0]
+		print(color_code)
+		print(rgb_code)
+
+	# button to open color picker
+	color_btn = tk.Button(led_settings_frame,text = 'Select precise color', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = choose_color)
+	color_btn.grid(row=3, columnspan=3, column=12, padx="7", pady="5", sticky="n")
+
 	# label for the slider
 	slider_label = tk.Label(
     	led_settings_frame,
@@ -831,7 +856,7 @@ def load_led_settings_frame():
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
 			font=("Ubuntu", 12),  
-			command=slider_changed).grid(row=5, columnspan=8, column=10, sticky="n")
+			command=slider_changed).grid(row=1, columnspan=2, column=1, sticky="w")
 
 	# Add start and end calendars
 	def grad_date():
@@ -902,16 +927,16 @@ def load_led_settings_frame():
 	fre2_drop = tk.OptionMenu(led_settings_frame, fre2_in, *fre2_options)
 	fre2_drop.config(font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	fre2_drop.grid(row=10, columnspan=1, column=5, padx="7", pady="5", sticky="e")
-	 
-	# creating a button that will call the fre_set function  
-	sub_btn = tk.Button(led_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
-	sub_btn.grid(row=12, columnspan=1, column=1, padx="7", pady="5", sticky="w")
 
 	time_label = tk.Label(led_settings_frame, text = 'Time (in hours) that ' + hardware + "s will run for: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
 	time_label.grid(row=11, columnspan=4, column=1, sticky="w")
 
 	time_entry = tk.Entry(led_settings_frame,textvariable = time_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=2)
 	time_entry.grid(row=11, columnspan=2, column=4, padx="7", pady="5", sticky="")
+
+	# creating a button that calls the fre_set function
+	sub_btn = tk.Button(led_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
+	sub_btn.grid(row=12, columnspan=1, column=1, padx="7", pady="5", sticky="w")
 
 	# load window
 	print("LED settings loaded")
