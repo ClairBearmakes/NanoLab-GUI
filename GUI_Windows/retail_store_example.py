@@ -1,7 +1,7 @@
 import sqlite3
 
 # define connection and cursor
-connection = sqlite3.connect("store_transactions.db")
+connection = sqlite3.connect("data/store_transactions_example.db")
 cursor = connection.cursor()
 
 # create stores table
