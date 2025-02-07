@@ -1,3 +1,5 @@
+#include <dummy.h>
+
 #include <TimeLib.h>
 #include <TimeAlarms.h>
 #include <Adafruit_NeoPixel.h>
@@ -6,7 +8,8 @@
 #include "SCMD.h"
 #include "SCMD_config.h"  //Contains #defines for common SCMD register names and values
 #include "Wire.h"
-
+#include <SPI.h>
+#include <SD.h>
 
 int fan = 8;  //fan pin
 
@@ -14,6 +17,7 @@ int fan = 8;  //fan pin
 
 int numPixels = 16;  //Led / neopixel settings
 int led = 9;
+int ledP = 14;
 int pixelFormat = NEO_GRB + NEO_KHZ800;
 
 Adafruit_NeoPixel *pixels;
@@ -23,17 +27,19 @@ AlarmId id;
 SCMD myMotorDriver;  //This creates the main object of one motor driver and connected peripherals.
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
+  SD.begin();
 
   pinMode(8, INPUT_PULLUP);  //Use to halt motor movement (ground)
-  
+
   pinMode(fan, OUTPUT);
-  
+
   //NeoPixels ********************************************//
   pixels = new Adafruit_NeoPixel(numPixels, led, pixelFormat);
   pixels->begin();
-
-
+  pinMode(ledP, OUTPUT);
+  digitalWrite(ledP, HIGH);  //by default we want this set to high and then flash it to low to wipe pixels.
+  //did this because the pixels wouldn't clear when told too and instead were displaying random garbled barf!
 
   //***** Configure the Motor Driver's Settings *****//
   //  .commInter face is I2C_MODE
@@ -57,7 +63,7 @@ void setup() {
   Alarm.alarmRepeat(18, 30, 0, ledFanOff);
 
 
-
+  Serial.print("Checking for Motor Controller");
   //*****initialize the driver get wait for idle*****//
   while (myMotorDriver.begin() != 0xA9)  //Wait until a valid ID word is returned
   {
@@ -77,9 +83,28 @@ void setup() {
 #define PUMP_MOTOR 0
 #define RIGHT_MOTOR 1
 
-void loop() {}
-  //load bearing void loop dont ask why idfk
+void loop() {
+  if (Serial.available() > 0) {  //Serial functions, it waits for the serial port to be avilible
+    int DoThis = Serial.read();  // then switches case based on set the character sent
 
+    switch (DoThis) {
+
+      case 'I':
+        Serial.print("loading instructions");
+
+        break;
+
+      case 'L':
+        pixels->fill(pixels->Color(214, 83, 211), 0, 15);
+        delay(10000);
+        digitalWrite(ledP, LOW);
+        delay(1000);
+        digitalWrite(ledP, HIGH);
+
+        break;
+    }
+  }
+}
 
 // functions to be called when an alarm triggers ************//
 
@@ -106,11 +131,10 @@ void ledOn() {
 }
 
 void ledFanOff() {
-  pixels->clear();
-  pixels->show();
+  digitalWrite(ledP, LOW);
+  delay(100);
+  digitalWrite(ledP, HIGH);
 
-  pixels->clear();
-  pixels->show();
   digitalWrite(fan, LOW);
   Serial.println("turn lights off");
 }
