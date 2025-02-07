@@ -1,7 +1,7 @@
 import sqlite3
 
 # define connection and cursor
-connection = sqlite3.connect("store_transactions.db")
+connection = sqlite3.connect("data/store_transactions_example.db")
 cursor = connection.cursor()
 
 # create stores table
@@ -37,5 +37,9 @@ print("**")
 # how to delete things
 cursor.execute("DELETE FROM purchases WHERE purchase_id - 54")
 cursor.execute("SELECT * FROM purchases")
+results = cursor.fetchall()
+print(results)
+
+cursor.execute("SELECT * FROM stores purchases")
 results = cursor.fetchall()
 print(results)

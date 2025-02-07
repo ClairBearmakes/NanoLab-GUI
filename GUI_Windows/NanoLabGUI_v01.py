@@ -9,7 +9,6 @@ bg_colour = "#808080"
 
 # load custom fonts
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
-pyglet.font.add_file("fonts/Shanti-Regular.ttf")
 
 def clear_widgets(frame):
 	# select all frame widgets and delete them

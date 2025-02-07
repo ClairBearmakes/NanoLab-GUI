@@ -7,8 +7,6 @@ import pyglet
 import webbrowser
 import serial 
 
-
-
 # set colours
 bg_colour = "white"
 menu_bg_color = "black"
@@ -17,7 +15,6 @@ act_fg_color = "#808080"
 
 # load custom fonts
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
-pyglet.font.add_file("fonts/Shanti-Regular.ttf")
 
 # set about website
 new = 1

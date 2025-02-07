@@ -16,7 +16,6 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 
 # load custom fonts
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
-pyglet.font.add_file("fonts/Shanti-Regular.ttf")
 
 # set normal colours
 menu_bg_color = "#000000"
