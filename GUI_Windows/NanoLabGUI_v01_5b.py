@@ -1,6 +1,6 @@
 
 # Code writen by Asher Powell at Warren Tech North
-# Version 1.5 
+# Version 1.5b
 
 # import dependencies
 import tkinter as tk
@@ -25,6 +25,7 @@ pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
 
 # set starting variables
 dev_mode = True # if True will show log button and test buttons # Make a beta test review sheet to go with this or separate thing?
+beta = True
 dark_mode = False
 
 # set normal colours
@@ -200,6 +201,7 @@ setup_root.mainloop()
 
 # =======================
 # main window stuff
+# =======================
 
 # creating the date object of today's date 
 todays_date = date.today() 
@@ -258,14 +260,6 @@ log_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, wid
 menu.grid(row=0, column=0, sticky="nsew")
 menu.grid_rowconfigure(0, minsize=35)
 settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-led_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-fan_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-camera_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-atmos_sensor_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-set_preview_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-data_results_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-log_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 
 # Initialize serial connection
@@ -277,6 +271,7 @@ log_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 # set websites
 nano_site = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
 github = "https://github.com/ClairBearmakes/NanoLab-GUI"
+bform = "docs.google.com/forms/d/e/1FAIpQLScn_A1m8JzfphVgT83yOyETZGsvzdgrhsZ03veFijbZWohrrg/viewform"
 
 # funtions for website buttons
 def opennanosite():
@@ -285,8 +280,11 @@ def opennanosite():
 def opengithub():
 	webbrowser.open_new(github)
 
+def openbetaform():
+	webbrowser.open_new(bform)
+
 def open_files():
-    webbrowser.open_new("C:") # replace with NanoLab's internal storage
+    webbrowser.open_new("C:") # replace with txt file with list of sd cards files
 
 def take_picture():
 	print("*click*")
@@ -298,7 +296,9 @@ def take_atmos_reading():
 
 def test_pump():
 	print("pump")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #pump some water and respond
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #pump some water and shake leaves and respond
+
+# test led also test_LED()
 
 def send_settings():
 	print(repr(all_set))
@@ -483,7 +483,7 @@ def load_settings_frame():
 	# create camera settings button widget
 	tk.Button(
 		settings_frame,
-		text="Camera Settings",
+		text="Camera Settings \n Coming Soon",
 		font=("Ubuntu", 24),
 		height=("3"),
 		width=("19"),
@@ -492,6 +492,7 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
+		state=DISABLED, # remove when camera is working
 		command=lambda:load_camera_settings_frame(), # camera settings frame
 		).grid(row=2, column=1, sticky="sw", padx="8", pady="5")
 
@@ -541,6 +542,26 @@ def load_settings_frame():
 		command=lambda:load_set_preview_frame(), # settings preview frame
 		).grid(row=4, column=3, columnspan=2, sticky="sw", padx="8", pady="5")
 	
+	# label for beta testing
+	beta_label = Label(settings_frame, bg=bg_color, text = "Rate your experience ", font=("Ubuntu", 12))
+	beta_label.grid(row=5, columnspan=1, column=0, sticky="ws", padx="8", pady="5")
+
+	if beta == True:
+		# create button widget for beta testing form
+		tk.Button(
+			settings_frame,
+			text="here",
+			font=("Ubuntu", 12),
+			height=("1"),
+			width=("4"),
+			bg=bg_color,
+			fg=fg_color,
+			cursor="hand2",
+			activebackground=act_bg_color,
+			activeforeground=act_fg_color,
+			command=openbetaform
+			).grid(row=5, column=1, sticky="ws", padx="5", pady="3")
+
 	# print("settings loaded")
 
 def load_w_pump_settings_frame(): 
@@ -651,6 +672,9 @@ def load_w_pump_settings_frame():
 	sub_btn=tk.Button(w_pump_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=5, columnspan=2, column=3, padx="7", pady="5", sticky="")
 
+	# set frame in window
+	w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+
 	print("H2O pump settings loaded")
 
 
@@ -678,7 +702,7 @@ blue_fg = "blue"
 purple_fg = "purple"
 
 def test_LED():
-	arduino.write(bytes('RR', str(get_current_value()), 'utf-8'))
+	arduino.write(bytes('I', 'utf-8'))
 
 def redLED():
 	arduino.write(bytes('RR', str(get_current_value()), 'utf-8'))
@@ -974,6 +998,9 @@ def load_led_settings_frame():
 	sub_btn = tk.Button(led_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=12, columnspan=1, column=1, padx="7", pady="5", sticky="w")
 
+	# set frame in window
+	led_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+
 	print("LED settings loaded")
 
 def load_fan_settings_frame(): 
@@ -1112,6 +1139,9 @@ def load_fan_settings_frame():
 	sub_btn=tk.Button(fan_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=6, columnspan=2, column=2, padx="7", pady="5", sticky="")
 
+	# set frame in window
+	fan_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+	
 	print("fan settings loaded")
 
 def load_camera_settings_frame(): 
@@ -1221,6 +1251,9 @@ def load_camera_settings_frame():
 	# creating a button that will call the fre_set function  
 	sub_btn=tk.Button(camera_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=5, columnspan=1, column=3, padx="7", pady="5", sticky="")
+
+	# set frame in window
+	camera_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 	print("camera settings loaded")
 
@@ -1334,6 +1367,9 @@ def load_atmos_sensor_frame():
 	sub_btn=tk.Button(atmos_sensor_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=5, columnspan=2, column=4, padx="7", pady="5", sticky="e")
 
+	# set frame in window
+	atmos_sensor_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+
 	print("atmos sensor frame loaded")
 
 def load_data_results_frame(): 
@@ -1427,6 +1463,9 @@ def load_data_results_frame():
 	bg=bg_color, fg=fg_color, activebackground=act_bg_color, activeforeground=act_fg_color, command = show_graph_new)
 	button.grid(row=1, column=4, sticky="w")
 	
+	# set frame in window
+	data_results_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+
 	print("data results loaded")
 
 def load_log_frame(): # log of what is happening on Arduino right now
@@ -1447,20 +1486,17 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	log_title = Label(log_frame, bg="white", text = "Log", font=("Ubuntu", 30))
 	log_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
-	# create back button widget
-	tk.Button(
-		log_frame,
-		text="Confirm settings",
-		font=("Ubuntu", 14),
-		height=("2"),
-		width=("17"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		# command=send_settings # command to send settings to NanoLab
-		).grid(row=6, column=1, sticky="w", padx="5", pady="3")
+	# Read the Image
+	image = Image.open("assets/log.jpg")
+	# Resize the image using resize() method
+	resize_image = image.resize((1000, 700))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Label(log_frame, image=logo_img, bg=bg_color)
+	logo_widget.image = logo_img
+	logo_widget.grid(row=1, column=1, sticky="nsew", padx="8", pady="5")
+
+	# set frame in window
+	log_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 	print("log loaded")
 
@@ -1496,6 +1532,9 @@ def load_set_preview_frame(): # preview of settings
 		activeforeground=act_fg_color,
 		command=send_settings # command to send settings to NanoLab
 		).grid(row=6, column=1, sticky="w", padx="5", pady="3")
+
+	# set frame in window
+	set_preview_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 	print("settings preview loaded")
 
