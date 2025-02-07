@@ -45,6 +45,8 @@ act_fg_color = "#808080"
 
 # create object
 setup_root = tk.Tk()
+setup_root.title("Universal NanoLab Setup")
+setup_root.configure(bg="white")
 
 # set logo
 setup_root.iconbitmap("assets/Universal logo.ico")
