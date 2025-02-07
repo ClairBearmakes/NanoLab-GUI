@@ -273,7 +273,7 @@ settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 # set websites
 nano_site = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
 github = "https://github.com/ClairBearmakes/NanoLab-GUI"
-bform = "docs.google.com/forms/d/e/1FAIpQLScn_A1m8JzfphVgT83yOyETZGsvzdgrhsZ03veFijbZWohrrg/viewform"
+bform = "https://docs.google.com/forms/d/e/1FAIpQLScn_A1m8JzfphVgT83yOyETZGsvzdgrhsZ03veFijbZWohrrg/viewform"
 
 # funtions for website buttons
 def opennanosite():
