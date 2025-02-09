@@ -15,6 +15,7 @@ import sys
 import time
 import random
 from tkcalendar import Calendar
+import datetime
 from datetime import date 
 from matplotlib.figure import Figure 
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
@@ -103,7 +104,8 @@ def load_setup1():
 	welcome_label = Label(setup1_frame, text="Pick Your Version", font=("Ubuntu-Bold", 18), bg=bg_color)
 	welcome_label.grid(row=1, columnspan=8, column=0, sticky="")
 
-	# add image button of HydroFuge and a "coming soon" for Universal
+	# add image button of HydroFuge and "coming soon" for Universal
+
 	# HydroFuge
 	# Read the Image
 	image = Image.open("assets/Universal NanoLab.png")
@@ -545,8 +547,8 @@ def load_settings_frame():
 		).grid(row=4, column=3, columnspan=2, sticky="sw", padx="8", pady="5")
 	
 	# label for beta testing
-	beta_label = Label(settings_frame, bg=bg_color, text = "Rate your experience ", font=("Ubuntu", 12))
-	beta_label.grid(row=5, columnspan=1, column=0, sticky="ws", padx="8", pady="5")
+	beta_label = Label(settings_frame, bg=bg_color, text = "     Rate your experience ", font=("Ubuntu", 14))
+	beta_label.grid(row=6, columnspan=2, column=0, sticky="w", padx="5", pady="3")
 
 	if beta == True:
 		# create button widget for beta testing form
@@ -554,7 +556,7 @@ def load_settings_frame():
 			settings_frame,
 			text="here",
 			font=("Ubuntu", 12),
-			height=("1"),
+			height=("0"),
 			width=("4"),
 			bg=bg_color,
 			fg=fg_color,
@@ -562,7 +564,7 @@ def load_settings_frame():
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
 			command=openbetaform
-			).grid(row=5, column=1, sticky="ws", padx="5", pady="3")
+			).grid(row=6, columnspan=2, column=0, sticky="s", padx="5", pady="3")
 
 	# print("settings loaded")
 
@@ -611,7 +613,7 @@ def load_w_pump_settings_frame():
 
 	start_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
+			day = cur_day, mindate=datetime.date(1, 6, 25), font=("Arial", 10)) #date m/d/yy (no starting zeros)
 	start_cal.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
 	end_label = Label(w_pump_settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
@@ -652,6 +654,12 @@ def load_w_pump_settings_frame():
 	# creating a entry for input
 	fre1_entry = tk.Entry(w_pump_settings_frame, textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=3)
 	fre1_entry.grid(row=5, columnspan=1, column=2, sticky="e")
+
+	def character_limit(fre1_in):
+		if len(fre1_in.get()) > 1:
+			fre1_in.set(fre1_in.get()[-1])
+
+	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
 
 	# creating a dropdown for frequency2
 	# Dropdown menu options 
@@ -973,6 +981,12 @@ def load_led_settings_frame():
 	fre1_entry = tk.Entry(led_settings_frame, textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=3)
 	fre1_entry.grid(row=10, columnspan=1, column=2, padx="5", pady="5", sticky="w")
 
+	def character_limit(fre1_in):
+		if len(fre1_in.get()) > 1:
+			fre1_in.set(fre1_in.get()[-1])
+
+	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
+
 	# creating a dropdown for frequency2
 	# Dropdown menu options 
 	fre2_options = [ 
@@ -995,6 +1009,12 @@ def load_led_settings_frame():
 
 	time_entry = tk.Entry(led_settings_frame,textvariable = time_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=3)
 	time_entry.grid(row=11, columnspan=2, column=4, padx="7", pady="5", sticky="")
+
+	def character_limit(time_in):
+		if len(time_in.get()) > 1:
+			time_in.set(time_in.get()[-1])
+
+	time_in.trace("w", lambda *args: character_limit(time_in))
 
 	# creating a button that calls the fre_set function
 	sub_btn = tk.Button(led_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
@@ -1233,6 +1253,12 @@ def load_camera_settings_frame():
 	fre1_entry = tk.Entry(camera_settings_frame,textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=4)
 	fre1_entry.grid(row=5, columnspan=1, column=2, sticky="")
 
+	def character_limit(fre1_in):
+		if len(fre1_in.get()) > 1:
+			fre1_in.set(fre1_in.get()[-1])
+
+	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
+
 	# creating a dropdown for frequency2
 	# Dropdown menu options 
 	fre2_options = [ 
@@ -1347,6 +1373,12 @@ def load_atmos_sensor_frame():
 	# creating a entry for input
 	fre1_entry = tk.Entry(atmos_sensor_frame,textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=8)
 	fre1_entry.grid(row=5, columnspan=1, column=3, padx="7", pady="5", sticky="w")
+
+	def character_limit(fre1_in):
+		if len(fre1_in.get()) > 1:
+			fre1_in.set(fre1_in.get()[-1])
+
+	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
 
 	# creating a dropdown for frequency2
 	# Dropdown menu options 
