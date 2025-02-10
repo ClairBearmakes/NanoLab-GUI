@@ -27,28 +27,29 @@ pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
 # set starting variables
 dev_mode = True # if True will show log button and test buttons # Make a beta test review sheet to go with this or separate thing?
 beta = True
-dark_mode = False # make this actually change colors
+dark_mode = True
 component_count = 5
 type_selected = False
 box_type = ""
 
-
-# set normal menu colors
-menu_bg_color = "#000000"
-menu_fg_color = "#ffffff"
-menu_act_bg_color = "#000000"
-
-# set normal colors
-bg_color = "#ffffff"
-fg_color = "#000000"
-act_bg_color = "#ffffff"
-act_fg_color = "#808080"
-
-# set dark mode menu colors
-
-
-#set dark mode normal colors
-
+if dark_mode == False: # fix these
+	# set normal colors
+	menu_bg_color = "#000000"
+	menu_fg_color = "#ffffff"
+	menu_act_bg_color = "#000000"
+	bg_color = "#ffffff"
+	fg_color = "#000000"
+	act_bg_color = "#ffffff"
+	act_fg_color = "#808080"
+else:
+	# set dark mode colors
+	menu_bg_color = "#ffffff"
+	menu_fg_color = "#000000"
+	menu_act_bg_color = "#ffffff"
+	bg_color = "#000000"
+	fg_color = "#ffffff"
+	act_bg_color = "#808080"
+	act_fg_color = "#ffffff"
 
 
 #"""
