@@ -27,17 +27,28 @@ pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
 # set starting variables
 dev_mode = True # if True will show log button and test buttons # Make a beta test review sheet to go with this or separate thing?
 beta = True
-dark_mode = False
+dark_mode = False # make this actually change colors
+component_count = 5
+type_selected = False
+box_type = ""
 
-# set normal colours
+
+# set normal menu colors
 menu_bg_color = "#000000"
 menu_fg_color = "#ffffff"
 menu_act_bg_color = "#000000"
-menu_act_fg_color = "#808080"
+
+# set normal colors
 bg_color = "#ffffff"
 fg_color = "#000000"
 act_bg_color = "#ffffff"
 act_fg_color = "#808080"
+
+# set dark mode menu colors
+
+
+#set dark mode normal colors
+
 
 
 #"""
@@ -70,24 +81,18 @@ setup2_frame = tk.Frame(setup_root, highlightbackground="grey", highlightthickne
 setup1_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 setup2_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 
-# define variables
-component_count = 5
-selected = False
-box_type = ""
-
 def type_hydro():
 	box_type = "HydroFuge"
 	print(box_type + " selected")
-	selected = True
-	hydro_bg_color = "green"
+	type_selected = True
 
 def type_uni():
 	box_type = "Universal"
 	print(box_type + " selected")
-	selected = True
+	type_selected = True
 
 """
-def load_main():
+def goto_main():
 	if selected == True:
 		setup_root.destroy
 """
@@ -149,7 +154,7 @@ def load_setup1():
 		command=setup_root.destroy # lambda:load_setup2()
 		).grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
 
-	print("first screen loaded")
+	# print("first screen loaded")
 
 """
 def load_setup2():
@@ -191,7 +196,7 @@ def load_setup2():
 		command=setup_root.destroy
 		).grid(row=5, column=6, sticky="", padx="5", pady="3")
 
-	print("second screen loaded")
+	# print("second screen loaded")
 """
 
 # run setup screen
@@ -332,7 +337,7 @@ def load_menu(): # button bar on top
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
-		activeforeground=menu_act_fg_color,
+		activeforeground=act_fg_color, 
 		command=lambda:load_settings_frame()
 		).grid(row=0, column=0, sticky="w", padx="5", pady="3") # row==up and down, column==left and right
 
@@ -347,7 +352,7 @@ def load_menu(): # button bar on top
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
-		activeforeground=menu_act_fg_color,
+		activeforeground=act_fg_color,
 		command=opennanosite
 		).grid(row=0, column=1, sticky="w", padx="5", pady="3")
 
@@ -362,7 +367,7 @@ def load_menu(): # button bar on top
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
-		activeforeground=menu_act_fg_color,
+		activeforeground=act_fg_color,
 		command=opengithub
 		).grid(row=0, column=2, sticky="w", padx="5", pady="3")
 
@@ -377,7 +382,7 @@ def load_menu(): # button bar on top
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
-		activeforeground=menu_act_fg_color,
+		activeforeground=act_fg_color,
 		command=open_files # open file explorer to microSD card on NanoLab
 		).grid(row=0, column=3, sticky="w", padx="5", pady="3")
 
@@ -393,7 +398,7 @@ def load_menu(): # button bar on top
 			fg=menu_fg_color,
 			cursor="hand2",
 			activebackground=menu_act_bg_color,
-			activeforeground=menu_act_fg_color,
+			activeforeground=act_fg_color,
 			command=lambda:load_data_results_frame() # data results frame
 			).grid(row=0, column=5, sticky="w", padx="5", pady="3")
 
@@ -409,7 +414,7 @@ def load_menu(): # button bar on top
 			fg=menu_fg_color,
 			cursor="hand2",
 			activebackground=menu_act_bg_color,
-			activeforeground=menu_act_fg_color,
+			activeforeground=act_fg_color,
 			command=lambda:load_log_frame() # open a log of what is happening right now on the Arduino
 			).grid(row=0, column=6, sticky="w", padx="5", pady="3")
 
@@ -685,7 +690,7 @@ def load_w_pump_settings_frame():
 	# set frame in window
 	w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("H2O pump settings loaded")
+	# print("H2O pump settings loaded")
 
 
 # LED settings stuff
@@ -1023,7 +1028,7 @@ def load_led_settings_frame():
 	# set frame in window
 	led_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("LED settings loaded")
+	# print("LED settings loaded")
 
 def load_fan_settings_frame(): 
 	# clear_widgets(settings_frame)
@@ -1164,7 +1169,7 @@ def load_fan_settings_frame():
 	# set frame in window
 	fan_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	
-	print("fan settings loaded")
+	# print("fan settings loaded")
 
 def load_camera_settings_frame(): 
 	# clear_widgets(settings_frame)
@@ -1283,7 +1288,7 @@ def load_camera_settings_frame():
 	# set frame in window
 	camera_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("camera settings loaded")
+	# print("camera settings loaded")
 
 def load_atmos_sensor_frame(): 
 	# clear_widgets(settings_frame)
@@ -1404,7 +1409,7 @@ def load_atmos_sensor_frame():
 	# set frame in window
 	atmos_sensor_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("atmos sensor frame loaded")
+	# print("atmos sensor frame loaded")
 
 def load_data_results_frame(): 
 	# clear_widgets(settings_frame)
@@ -1426,7 +1431,7 @@ def load_data_results_frame():
 	data_r_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	# graph
-	def load_plot1(): 
+	def load_graph(): 
 
 	    # the figure that will contain the plot 
 	    fig = Figure(figsize = (6, 4), 
@@ -1446,7 +1451,7 @@ def load_data_results_frame():
 	    canvas.draw() 
 
 	    # placing the canvas on the Tkinter window 
-	    canvas.get_tk_widget().grid(row=3, columnspan=4, column=1) 
+	    canvas.get_tk_widget().grid(row=2, columnspan=4, column=1) 
 
 	    # creating the Matplotlib toolbar 
 	    toolbar = NavigationToolbar2Tk(canvas, data_results_frame)
@@ -1468,9 +1473,10 @@ def load_data_results_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		command=load_plot1(), # update the graph
+		command=load_graph(), # update the graph
 		).grid(row=1, column=1, sticky="w", padx="5", pady="3")
 
+	"""
 	# Dropdown to choose kind of graph
 	def show_graph_new(): 
 		print(clicked.get())
@@ -1489,18 +1495,20 @@ def load_data_results_frame():
 
 	# Create Dropdown menu 
 	drop = OptionMenu(data_results_frame, clicked, *options)
-	drop.config(bg=bg_color, fg=fg_color) 
+	drop.config(bg=bg_color, fg=fg_color, font=("Ubuntu", 12)) 
 	drop.grid(row=1, column=3, sticky="e")
 
 	# Create button that updates graph
 	button = Button(data_results_frame, text = "Choose", font=("Ubuntu", 12), height=("0"), width=("7"), 
 	bg=bg_color, fg=fg_color, activebackground=act_bg_color, activeforeground=act_fg_color, command = show_graph_new)
 	button.grid(row=1, column=4, sticky="w")
-	
+	"""
+
+
 	# set frame in window
 	data_results_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("data results loaded")
+	# print("data results loaded")
 
 def load_log_frame(): # log of what is happening on Arduino right now
 	# clear_widgets()
@@ -1532,7 +1540,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	# set frame in window
 	log_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("log loaded")
+	# print("log loaded")
 
 def load_set_preview_frame(): # preview of settings
 	# clear_widgets()
@@ -1549,8 +1557,38 @@ def load_set_preview_frame(): # preview of settings
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	set_preview_title = Label(set_preview_frame, bg="white", text = "Preview Your Settings", font=("Ubuntu", 30))
+	set_preview_title = Label(set_preview_frame, bg=bg_color, text = "Preview Your Settings", font=("Ubuntu", 30))
 	set_preview_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
+
+	w_pump_preview_title = Label(set_preview_frame, bg=bg_color, text = "Water Pump", font=("Ubuntu", 14))
+	w_pump_preview_title.grid(row=1, columnspan=2, column=1, padx="8", pady="5")
+
+	LED_preview_title = Label(set_preview_frame, bg=bg_color, text = "LED", font=("Ubuntu", 14))
+	LED_preview_title.grid(row=1, columnspan=2, column=3, padx="8", pady="5")
+
+	fan_preview_title = Label(set_preview_frame, bg=bg_color, text = "Fan", font=("Ubuntu", 14))
+	fan_preview_title.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
+
+	camera_preview_title = Label(set_preview_frame, bg=bg_color, text = "Camera", font=("Ubuntu", 14))
+	camera_preview_title.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
+
+	atmos_preview_title = Label(set_preview_frame, bg=bg_color, text = "Atmospheric Sensor", font=("Ubuntu", 14))
+	atmos_preview_title.grid(row=3, columnspan=2, column=1, padx="8", pady="5")
+
+	# create cancel button widget
+	tk.Button(
+		set_preview_frame,
+		text="Cancel",
+		font=("Ubuntu", 14),
+		height=("2"),
+		width=("17"),
+		bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		command=lambda:load_settings_frame # command to go back to main screen
+		).grid(row=3, columnspan=1, column=3, sticky="w", padx="5", pady="3")
 
 	# create confirm button widget
 	tk.Button(
@@ -1565,12 +1603,12 @@ def load_set_preview_frame(): # preview of settings
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=send_settings # command to send settings to NanoLab
-		).grid(row=6, column=1, sticky="w", padx="5", pady="3")
+		).grid(row=3, columnspan=1, column=4, sticky="w", padx="5", pady="3")
 
 	# set frame in window
 	set_preview_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("settings preview loaded")
+	# print("settings preview loaded")
 
 # run main app
 load_menu()
