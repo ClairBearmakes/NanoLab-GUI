@@ -27,7 +27,7 @@ pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
 # set starting variables
 dev_mode = True # if True will show log button and test buttons # Make a beta test review sheet to go with this or separate thing?
 beta = True
-dark_mode = True
+dark_mode = False
 component_count = 5
 type_selected = False
 box_type = ""
