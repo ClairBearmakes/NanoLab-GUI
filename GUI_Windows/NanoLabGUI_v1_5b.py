@@ -493,7 +493,7 @@ def load_settings_frame():
 	# create camera settings button widget
 	tk.Button(
 		settings_frame,
-		text="Camera Settings \n Coming Soon",
+		text="Camera Intervals", # change back to camera settings if we have actually control over cam
 		font=("Ubuntu", 24),
 		height=("3"),
 		width=("19"),
@@ -502,7 +502,7 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		state=DISABLED, # remove when camera is working
+		# state=DISABLED
 		command=lambda:load_camera_settings_frame(), # camera settings frame
 		).grid(row=2, column=1, sticky="sw", padx="8", pady="5")
 
@@ -914,7 +914,7 @@ def load_led_settings_frame():
 	# label for the slider
 	slider_label = tk.Label(
     	led_settings_frame,
-    	text='Dimming Slider',
+    	text='Brightness',
     	font=("Ubuntu", 12),
     	bg=bg_color,
 		fg=fg_color
@@ -1194,7 +1194,7 @@ def load_camera_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	cam_settings_title = Label(camera_settings_frame, bg="white", text = "Camera Settings", font=("Ubuntu", 30))
+	cam_settings_title = Label(camera_settings_frame, bg="white", text = "Camera Intervals", font=("Ubuntu", 30))
 	cam_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 	
 	if dev_mode == True:
