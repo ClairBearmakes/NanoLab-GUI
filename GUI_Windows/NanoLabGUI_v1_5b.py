@@ -281,7 +281,7 @@ settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 # set websites
 nano_site = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
 github = "https://github.com/ClairBearmakes/NanoLab-GUI"
-bform = "https://docs.google.com/forms/d/e/1FAIpQLScn_A1m8JzfphVgT83yOyETZGsvzdgrhsZ03veFijbZWohrrg/viewform"
+betaform = "https://docs.google.com/forms/d/e/1FAIpQLScn_A1m8JzfphVgT83yOyETZGsvzdgrhsZ03veFijbZWohrrg/viewform"
 
 # funtions for website buttons
 def opennanosite():
@@ -291,22 +291,22 @@ def opengithub():
 	webbrowser.open_new(github)
 
 def openbetaform():
-	webbrowser.open_new(bform)
+	webbrowser.open_new(betaform)
 
 def open_files():
     webbrowser.open_new("C:") # replace with txt file with list of sd cards files
 
 def take_picture():
 	print("*click*")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #take picture and save it
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # take picture and save it
 
 def take_atmos_reading():
 	print("read atmos")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #take atmos reading and save it
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # take atmos reading and save it
 
 def test_pump():
 	print("pump")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #pump some water and shake leaves and respond
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # pump some water and shake leaves and respond
 
 # test led also test_LED()
 
@@ -502,7 +502,6 @@ def load_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		# state=DISABLED
 		command=lambda:load_camera_settings_frame(), # camera settings frame
 		).grid(row=2, column=1, sticky="sw", padx="8", pady="5")
 
