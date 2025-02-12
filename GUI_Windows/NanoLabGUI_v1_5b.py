@@ -445,12 +445,35 @@ def load_settings_frame():
 	settings_title = Label(settings_frame, bg="white", text = "Main Settings", font=("Ubuntu", 48))
 	settings_title.grid(row=0, columnspan=3, column=1, padx="8", pady="5")
 
+	# Add start and end calendars
+	def grad_date():
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
+
+	schedule_label = Label(settings_frame, text = "Schedule", font=("Ubuntu", 18), bg=bg_color, fg=fg_color)
+	schedule_label.grid(row=1, columnspan=1, column=2, sticky="n", padx="8", pady="5")
+
+	start_label = Label(settings_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	start_label.grid(row=1, columnspan=2, column=1, padx="8", pady="5")
+
+	start_cal = Calendar(settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day, mindate=datetime.date(2, 11, 25), font=("Arial", 10)) #date m/d/yy (no starting zeros)
+	start_cal.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
+
+	end_label = Label(settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	end_label.grid(row=1, columnspan=2, column=2, padx="8", pady="5")
+
+	end_cal = Calendar(settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day, font=("Arial", 10))
+	end_cal.grid(row=2, columnspan=2, column=2, padx="8", pady="5")
+
 	# create water pump settings button widget
 	tk.Button(
 		settings_frame,
 		text="Water Pump Settings",
 		font=("Ubuntu", 24),
-		height=("3"),
+		height=("1"),
 		width=("19"),
 		bg=bg_color,
 		fg=fg_color,
@@ -458,14 +481,14 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_w_pump_settings_frame(), # water pump settings frame
-		).grid(row=1, column=1, sticky="sw", padx="8", pady="5")
+		).grid(row=4, column=1, sticky="sw", padx="8", pady="5")
 
 	# create LED settings button widget
 	tk.Button(
 		settings_frame,
 		text="LED Settings",
 		font=("Ubuntu", 24),
-		height=("3"),
+		height=("1"),
 		width=("19"),
 		bg=bg_color,
 		fg=fg_color,
@@ -473,14 +496,14 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_led_settings_frame(), # LED settings frame
-		).grid(row=1, column=2, sticky="sw", padx="8", pady="5")
+		).grid(row=4, column=2, sticky="sw", padx="8", pady="5")
 
 	# create fan settings button widget
 	tk.Button(
 		settings_frame,
 		text="Fan Settings",
 		font=("Ubuntu", 24),
-		height=("3"),
+		height=("1"),
 		width=("19"),
 		bg=bg_color,
 		fg=fg_color,
@@ -488,14 +511,14 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_fan_settings_frame(), # fan settings frame
-		).grid(row=1, column=3, sticky="sw", padx="8", pady="5")
+		).grid(row=4, column=3, sticky="sw", padx="8", pady="5")
 
 	# create camera settings button widget
 	tk.Button(
 		settings_frame,
 		text="Camera Intervals", # change back to camera settings if we have actually control over cam
 		font=("Ubuntu", 24),
-		height=("3"),
+		height=("1"),
 		width=("19"),
 		bg=bg_color,
 		fg=fg_color,
@@ -503,14 +526,14 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_camera_settings_frame(), # camera settings frame
-		).grid(row=2, column=1, sticky="sw", padx="8", pady="5")
+		).grid(row=5, column=1, sticky="sw", padx="8", pady="5")
 
 	# create atmospheric sensor button widget
 	tk.Button(
 		settings_frame,
 		text="Atmospheric Sensor",
 		font=("Ubuntu", 24),
-		height=("3"),
+		height=("1"),
 		width=("19"),
 		bg=bg_color,
 		fg=fg_color,
@@ -518,7 +541,7 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_atmos_sensor_frame(), # atmos sensor frame
-		).grid(row=2, column=2, sticky="sw", padx="8", pady="5")
+		).grid(row=5, column=2, sticky="sw", padx="8", pady="5")
 
 	if component_count <= 5:
 		# create data results button widget
@@ -526,7 +549,7 @@ def load_settings_frame():
 			settings_frame,
 			text="Data Results",
 			font=("Ubuntu", 24),
-			height=("3"),
+			height=("1"),
 			width=("19"),
 			bg=bg_color,
 			fg=fg_color,
@@ -534,7 +557,7 @@ def load_settings_frame():
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
 			command=lambda:load_data_results_frame() # data results frame
-			).grid(row=2, column=3, sticky="sw", padx="8", pady="5")
+			).grid(row=5, column=3, sticky="sw", padx="8", pady="5")
 
 	# create send to arduino button widget
 	tk.Button(
@@ -549,27 +572,27 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_set_preview_frame(), # settings preview frame
-		).grid(row=4, column=3, columnspan=2, sticky="sw", padx="8", pady="5")
+		).grid(row=6, column=3, columnspan=2, sticky="sw", padx="8", pady="5")
 	
-	# label for beta testing
-	beta_label = Label(settings_frame, bg=bg_color, text = "     Rate your experience ", font=("Ubuntu", 14))
-	beta_label.grid(row=6, columnspan=2, column=0, sticky="w", padx="5", pady="3")
-
 	if beta == True:
+		# label for beta testing
+		# beta_label = Label(settings_frame, bg=bg_color, text = "     Rate your experience ", font=("Ubuntu", 12))
+		# beta_label.grid(row=7, columnspan=2, column=0, sticky="w", padx="5", pady="3")
+
 		# create button widget for beta testing form
 		tk.Button(
 			settings_frame,
-			text="here",
-			font=("Ubuntu", 12),
+			text="Rate your experience",
+			font=("Ubuntu", 10),
 			height=("0"),
-			width=("4"),
+			width=("19"),
 			bg=bg_color,
 			fg=fg_color,
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
 			command=openbetaform
-			).grid(row=6, columnspan=2, column=0, sticky="s", padx="5", pady="3")
+			).grid(row=7, columnspan=2, column=0, sticky="sw", padx="5", pady="3")
 
 	# print("settings loaded")
 
