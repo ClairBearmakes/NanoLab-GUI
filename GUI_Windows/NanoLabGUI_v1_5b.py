@@ -24,6 +24,22 @@ import array
 # load custom fonts
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
 
+"""
+# Arduino Stuff
+# open serial port
+arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
+# check which port was really used
+print(arduino.name)
+
+# close serial port from https://stackoverflow.com/questions/35235436/python-arduino-prototyping-api-v2-closing-serial-port
+def closeport(): #Closes port if currently open
+    ser = serial.Serial(usbport) 
+    if ser.isOpen() == True:
+        ser.close()
+
+# closeport() #make sure port is available
+"""
+
 # set starting variables
 dev_mode = True # if True will show log button and test buttons # Make a beta test review sheet to go with this or separate thing?
 beta = True
@@ -271,13 +287,6 @@ menu.grid(row=0, column=0, sticky="nsew")
 menu.grid_rowconfigure(0, minsize=35)
 settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-
-# Initialize serial connection
-# arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
-
-# check which port was really used
-# print(arduino.name)
-
 # set websites
 nano_site = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
 github = "https://github.com/ClairBearmakes/NanoLab-GUI"
@@ -296,6 +305,7 @@ def openbetaform():
 def open_files():
     webbrowser.open_new("C:") # replace with txt file with list of sd cards files
 
+# test functions
 def take_picture():
 	print("*click*")
 	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # take picture and save it
