@@ -50,92 +50,43 @@ def toggle_fullscreen(self, event=None):
 
 class Framework(tk.Tk):
     def __init__(self, *args, **kwargs):
+        # creating window
         tk.Tk.__init__(self, *args, **kwargs)
+
         # setting up window
         self.title("Universal NanoLab Settings")
-        width = self.winfo_screenwidth()
-        height = self.winfo_screenheight()
-        self.geometry("%dx%d" % (width, height))
+        self.width = self.winfo_screenwidth() 
+        self.height = self.winfo_screenheight()
+        self.geometry("%dx%d" % (self.width, self.height))
+        # self.width = width 
+        # self.height = height
+        # self.geometry("%dx%d" % (self.width, self.height))
         # self.eval("tk::PlaceWindow . center")
         self.attributes("-fullscreen", False)
         self.iconbitmap("assets/Universal logo.ico")
         self.configure(bg=bg_color)
 
-        # creating a frame to contain all other frames
-        container = tk.Frame(self, width=width, height=height, bg=bg_color)
-        # specifying the region where the frame is put into root
-        container.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nsew")
+    class Frames(Framework, self):
+        # attributes for frames
+        def __init__(Framework, self):
 
-        # configuring the location of the container using grid
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
+            def frames():
+                # creating a default frame
+                frame = tk.Frame(self, width=self.width, height=self.height - menu_height, bg=bg_color, highlightbackground="grey", highlightthickness=1)
+            frames()
 
-        # create a dictionary of frames
-        self.frames = {}
-        # the frames themselves are created later but add the frames to the dictionary now
-        for F in (MainPage, SecondPage): # add all classes for the frames
-            frame = F(container, self)
-
-            # the Framework class acts as the root window for the frames.
-            self.frames[F] = frame
-            frame.config(width=width, height=height - menu_height, bg=bg_color)
-            frame.grid(row=1, column=0, sticky="nsew")
-
-        # Using a method to switch frames
-        self.show_frame(MainPage)
-
-    def show_frame(self, cont):
-            frame = self.frames[cont]
-            # raises the current frame to the top
-            frame.tkraise()
-
-class Menu(tk.Frame):
-    def __init__(self, parent): #, controller
-        tk.Frame.__init__(self, parent)
-        self.grid(row=0, column=0, sticky="nsew")
-        self.grid_rowconfigure(0, minsize=35)
-        self.tkraise()
-        self.grid_propagate(False)
-
-        # add things into frame
-        label = tk.Label(self, text="Menu")
-        label.grid(row=0, column=0, sticky="w", padx="5", pady="3")
-
-# make one of these for each page
-class MainPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Main Page")
-        label.grid(row=2, column=0, sticky="w", padx="5", pady="3")
-
-        # We use the switch_window_button in order to call the show_frame() method as a lambda function
-        switch_window_button = tk.Button(
-            self,
-            text="Go to the Second Page",
-            command=lambda: controller.show_frame(SecondPage),
-        )
-        switch_window_button.grid(row=3, column=0, sticky="w", padx="5", pady="3")
-
-class SecondPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Second Page")
-        label.pack(padx=10, pady=10)
-
-        # We use the switch_window_button in order to call the show_frame() method as a lambda function
-        switch_window_button = tk.Button(
-            self,
-            text="Go back to the Main Page",
-            command=lambda: controller.show_frame(MainPage),
-        )
-        switch_window_button.pack(side="bottom", fill=tk.X)
+            def MainScreen():
+                label = tk.Label(frame, bg=bg_color, text = "Preview Your Settings", font=title_font)
+                label.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
+                frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+        
 
 # define objects and start app
-if __name__ == "__main__":
-    Menu = Menu()
-    Menu.mainloop()
-    MainApp = Framework()
-    MainApp.mainloop()
+# if __name__ == "__main__":
+MainApp = Framework()
+MainFrames = Frames()
+
+MainApp.mainloop()
 
 
 # example from https://www.digitalocean.com/community/tutorials/tkinter-working-with-classes
