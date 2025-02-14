@@ -21,8 +21,12 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import array 
 
-# load custom fonts
+# set fonts
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
+normal_font= ("Ubuntu", 12)
+big_font= ("Ubuntu", 24)
+title_font= ("Ubuntu", 46)
+calender_font= ("Arial", 10)
 
 """
 # Arduino Stuff
@@ -41,8 +45,8 @@ def closeport(): #Closes port if currently open
 """
 
 # set starting variables
-dev_mode = True # if True will show log button and test buttons # Make a beta test review sheet to go with this or separate thing?
-beta = True
+dev_mode = True # if True will show log button and test buttons
+beta = True # enable beta testing form button
 dark_mode = False
 component_count = 5
 type_selected = False
@@ -75,7 +79,7 @@ else:
 # create object
 setup_root = tk.Tk()
 setup_root.title("Universal NanoLab Setup")
-setup_root.configure(bg="white")
+setup_root.configure(bg=bg_color)
 
 # set logo
 setup_root.iconbitmap("assets/Universal logo.ico")
@@ -126,6 +130,7 @@ def load_setup1():
 	welcome_label = Label(setup1_frame, text="Pick Your Version", font=("Ubuntu-Bold", 18), bg=bg_color)
 	welcome_label.grid(row=1, columnspan=8, column=0, sticky="")
 
+
 	# add image button of HydroFuge and "coming soon" for Universal
 
 	# HydroFuge
@@ -134,12 +139,12 @@ def load_setup1():
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
-	hydro_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, highlightcolor="red", command=type_hydro)
+	hydro_logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, highlightcolor="gray", command=type_hydro)
 	hydro_logo_widget.image = logo_img
 	hydro_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
 
 	# add HydroFuge label under button
-	hydrofuge_label = Label(setup1_frame, text="HydroFuge", font=("Ubuntu", 12), bg=bg_color)
+	hydrofuge_label = Label(setup1_frame, text="HydroFuge", font=normal_font, bg=bg_color)
 	hydrofuge_label.grid(row=3, columnspan=3, column=1, sticky="", padx="5", pady="3")
 
 	# Universal
@@ -153,14 +158,14 @@ def load_setup1():
 	uni_logo_widget.grid(row=2, columnspan=3, column=4, sticky="", padx="8", pady="5")
 
 	# add Universal label under button
-	hydrofuge_label = Label(setup1_frame, text="Universal (Coming Soon)", font=("Ubuntu", 12), bg=bg_color)
+	hydrofuge_label = Label(setup1_frame, text="Universal (Coming Soon)", font=normal_font, bg=bg_color)
 	hydrofuge_label.grid(row=3, columnspan=3, column=4, sticky="", padx="5", pady="3")
 
 	# Finish setup or go to next frame
 	tk.Button(
 		setup1_frame,
 		text="Done", # Next
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("1"),
 		width=("7"),
 		bg=bg_color,
@@ -187,7 +192,7 @@ def load_setup2():
 	tk.Button(
 		setup2_frame,
 		text="Back",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("1"),
 		width=("7"),
 		bg=bg_color,
@@ -202,7 +207,7 @@ def load_setup2():
 	tk.Button(
 		setup2_frame,
 		text="Done",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("1"),
 		width=("7"),
 		bg=bg_color,
@@ -264,11 +269,12 @@ root.iconbitmap("assets/Universal logo.ico")
 # getting screen dimentions of display
 width = root.winfo_screenwidth()
 height = root.winfo_screenheight()
-menu_height = 55
 
 # setting tk window size
 root.geometry("%dx%d" % (width, height))
 # root.eval("tk::PlaceWindow . center")
+
+menu_height = 55
 
 # create main frame widgets
 menu = tk.Frame(root, width=width, height=menu_height, bg=menu_bg_color)
@@ -341,7 +347,7 @@ def load_menu(): # button bar on top
 	tk.Button(
 		menu,
 		text="Back",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("1"),
 		width=("5"),
 		bg=menu_bg_color,
@@ -356,7 +362,7 @@ def load_menu(): # button bar on top
 	tk.Button(
 		menu,
 		text="About",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("1"),
 		width=("6"),
 		bg=menu_bg_color,
@@ -371,7 +377,7 @@ def load_menu(): # button bar on top
 	tk.Button(
 		menu,
 		text="Updates",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("0"),
 		width=("8"),
 		bg=menu_bg_color,
@@ -386,7 +392,7 @@ def load_menu(): # button bar on top
 	tk.Button(
 		menu,
 		text="Storage",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("0"),
 		width=("8"),
 		bg=menu_bg_color,
@@ -402,7 +408,7 @@ def load_menu(): # button bar on top
 		tk.Button(
 			menu,
 			text="Data Results",
-			font=("Ubuntu", 12),
+			font=normal_font,
 			height=("0"),
 			width=("12"),
 			bg=menu_bg_color,
@@ -418,7 +424,7 @@ def load_menu(): # button bar on top
 		tk.Button(
 			menu,
 			text="Log",
-			font=("Ubuntu", 12),
+			font=normal_font,
 			height=("0"),
 			width=("4"),
 			bg=menu_bg_color,
@@ -452,7 +458,7 @@ def load_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	settings_title = Label(settings_frame, bg="white", text = "Main Settings", font=("Ubuntu", 48))
+	settings_title = Label(settings_frame, bg="white", text = "Main Settings", font=title_font)
 	settings_title.grid(row=0, columnspan=3, column=1, padx="8", pady="5")
 
 	# Add start and end calendars
@@ -462,7 +468,7 @@ def load_settings_frame():
 	schedule_label = Label(settings_frame, text = "Schedule", font=("Ubuntu", 18), bg=bg_color, fg=fg_color)
 	schedule_label.grid(row=1, columnspan=1, column=2, sticky="n", padx="8", pady="5")
 
-	start_label = Label(settings_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	start_label = Label(settings_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	start_label.grid(row=1, columnspan=2, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(settings_frame, selectmode = 'day',
@@ -470,7 +476,7 @@ def load_settings_frame():
 			day = cur_day, mindate=datetime.date(2, 11, 25), font=("Arial", 10)) #date m/d/yy (no starting zeros)
 	start_cal.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
-	end_label = Label(settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	end_label = Label(settings_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	end_label.grid(row=1, columnspan=2, column=2, padx="8", pady="5")
 
 	end_cal = Calendar(settings_frame, selectmode = 'day',
@@ -478,6 +484,7 @@ def load_settings_frame():
 			day = cur_day, font=("Arial", 10))
 	end_cal.grid(row=2, columnspan=2, column=2, padx="8", pady="5")
 
+	"""
 	# create water pump settings button widget
 	tk.Button(
 		settings_frame,
@@ -492,6 +499,7 @@ def load_settings_frame():
 		activeforeground=act_fg_color,
 		command=lambda:load_w_pump_settings_frame(), # water pump settings frame
 		).grid(row=4, column=1, sticky="sw", padx="8", pady="5")
+	"""
 
 	# create LED settings button widget
 	tk.Button(
@@ -586,7 +594,7 @@ def load_settings_frame():
 	
 	if beta == True:
 		# label for beta testing
-		# beta_label = Label(settings_frame, bg=bg_color, text = "     Rate your experience ", font=("Ubuntu", 12))
+		# beta_label = Label(settings_frame, bg=bg_color, text = "     Rate your experience ", font=normal_font)
 		# beta_label.grid(row=7, columnspan=2, column=0, sticky="w", padx="5", pady="3")
 
 		# create button widget for beta testing form
@@ -606,21 +614,33 @@ def load_settings_frame():
 
 	# buttons made with class
 	class MyButton:
-		def __init__(self, master, btntext, rownum, columnnum, stickdir, command):
-			self.master = master	
+		# class variables (attributes)
+		master = settings_frame
+
+		def __init__(self, btntext, font, btnheight, btnwidth, rownum, columnnum, stickdir, command):	
 			self.btntext = btntext
+			self.font = font
+			self.btnheight = btnheight
+			self.btnwidth = btnwidth
 			self.command = command
-			self.btn = tk.Button(master, text=self.btntext, command=self.command)
-			self.btn.config(bg=bg_color, fg=fg_color, font=("Ubuntu", 12), padx=10, pady=5)
+			self.btn = tk.Button(self.master, 
+			text=self.btntext, font=font,
+			height = btnheight,  width = btnwidth,
+			bg = bg_color, fg = fg_color,
+			activebackground = act_bg_color, activeforeground = act_fg_color,
+			cursor = "hand2", command=self.command)
+			self.btn.config(padx=0, pady=0)
 			self.rownum = rownum
 			self.columnnum = columnnum
 			self.stickdir = stickdir
-			self.btn.grid(row=self.rownum, column=self.columnnum, padx="7", pady="5", sticky=stickdir)
+			self.btn.grid(row=self.rownum, column=self.columnnum, padx="8", pady="5", sticky=stickdir)
 
 		# def on_change(self):
 			# print(f"Record {self.checktext} = {self.checkbox_value.get()}")
 
-	testbtn = MyButton(settings_frame, "Test", 0, 1, "", take_picture)
+	# text, font, height, width, row, column, sticky, command
+	testbtn = MyButton("Test", big_font, 1, 19, 0, 1, "", take_picture)
+	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, "sw", lambda:load_w_pump_settings_frame())
 
 	# print("settings loaded")
 
@@ -646,7 +666,7 @@ def load_w_pump_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	w_pump_title = Label(w_pump_settings_frame, bg="white", text = "Water Pump Settings", font=("Ubuntu", 30))
+	w_pump_title = Label(w_pump_settings_frame, bg="white", text = "Water Pump Settings", font=title_font)
 	w_pump_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	if dev_mode == True:
@@ -655,7 +675,7 @@ def load_w_pump_settings_frame():
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
-			font=("Ubuntu", 12),  
+			font=normal_font,  
 			command=test_pump #pump some water
 			).grid(row=1, columnspan=1, column=1, padx="8", pady="5", sticky="w")
 		
@@ -664,7 +684,7 @@ def load_w_pump_settings_frame():
 	def grad_date():
 		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	start_label = Label(w_pump_settings_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	start_label = Label(w_pump_settings_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	start_label.grid(row=1, columnspan=2, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
@@ -672,7 +692,7 @@ def load_w_pump_settings_frame():
 			day = cur_day, mindate=datetime.date(1, 6, 25), font=("Arial", 10)) #date m/d/yy (no starting zeros)
 	start_cal.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
-	end_label = Label(w_pump_settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	end_label = Label(w_pump_settings_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	end_label.grid(row=1, columnspan=2, column=3, padx="8", pady="5")
 
 	end_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
@@ -681,10 +701,10 @@ def load_w_pump_settings_frame():
 	end_cal.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
 
 	# Add Button and Label
-	# select = Button(w_pump_settings_frame, text = "Selected dates are: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = grad_date)
+	# select = Button(w_pump_settings_frame, text = "Selected dates are: ", font=normal_font, bg=bg_color, fg=fg_color, command = grad_date)
 	# select.grid(row=3, columnspan=2, column=1, padx="8", pady="5", sticky="e")
 
-	# date = Label(w_pump_settings_frame, text = "", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	# date = Label(w_pump_settings_frame, text = "", font=normal_font, bg=bg_color, fg=fg_color)
 	# date.grid(row=3, columnspan=2, column=3, padx="8", pady="5", sticky="w")
 
 
@@ -704,11 +724,11 @@ def load_w_pump_settings_frame():
 	    
 	    
 	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(w_pump_settings_frame, text = 'Frequency of ' + hardware + ": ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre_label = tk.Label(w_pump_settings_frame, text = 'Frequency of ' + hardware + ": ", font=normal_font, bg=bg_color, fg=fg_color)
 	fre_label.grid(row=5, column=1, sticky="w")
 
 	# creating a entry for input
-	fre1_entry = tk.Entry(w_pump_settings_frame, textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=3)
+	fre1_entry = tk.Entry(w_pump_settings_frame, textvariable = fre1_in, font=normal_font, bg=bg_color, fg=fg_color, width=3)
 	fre1_entry.grid(row=5, columnspan=1, column=2, sticky="e")
 
 	def character_limit(fre1_in):
@@ -731,11 +751,11 @@ def load_w_pump_settings_frame():
 
 	# Create Dropdown menu 
 	fre2_drop = tk.OptionMenu(w_pump_settings_frame, fre2_in, *fre2_options)
-	fre2_drop.config(font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre2_drop.config(font=normal_font, bg=bg_color, fg=fg_color)
 	fre2_drop.grid(row=5, columnspan=2, column=3, sticky="w", padx="7")
 	 
 	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(w_pump_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
+	sub_btn=tk.Button(w_pump_settings_frame,text = 'Save', font=normal_font, bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=5, columnspan=2, column=3, padx="7", pady="5", sticky="")
 
 	# set frame in window
@@ -823,14 +843,14 @@ def load_led_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	led_settings_title = Label(led_settings_frame, bg="white", text = "LED Settings", font=("Ubuntu", 30))
+	led_settings_title = Label(led_settings_frame, bg="white", text = "LED Settings", font=title_font)
 	led_settings_title.grid(row=0, columnspan=12, column=1, padx="8", pady="5")
 
 	# create red color button widget
 	tk.Button(
 		led_settings_frame,
 		text="Red",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("0"),
 		width=("7"),
 		bg=led_bg,
@@ -845,7 +865,7 @@ def load_led_settings_frame():
 	tk.Button(
 		led_settings_frame,
 		text="Orange",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("0"),
 		width=("7"),
 		bg=led_bg,
@@ -860,7 +880,7 @@ def load_led_settings_frame():
 	tk.Button(
 		led_settings_frame,
 		text="Yellow",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("0"),
 		width=("7"),
 		bg=led_bg,
@@ -875,7 +895,7 @@ def load_led_settings_frame():
 	tk.Button(
 		led_settings_frame,
 		text="Green",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("0"),
 		width=("7"),
 		bg=led_bg,
@@ -890,7 +910,7 @@ def load_led_settings_frame():
 	tk.Button(
 		led_settings_frame,
 		text="Blue",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("0"),
 		width=("7"),
 		bg=led_bg,
@@ -905,7 +925,7 @@ def load_led_settings_frame():
 	tk.Button(
 		led_settings_frame,
 		text="Purple",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("0"),
 		width=("7"),
 		bg=led_bg,
@@ -920,7 +940,7 @@ def load_led_settings_frame():
 	tk.Button(
 		led_settings_frame,
 		text="Clear",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("0"),
 		width=("7"),
 		bg=led_bg,
@@ -958,14 +978,14 @@ def load_led_settings_frame():
 	print(rgb_code)
 
 	# button to open color picker
-	color_btn = tk.Button(led_settings_frame,text = 'Select precise color', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = choose_color)
+	color_btn = tk.Button(led_settings_frame,text = 'Select precise color', font=normal_font, bg=bg_color, fg=fg_color, command = choose_color)
 	color_btn.grid(row=3, columnspan=3, column=12, padx="7", pady="5", sticky="")
 
 	# label for the slider
 	slider_label = tk.Label(
     	led_settings_frame,
     	text='Brightness',
-    	font=("Ubuntu", 12),
+    	font=normal_font,
     	bg=bg_color,
 		fg=fg_color
 	).grid(row=4, columnspan=8, column=10, sticky="n", padx="0", pady="0")
@@ -980,14 +1000,14 @@ def load_led_settings_frame():
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
-			font=("Ubuntu", 12),  
+			font=normal_font,  
 			command=test_LED).grid(row=1, columnspan=1, column=1, sticky="w")
 
 	# Add start and end calendars
 	def grad_date():
 		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	start_label = Label(led_settings_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	start_label = Label(led_settings_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	start_label.grid(row=1, columnspan=4, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(led_settings_frame, selectmode = 'day',
@@ -995,7 +1015,7 @@ def load_led_settings_frame():
 			day = cur_day, font=("Arial", 10))
 	start_cal.grid(rowspan=4, row=2, columnspan=4, column=1, padx="8", pady="5")
 
-	end_label = Label(led_settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	end_label = Label(led_settings_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	end_label.grid(row=1, columnspan=4, column=5, padx="8", pady="5")
 
 	end_cal = Calendar(led_settings_frame, selectmode = 'day',
@@ -1004,10 +1024,10 @@ def load_led_settings_frame():
 	end_cal.grid(rowspan=4, row=2, columnspan=4, column=5, padx="8", pady="5", sticky="e")
 
 	# Add Button and Label
-	# select = Button(led_settings_frame, text = "Selected dates are: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = grad_date)
+	# select = Button(led_settings_frame, text = "Selected dates are: ", font=normal_font, bg=bg_color, fg=fg_color, command = grad_date)
 	# select.grid(row=9, columnspan=4, column=1, padx="8", pady="5", sticky="e")
 
-	# date = Label(led_settings_frame, text = "", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	# date = Label(led_settings_frame, text = "", font=normal_font, bg=bg_color, fg=fg_color)
 	# date.grid(row=9, columnspan=4, column=5, padx="8", pady="5", sticky="w")
 
 	# frequency stuff
@@ -1030,11 +1050,11 @@ def load_led_settings_frame():
 	    
 
 	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(led_settings_frame, text = 'Frequency of ' + hardware + ": ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre_label = tk.Label(led_settings_frame, text = 'Frequency of ' + hardware + ": ", font=normal_font, bg=bg_color, fg=fg_color)
 	fre_label.grid(row=10, columnspan=1, column=1, sticky="w")
 
 	# creating a entry for input
-	fre1_entry = tk.Entry(led_settings_frame, textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=3)
+	fre1_entry = tk.Entry(led_settings_frame, textvariable = fre1_in, font=normal_font, bg=bg_color, fg=fg_color, width=3)
 	fre1_entry.grid(row=10, columnspan=1, column=2, padx="5", pady="5", sticky="w")
 
 	def character_limit(fre1_in):
@@ -1057,13 +1077,13 @@ def load_led_settings_frame():
 
 	# Create Dropdown menu 
 	fre2_drop = tk.OptionMenu(led_settings_frame, fre2_in, *fre2_options)
-	fre2_drop.config(font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre2_drop.config(font=normal_font, bg=bg_color, fg=fg_color)
 	fre2_drop.grid(row=10, columnspan=2, column=3, padx="5", pady="5", sticky="e")
 
-	time_label = tk.Label(led_settings_frame, text = 'Time (in hours) that ' + hardware + "s will run for: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	time_label = tk.Label(led_settings_frame, text = 'Time (in hours) that ' + hardware + "s will run for: ", font=normal_font, bg=bg_color, fg=fg_color)
 	time_label.grid(row=11, columnspan=4, column=1, sticky="w")
 
-	time_entry = tk.Entry(led_settings_frame,textvariable = time_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=3)
+	time_entry = tk.Entry(led_settings_frame,textvariable = time_in, font=normal_font, bg=bg_color, fg=fg_color, width=3)
 	time_entry.grid(row=11, columnspan=2, column=4, padx="7", pady="5", sticky="")
 
 	def character_limit(time_in):
@@ -1073,7 +1093,7 @@ def load_led_settings_frame():
 	time_in.trace("w", lambda *args: character_limit(time_in))
 
 	# creating a button that calls the fre_set function
-	sub_btn = tk.Button(led_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
+	sub_btn = tk.Button(led_settings_frame,text = 'Save', font=normal_font, bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=12, columnspan=1, column=1, padx="7", pady="5", sticky="w")
 
 	# set frame in window
@@ -1103,7 +1123,7 @@ def load_fan_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	fan_settings_title = Label(fan_settings_frame, bg="white", text = "Fan Settings", font=("Ubuntu", 30))
+	fan_settings_title = Label(fan_settings_frame, bg="white", text = "Fan Settings", font=title_font)
 	fan_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	# slider current value
@@ -1124,7 +1144,7 @@ def load_fan_settings_frame():
 	slider_label = tk.Label(
     	fan_settings_frame,
     	text='Fan Strength (%)',
-    	font=("Ubuntu", 12), 
+    	font=normal_font, 
 		bg=bg_color,
 		fg=fg_color
 	).grid(row=1, columnspan=3, column=1, sticky="n")
@@ -1139,7 +1159,7 @@ def load_fan_settings_frame():
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color, 
-			font=("Ubuntu", 12), 
+			font=normal_font, 
 			command=slider_changed
 			).grid(row=1, columnspan=3, column=1, padx="8", pady="5", sticky="w")
 
@@ -1147,7 +1167,7 @@ def load_fan_settings_frame():
 	def grad_date():
 		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	start_label = Label(fan_settings_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	start_label = Label(fan_settings_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	start_label.grid(row=3, columnspan=2, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(fan_settings_frame, selectmode = 'day',
@@ -1155,7 +1175,7 @@ def load_fan_settings_frame():
 			day = cur_day, font=("Arial", 10))
 	start_cal.grid(row=4, columnspan=2, column=1, padx="8", pady="5")
 
-	end_label = Label(fan_settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	end_label = Label(fan_settings_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	end_label.grid(row=3, columnspan=2, column=3, padx="8", pady="5")
 
 	end_cal = Calendar(fan_settings_frame, selectmode = 'day',
@@ -1164,10 +1184,10 @@ def load_fan_settings_frame():
 	end_cal.grid(row=4, columnspan=2, column=3, padx="8", pady="5")
 
 	# Add Button and Label
-	# select = Button(fan_settings_frame, text = "Selected dates are: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = grad_date)
+	# select = Button(fan_settings_frame, text = "Selected dates are: ", font=normal_font, bg=bg_color, fg=fg_color, command = grad_date)
 	# select.grid(row=5, columnspan=2, column=1, padx="8", pady="5", sticky="e")
 
-	# date = Label(fan_settings_frame, text = "", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	# date = Label(fan_settings_frame, text = "", font=normal_font, bg=bg_color, fg=fg_color)
 	# date.grid(row=5, columnspan=2, column=3, padx="8", pady="5", sticky="w")
 
 
@@ -1188,11 +1208,11 @@ def load_fan_settings_frame():
 	    
 	"""
 	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(fan_settings_frame, text = 'Frequency of ' + hardware + ": ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre_label = tk.Label(fan_settings_frame, text = 'Frequency of ' + hardware + ": ", font=normal_font, bg=bg_color, fg=fg_color)
 	fre_label.grid(row=6, column=1, sticky="w")
 
 	# creating a entry for input
-	fre1_entry = tk.Entry(fan_settings_frame,textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=18)
+	fre1_entry = tk.Entry(fan_settings_frame,textvariable = fre1_in, font=normal_font, bg=bg_color, fg=fg_color, width=18)
 	fre1_entry.grid(row=6, columnspan=2, column=1)
 
 	# creating a dropdown for frequency2
@@ -1209,12 +1229,12 @@ def load_fan_settings_frame():
 
 	# Create Dropdown menu 
 	fre2_drop = tk.OptionMenu(fan_settings_frame, fre2_in, *fre2_options)
-	fre2_drop.config(font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre2_drop.config(font=normal_font, bg=bg_color, fg=fg_color)
 	fre2_drop.grid(row=6, column=2)
 	"""
 
 	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(fan_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
+	sub_btn=tk.Button(fan_settings_frame,text = 'Save', font=normal_font, bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=6, columnspan=2, column=2, padx="7", pady="5", sticky="")
 
 	# set frame in window
@@ -1244,7 +1264,7 @@ def load_camera_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	cam_settings_title = Label(camera_settings_frame, bg="white", text = "Camera Intervals", font=("Ubuntu", 30))
+	cam_settings_title = Label(camera_settings_frame, bg="white", text = "Camera Intervals", font=title_font)
 	cam_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 	
 	if dev_mode == True:
@@ -1253,7 +1273,7 @@ def load_camera_settings_frame():
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color, 
-			font=("Ubuntu", 12), 
+			font=normal_font, 
 			command=take_picture
 			).grid(row=2, columnspan=1, column=1, padx="8", pady="5", sticky="w")
 
@@ -1261,7 +1281,7 @@ def load_camera_settings_frame():
 	def grad_date():
 		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 
-	start_label = Label(camera_settings_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	start_label = Label(camera_settings_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	start_label.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(camera_settings_frame, selectmode = 'day',
@@ -1269,7 +1289,7 @@ def load_camera_settings_frame():
 			day = cur_day, font=("Arial", 10))
 	start_cal.grid(row=3, columnspan=2, column=1, padx="8", pady="5")
 
-	end_label = Label(camera_settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	end_label = Label(camera_settings_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	end_label.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
 
 	end_cal = Calendar(camera_settings_frame, selectmode = 'day',
@@ -1278,10 +1298,10 @@ def load_camera_settings_frame():
 	end_cal.grid(row=3, columnspan=2, column=3, padx="8", pady="5")
 
 	# Add Button and Label
-	# select = Button(camera_settings_frame, text = "Selected dates are: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = grad_date)
+	# select = Button(camera_settings_frame, text = "Selected dates are: ", font=normal_font, bg=bg_color, fg=fg_color, command = grad_date)
 	# select.grid(row=4, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
-	# date = Label(camera_settings_frame, text = "", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	# date = Label(camera_settings_frame, text = "", font=normal_font, bg=bg_color, fg=fg_color)
 	# date.grid(row=4, columnspan=1, column=2, padx="8", pady="5", sticky="w")
 
 
@@ -1302,11 +1322,11 @@ def load_camera_settings_frame():
 	    
 	    
 	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(camera_settings_frame, text = 'Frequency of ' + hardware + ": ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre_label = tk.Label(camera_settings_frame, text = 'Frequency of ' + hardware + ": ", font=normal_font, bg=bg_color, fg=fg_color)
 	fre_label.grid(row=5, columnspan=2, column=1, sticky="w")
 
 	# creating a entry for input
-	fre1_entry = tk.Entry(camera_settings_frame,textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=4)
+	fre1_entry = tk.Entry(camera_settings_frame,textvariable = fre1_in, font=normal_font, bg=bg_color, fg=fg_color, width=4)
 	fre1_entry.grid(row=5, columnspan=1, column=2, sticky="")
 
 	def character_limit(fre1_in):
@@ -1329,11 +1349,11 @@ def load_camera_settings_frame():
 
 	# Create Dropdown menu 
 	fre2_drop = tk.OptionMenu(camera_settings_frame, fre2_in, *fre2_options)
-	fre2_drop.config(font=("Ubuntu", 12), bg=bg_color, fg=fg_color) 
+	fre2_drop.config(font=normal_font, bg=bg_color, fg=fg_color) 
 	fre2_drop.grid(row=5, columnspan=2, column=2, padx="7", pady="5", sticky="")
 	 
 	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(camera_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
+	sub_btn=tk.Button(camera_settings_frame,text = 'Save', font=normal_font, bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=5, columnspan=1, column=3, padx="7", pady="5", sticky="")
 
 	# set frame in window
@@ -1363,7 +1383,7 @@ def load_atmos_sensor_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	atmos_sensor_title = Label(atmos_sensor_frame, bg="white", text = "Atmospheric Sensor Settings", font=("Ubuntu", 30))
+	atmos_sensor_title = Label(atmos_sensor_frame, bg="white", text = "Atmospheric Sensor Settings", font=title_font)
 	atmos_sensor_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	if dev_mode == True:
@@ -1372,7 +1392,7 @@ def load_atmos_sensor_frame():
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color, 
-			font=("Ubuntu", 12), 
+			font=normal_font, 
 			command=take_atmos_reading
 			).grid(row=2, columnspan=1, column=1, padx="8", pady="5", sticky="w")
 
@@ -1382,7 +1402,7 @@ def load_atmos_sensor_frame():
 		# print(start_cal.get_date())
 		# print(end_cal.get_date())
 
-	start_label = Label(atmos_sensor_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	start_label = Label(atmos_sensor_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	start_label.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
 	start_cal = Calendar(atmos_sensor_frame, selectmode = 'day',
@@ -1390,7 +1410,7 @@ def load_atmos_sensor_frame():
 			day = cur_day, font=("Arial", 10))
 	start_cal.grid(row=3, columnspan=2, column=1, padx="8", pady="5", sticky="w")
 
-	end_label = Label(atmos_sensor_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	end_label = Label(atmos_sensor_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	end_label.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
 
 	end_cal = Calendar(atmos_sensor_frame, selectmode = 'day',
@@ -1399,10 +1419,10 @@ def load_atmos_sensor_frame():
 	end_cal.grid(row=3, columnspan=2, column=3, padx="8", pady="5", sticky="w")
 
 	# Add Button and Label
-	# select = Button(atmos_sensor_frame, text = "Selected dates are: ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command=grad_date)
+	# select = Button(atmos_sensor_frame, text = "Selected dates are: ", font=normal_font, bg=bg_color, fg=fg_color, command=grad_date)
 	# select.grid(row=4, columnspan=1, column=1, padx="8", pady="5", sticky="e")
 
-	# date = Label(atmos_sensor_frame, text = "", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	# date = Label(atmos_sensor_frame, text = "", font=normal_font, bg=bg_color, fg=fg_color)
 	# date.grid(row=4, columnspan=2, column=2, padx="8", pady="5", sticky="w")
 
 
@@ -1423,11 +1443,11 @@ def load_atmos_sensor_frame():
 	    
 	    
 	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(atmos_sensor_frame, text = 'Frequency of ' + hardware + ": ", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre_label = tk.Label(atmos_sensor_frame, text = 'Frequency of ' + hardware + ": ", font=normal_font, bg=bg_color, fg=fg_color)
 	fre_label.grid(row=5, columnspan=2, column=1, sticky="w")
 
 	# creating a entry for input
-	fre1_entry = tk.Entry(atmos_sensor_frame,textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=8)
+	fre1_entry = tk.Entry(atmos_sensor_frame,textvariable = fre1_in, font=normal_font, bg=bg_color, fg=fg_color, width=8)
 	fre1_entry.grid(row=5, columnspan=1, column=3, padx="7", pady="5", sticky="w")
 
 	def character_limit(fre1_in):
@@ -1450,11 +1470,11 @@ def load_atmos_sensor_frame():
 
 	# Create Dropdown menu 
 	fre2_drop = tk.OptionMenu(atmos_sensor_frame, fre2_in, *fre2_options)
-	fre2_drop.config(font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	fre2_drop.config(font=normal_font, bg=bg_color, fg=fg_color)
 	fre2_drop.grid(row=5, columnspan=2, column=3, padx="7", pady="5", sticky="")
 	 
 	# creating a button that will call the fre_set function  
-	sub_btn = tk.Button(atmos_sensor_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
+	sub_btn = tk.Button(atmos_sensor_frame,text = 'Save', font=normal_font, bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=5, columnspan=2, column=4, padx="7", pady="5", sticky="e")
 
 	# checkbox made with class
@@ -1464,7 +1484,7 @@ def load_atmos_sensor_frame():
 			self.checkbox_value = tk.BooleanVar()
 			self.checktext = checktext
 			self.checkbox = tk.Checkbutton(master, text=self.checktext, variable=self.checkbox_value, command=self.on_change)
-			self.checkbox.config(bg=bg_color, fg=fg_color, font=("Ubuntu", 12), selectcolor="white", relief="raised", padx=10, pady=5)
+			self.checkbox.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor="white", relief="raised", padx=10, pady=5)
 			self.rownum = rownum
 			self.columnnum = columnnum
 			self.stickdir = stickdir
@@ -1499,7 +1519,7 @@ def load_data_results_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	data_r_title = Label(data_results_frame, bg="white", text = "Data Results", font=("Ubuntu", 30))
+	data_r_title = Label(data_results_frame, bg="white", text = "Data Results", font=title_font)
 	data_r_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	# graph
@@ -1537,7 +1557,7 @@ def load_data_results_frame():
 	tk.Button(
 		data_results_frame,
 		text="Update",
-		font=("Ubuntu", 12),
+		font=normal_font,
 		height=("0"),
 		width=("7"),
 		bg=bg_color,
@@ -1567,11 +1587,11 @@ def load_data_results_frame():
 
 	# Create Dropdown menu 
 	drop = OptionMenu(data_results_frame, clicked, *options)
-	drop.config(bg=bg_color, fg=fg_color, font=("Ubuntu", 12)) 
+	drop.config(bg=bg_color, fg=fg_color, font=normal_font) 
 	drop.grid(row=1, column=3, sticky="e")
 
 	# Create button that updates graph
-	button = Button(data_results_frame, text = "Choose", font=("Ubuntu", 12), height=("0"), width=("7"), 
+	button = Button(data_results_frame, text = "Choose", font=normal_font, height=("0"), width=("7"), 
 	bg=bg_color, fg=fg_color, activebackground=act_bg_color, activeforeground=act_fg_color, command = show_graph_new)
 	button.grid(row=1, column=4, sticky="w")
 	"""
@@ -1597,7 +1617,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	log_title = Label(log_frame, bg="white", text = "Log", font=("Ubuntu", 30))
+	log_title = Label(log_frame, bg="white", text = "Log", font=title_font)
 	log_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	# Read the Image
@@ -1629,7 +1649,7 @@ def load_set_preview_frame(): # preview of settings
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	set_preview_title = Label(set_preview_frame, bg=bg_color, text = "Preview Your Settings", font=("Ubuntu", 30))
+	set_preview_title = Label(set_preview_frame, bg=bg_color, text = "Preview Your Settings", font=title_font)
 	set_preview_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	w_pump_preview_title = Label(set_preview_frame, bg=bg_color, text = "Water Pump", font=("Ubuntu", 14))
