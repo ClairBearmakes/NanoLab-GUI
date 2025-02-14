@@ -42,7 +42,7 @@ def closeport(): #Closes port if currently open
 
 # set starting variables
 dev_mode = True # if True will show log button and test buttons # Make a beta test review sheet to go with this or separate thing?
-beta = True
+beta = False
 dark_mode = False
 component_count = 5
 type_selected = False
