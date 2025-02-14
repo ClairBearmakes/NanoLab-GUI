@@ -1,6 +1,6 @@
 
 # Code writen by Asher Powell at Warren Tech North
-# Version 1.5b
+# Version 1.6a
 
 # import dependencies
 import tkinter as tk
@@ -603,6 +603,24 @@ def load_settings_frame():
 			activeforeground=act_fg_color,
 			command=openbetaform
 			).grid(row=7, columnspan=2, column=0, sticky="sw", padx="5", pady="3")
+
+	# buttons made with class
+	class MyButton:
+		def __init__(self, master, btntext, rownum, columnnum, stickdir, command):
+			self.master = master	
+			self.btntext = btntext
+			self.command = command
+			self.btn = tk.Button(master, text=self.btntext, command=self.command)
+			self.btn.config(bg=bg_color, fg=fg_color, font=("Ubuntu", 12), padx=10, pady=5)
+			self.rownum = rownum
+			self.columnnum = columnnum
+			self.stickdir = stickdir
+			self.btn.grid(row=self.rownum, column=self.columnnum, padx="7", pady="5", sticky=stickdir)
+
+		# def on_change(self):
+			# print(f"Record {self.checktext} = {self.checkbox_value.get()}")
+
+	testbtn = MyButton(settings_frame, "Test", 0, 1, "", take_picture)
 
 	# print("settings loaded")
 
@@ -1438,6 +1456,27 @@ def load_atmos_sensor_frame():
 	# creating a button that will call the fre_set function  
 	sub_btn = tk.Button(atmos_sensor_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=5, columnspan=2, column=4, padx="7", pady="5", sticky="e")
+
+	# checkbox made with class
+	class MyCheckbox:
+		def __init__(self, master, checktext, rownum, columnnum, stickdir):
+			self.master = master
+			self.checkbox_value = tk.BooleanVar()
+			self.checktext = checktext
+			self.checkbox = tk.Checkbutton(master, text=self.checktext, variable=self.checkbox_value, command=self.on_change)
+			self.checkbox.config(bg=bg_color, fg=fg_color, font=("Ubuntu", 12), selectcolor="white", relief="raised", padx=10, pady=5)
+			self.rownum = rownum
+			self.columnnum = columnnum
+			self.stickdir = stickdir
+			self.checkbox.grid(row=self.rownum, column=self.columnnum, padx="7", pady="5", sticky=stickdir)
+
+		def on_change(self):
+			print(f"Record {self.checktext} = {self.checkbox_value.get()}")
+
+	gas_checkbox = MyCheckbox(atmos_sensor_frame, "Gas (VOCs)", 1, 6, "")
+	temp_checkbox = MyCheckbox(atmos_sensor_frame, "Temperature", 2, 6, "")
+	humid_checkbox = MyCheckbox(atmos_sensor_frame, "Humidity", 3, 6, "n")
+	press_checkbox = MyCheckbox(atmos_sensor_frame, "Barometric pressure", 3, 6, "")
 
 	# set frame in window
 	atmos_sensor_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
