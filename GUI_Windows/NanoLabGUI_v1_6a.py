@@ -331,7 +331,7 @@ class TestButton: # master, rownum, columnnum, colspan, stickdir, command
 	# class variables (attributes)
 
 	def __init__(self, master, rownum, columnnum, colspan, stickdir, command):
-		self.master = w_pump_settings_frame	
+		self.master = master
 		self.rownum = rownum
 		self.columnnum = columnnum
 		self.colspan = colspan
@@ -556,14 +556,14 @@ def load_settings_frame():
 			text="Select Schedule",
 			font=normal_font,
 			height=("0"),
-			width=("4"),
+			width=("15"),
 			bg=bg_color,
 			fg=fg_color,
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
 			command=select_date() # select dates and print them
-			).grid(row=3, columnspan=1, column=2, sticky="w", padx="5", pady="3")
+			).grid(row=3, columnspan=1, column=2, sticky="", padx="5", pady="3")
 
 	# text, font, height, width, row, column, columnspan, sticky, command
 	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, 1, "sw", lambda:load_w_pump_settings_frame())
