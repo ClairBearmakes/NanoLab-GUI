@@ -298,7 +298,60 @@ nano_site = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project
 github = "https://github.com/ClairBearmakes/NanoLab-GUI"
 betaform = "https://docs.google.com/forms/d/e/1FAIpQLScn_A1m8JzfphVgT83yOyETZGsvzdgrhsZ03veFijbZWohrrg/viewform"
 
-# funtions for website buttons
+# set classes
+# buttons for main settings screen
+class MyButton: # text, font, height, width, row, column, columnspan, sticky, command
+	# class variables (attributes)
+	master = settings_frame # change with MyButton.master = whatever_frame
+
+	def __init__(self, btntext, font, btnheight, btnwidth, rownum, columnnum, colspan, stickdir, command):	
+		self.btntext = btntext
+		self.font = font
+		self.btnheight = btnheight
+		self.btnwidth = btnwidth
+		self.command = command
+		self.btn = tk.Button(self.master, 
+		text=self.btntext, font=font,
+		height = btnheight,  width = btnwidth,
+		bg = bg_color, fg = fg_color,
+		activebackground = act_bg_color, activeforeground = act_fg_color,
+		cursor = "hand2", command=self.command)
+		self.btn.config(padx=0, pady=0)
+		self.rownum = rownum
+		self.columnnum = columnnum
+		self.colspan = colspan
+		self.stickdir = stickdir
+		self.btn.grid(row=self.rownum, column=self.columnnum, columnspan=self.colspan, padx="8", pady="5", sticky=stickdir)
+
+	# def on_change(self):
+		# print(f"Record {self.checktext} = {self.checkbox_value.get()}") 
+
+# test buttons
+class TestButton: # master, rownum, columnnum, colspan, stickdir, command
+	# class variables (attributes)
+
+	def __init__(self, master, rownum, columnnum, colspan, stickdir, command):
+		self.master = w_pump_settings_frame	
+		self.rownum = rownum
+		self.columnnum = columnnum
+		self.colspan = colspan
+		self.stickdir = stickdir
+		self.command = command
+
+		self.btn = tk.Button(self.master, text='Test', 
+			bg=bg_color, fg=fg_color,
+			activebackground=act_bg_color, activeforeground=act_fg_color,
+			font=normal_font,
+			cursor="hand2",  
+			command=self.command)
+		self.btn.grid(row=self.rownum, column=self.columnnum, columnspan=self.colspan, padx="8", pady="5", sticky=stickdir)
+
+	# def on_change(self):
+		# print(f"Record {self.checktext} = {self.checkbox_value.get()}") 
+
+
+# set functions
+# functions for website buttons
 def opennanosite():
     webbrowser.open_new(nano_site)
 
@@ -322,9 +375,13 @@ def take_atmos_reading():
 
 def test_pump():
 	print("pump")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # pump some water and shake leaves and respond
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # pump some water and shake leaves
 
-# test led also test_LED()
+def test_fan():
+	print("fan running")
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # turn on the fan for a little bit
+
+# LED test = test_LED()
 
 def send_settings():
 	print(repr(all_set))
@@ -337,7 +394,8 @@ def clear_widgets(root):
 	for frame in root.winfo_children():
 		frame.destroy()
 
-def load_menu(): # button bar on top
+# defining button bar on top
+def load_menu(): 
 	# clear_widgets()
 	menu.tkraise()
 	# prevent widgets from modifying the frame
@@ -436,7 +494,7 @@ def load_menu(): # button bar on top
 			).grid(row=0, column=6, sticky="w", padx="5", pady="3")
 
 	# print("loaded menu")
-	
+
 def load_settings_frame():
 	# clear_widgets(data_results_frame)
 	# clear_widgets(w_pump_settings_frame)
@@ -462,8 +520,17 @@ def load_settings_frame():
 	settings_title.grid(row=0, columnspan=3, column=1, padx="8", pady="5")
 
 	# Add start and end calendars
-	def grad_date():
-		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
+	start_date = ""
+	end_date = ""
+	def select_date():
+		# date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
+		start_date = start_cal.get_date()
+		end_date = end_cal.get_date()
+		return start_date
+		return end_date
+		print(start_date)
+		print(end_date)
+		print(f"Experiment will run from {start_date} - {end_date}")
 
 	schedule_label = Label(settings_frame, text = "Schedule", font=("Ubuntu", 18), bg=bg_color, fg=fg_color)
 	schedule_label.grid(row=1, columnspan=1, column=2, sticky="n", padx="8", pady="5")
@@ -484,159 +551,19 @@ def load_settings_frame():
 			day = cur_day, font=("Arial", 10))
 	end_cal.grid(row=2, columnspan=2, column=2, padx="8", pady="5")
 
-	"""
-	# create water pump settings button widget
 	tk.Button(
-		settings_frame,
-		text="Water Pump Settings",
-		font=("Ubuntu", 24),
-		height=("1"),
-		width=("19"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=lambda:load_w_pump_settings_frame(), # water pump settings frame
-		).grid(row=4, column=1, sticky="sw", padx="8", pady="5")
-
-	# create LED settings button widget
-	tk.Button(
-		settings_frame,
-		text="LED Settings",
-		font=("Ubuntu", 24),
-		height=("1"),
-		width=("19"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=lambda:load_led_settings_frame(), # LED settings frame
-		).grid(row=4, column=2, sticky="sw", padx="8", pady="5")
-	
-	# create fan settings button widget
-	tk.Button(
-		settings_frame,
-		text="Fan Settings",
-		font=("Ubuntu", 24),
-		height=("1"),
-		width=("19"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=lambda:load_fan_settings_frame(), # fan settings frame
-		).grid(row=4, column=3, sticky="sw", padx="8", pady="5")
-
-	# create camera settings button widget
-	tk.Button(
-		settings_frame,
-		text="Camera Intervals", # change back to camera settings if we have actually control over cam
-		font=("Ubuntu", 24),
-		height=("1"),
-		width=("19"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=lambda:load_camera_settings_frame(), # camera settings frame
-		).grid(row=5, column=1, sticky="sw", padx="8", pady="5")
-
-	# create atmospheric sensor button widget
-	tk.Button(
-		settings_frame,
-		text="Atmospheric Sensor",
-		font=("Ubuntu", 24),
-		height=("1"),
-		width=("19"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=lambda:load_atmos_sensor_frame(), # atmos sensor frame
-		).grid(row=5, column=2, sticky="sw", padx="8", pady="5")
-	
-	if component_count <= 5:
-		# create data results button widget
-		tk.Button(
 			settings_frame,
-			text="Data Results",
-			font=("Ubuntu", 24),
-			height=("1"),
-			width=("19"),
-			bg=bg_color,
-			fg=fg_color,
-			cursor="hand2",
-			activebackground=act_bg_color,
-			activeforeground=act_fg_color,
-			command=lambda:load_data_results_frame() # data results frame
-			).grid(row=5, column=3, sticky="sw", padx="8", pady="5")
-	
-	# create send to arduino button widget
-	tk.Button(
-		settings_frame,
-		text="Send settings to your NanoLab",
-		font=("Ubuntu", 22),
-		height=("0"),
-		width=("24"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=lambda:load_set_preview_frame(), # settings preview frame
-		).grid(row=6, column=3, columnspan=2, sticky="sw", padx="8", pady="5")
-	
-	if beta == True:
-		# label for beta testing
-		# beta_label = Label(settings_frame, bg=bg_color, text = "     Rate your experience ", font=normal_font)
-		# beta_label.grid(row=7, columnspan=2, column=0, sticky="w", padx="5", pady="3")
-
-		# create button widget for beta testing form
-		tk.Button(
-			settings_frame,
-			text="Rate your experience",
-			font=("Ubuntu", 10),
+			text="Select Schedule",
+			font=normal_font,
 			height=("0"),
-			width=("19"),
+			width=("4"),
 			bg=bg_color,
 			fg=fg_color,
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
-			command=openbetaform
-			).grid(row=7, columnspan=2, column=0, sticky="sw", padx="5", pady="3")
-	"""
-	# buttons made with class
-	class MyButton:
-		# class variables (attributes)
-		master = settings_frame
-
-		def __init__(self, btntext, font, btnheight, btnwidth, rownum, columnnum, colspan, stickdir, command):	
-			self.btntext = btntext
-			self.font = font
-			self.btnheight = btnheight
-			self.btnwidth = btnwidth
-			self.command = command
-			self.btn = tk.Button(self.master, 
-			text=self.btntext, font=font,
-			height = btnheight,  width = btnwidth,
-			bg = bg_color, fg = fg_color,
-			activebackground = act_bg_color, activeforeground = act_fg_color,
-			cursor = "hand2", command=self.command)
-			self.btn.config(padx=0, pady=0)
-			self.rownum = rownum
-			self.columnnum = columnnum
-			self.colspan = colspan
-			self.stickdir = stickdir
-			self.btn.grid(row=self.rownum, column=self.columnnum, columnspan=self.colspan, padx="8", pady="5", sticky=stickdir)
-
-		# def on_change(self):
-			# print(f"Record {self.checktext} = {self.checkbox_value.get()}")
+			command=select_date() # select dates and print them
+			).grid(row=3, columnspan=1, column=2, sticky="w", padx="5", pady="3")
 
 	# text, font, height, width, row, column, columnspan, sticky, command
 	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, 1, "sw", lambda:load_w_pump_settings_frame())
@@ -678,15 +605,8 @@ def load_w_pump_settings_frame():
 	w_pump_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	if dev_mode == True:
-		Button(w_pump_settings_frame, text='Test', bg=bg_color,
-			fg=fg_color,
-			cursor="hand2",
-			activebackground=act_bg_color,
-			activeforeground=act_fg_color,
-			font=normal_font,  
-			command=test_pump #pump some water
-			).grid(row=1, columnspan=1, column=1, padx="8", pady="5", sticky="w")
-		
+		# master, rownum, columnnum, colspan, stickdir, command
+		testbtn1 = TestButton(w_pump_settings_frame, 1, 1, 1, "w", lambda:test_pump())
 
 	# Add start and end calendars
 	def grad_date():
@@ -1003,13 +923,8 @@ def load_led_settings_frame():
 	led_slider.grid(row=5, columnspan=8, column=10, sticky="n")
 
 	if dev_mode == True:
-		Button(led_settings_frame, text='Test', bg=bg_color,
-			fg=fg_color,
-			cursor="hand2",
-			activebackground=act_bg_color,
-			activeforeground=act_fg_color,
-			font=normal_font,  
-			command=test_LED).grid(row=1, columnspan=1, column=1, sticky="w")
+		# master, rownum, columnnum, colspan, stickdir, command
+		testbtn2 = TestButton(led_settings_frame, 1, 1, 1, "w", lambda:test_LED())
 
 	# Add start and end calendars
 	def grad_date():
@@ -1162,14 +1077,8 @@ def load_fan_settings_frame():
 	fan_strength_slider.grid(row=2, columnspan=8, column=1, sticky="n")
 
 	if dev_mode == True:
-		Button(fan_settings_frame, text='Test', bg=bg_color,
-			fg=fg_color,
-			cursor="hand2",
-			activebackground=act_bg_color,
-			activeforeground=act_fg_color, 
-			font=normal_font, 
-			command=slider_changed
-			).grid(row=1, columnspan=3, column=1, padx="8", pady="5", sticky="w")
+		# master, rownum, columnnum, colspan, stickdir, command
+		testbtn3 = TestButton(fan_settings_frame, 1, 1, 3, "w", lambda:test_fan())
 
 	# Add start and end calendars
 	def grad_date():
@@ -1276,14 +1185,8 @@ def load_camera_settings_frame():
 	cam_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 	
 	if dev_mode == True:
-		Button(camera_settings_frame, text='Test', bg=bg_color,
-			fg=fg_color,
-			cursor="hand2",
-			activebackground=act_bg_color,
-			activeforeground=act_fg_color, 
-			font=normal_font, 
-			command=take_picture
-			).grid(row=2, columnspan=1, column=1, padx="8", pady="5", sticky="w")
+		# master, rownum, columnnum, colspan, stickdir, command
+		testbtn4 = TestButton(camera_settings_frame, 2, 1, 1, "w", lambda:take_picture())
 
 	# Add start and end calendars
 	def grad_date():
@@ -1395,14 +1298,8 @@ def load_atmos_sensor_frame():
 	atmos_sensor_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	if dev_mode == True:
-		Button(atmos_sensor_frame, text='Test', bg=bg_color,
-			fg=fg_color,
-			cursor="hand2",
-			activebackground=act_bg_color,
-			activeforeground=act_fg_color, 
-			font=normal_font, 
-			command=take_atmos_reading
-			).grid(row=2, columnspan=1, column=1, padx="8", pady="5", sticky="w")
+		# master, rownum, columnnum, colspan, stickdir, command
+		testbtn5 = TestButton(atmos_sensor_frame, 2, 1, 1, "w", lambda:take_atmos_reading())
 
 	# Add start and end calendars
 	def grad_date():
