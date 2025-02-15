@@ -48,7 +48,7 @@ def closeport(): #Closes port if currently open
 dev_mode = True # if True will show log button and test buttons
 beta = True # enable beta testing form button
 dark_mode = False
-component_count = 5
+comp_count = 5 # number of components
 type_selected = False
 box_type = ""
 
@@ -403,7 +403,7 @@ def load_menu(): # button bar on top
 		command=open_files # open file explorer to microSD card on NanoLab
 		).grid(row=0, column=3, sticky="w", padx="5", pady="3")
 
-	if component_count >= 6:
+	if comp_count >= 6:
 		# create data results button widget
 		tk.Button(
 			menu,
@@ -499,7 +499,6 @@ def load_settings_frame():
 		activeforeground=act_fg_color,
 		command=lambda:load_w_pump_settings_frame(), # water pump settings frame
 		).grid(row=4, column=1, sticky="sw", padx="8", pady="5")
-	"""
 
 	# create LED settings button widget
 	tk.Button(
@@ -515,7 +514,7 @@ def load_settings_frame():
 		activeforeground=act_fg_color,
 		command=lambda:load_led_settings_frame(), # LED settings frame
 		).grid(row=4, column=2, sticky="sw", padx="8", pady="5")
-
+	
 	# create fan settings button widget
 	tk.Button(
 		settings_frame,
@@ -560,7 +559,7 @@ def load_settings_frame():
 		activeforeground=act_fg_color,
 		command=lambda:load_atmos_sensor_frame(), # atmos sensor frame
 		).grid(row=5, column=2, sticky="sw", padx="8", pady="5")
-
+	
 	if component_count <= 5:
 		# create data results button widget
 		tk.Button(
@@ -576,7 +575,7 @@ def load_settings_frame():
 			activeforeground=act_fg_color,
 			command=lambda:load_data_results_frame() # data results frame
 			).grid(row=5, column=3, sticky="sw", padx="8", pady="5")
-
+	
 	# create send to arduino button widget
 	tk.Button(
 		settings_frame,
@@ -611,13 +610,13 @@ def load_settings_frame():
 			activeforeground=act_fg_color,
 			command=openbetaform
 			).grid(row=7, columnspan=2, column=0, sticky="sw", padx="5", pady="3")
-
+	"""
 	# buttons made with class
 	class MyButton:
 		# class variables (attributes)
 		master = settings_frame
 
-		def __init__(self, btntext, font, btnheight, btnwidth, rownum, columnnum, stickdir, command):	
+		def __init__(self, btntext, font, btnheight, btnwidth, rownum, columnnum, colspan, stickdir, command):	
 			self.btntext = btntext
 			self.font = font
 			self.btnheight = btnheight
@@ -632,15 +631,24 @@ def load_settings_frame():
 			self.btn.config(padx=0, pady=0)
 			self.rownum = rownum
 			self.columnnum = columnnum
+			self.colspan = colspan
 			self.stickdir = stickdir
-			self.btn.grid(row=self.rownum, column=self.columnnum, padx="8", pady="5", sticky=stickdir)
+			self.btn.grid(row=self.rownum, column=self.columnnum, columnspan=self.colspan, padx="8", pady="5", sticky=stickdir)
 
 		# def on_change(self):
 			# print(f"Record {self.checktext} = {self.checkbox_value.get()}")
 
-	# text, font, height, width, row, column, sticky, command
-	testbtn = MyButton("Test", big_font, 1, 19, 0, 1, "", take_picture)
-	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, "sw", lambda:load_w_pump_settings_frame())
+	# text, font, height, width, row, column, columnspan, sticky, command
+	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, 1, "sw", lambda:load_w_pump_settings_frame())
+	led_set_btn = MyButton("LED Settings", big_font, 1, 19, 4, 2, 1, "sw", lambda:load_led_settings_frame())
+	fan_set_btn = MyButton("Fan Settings", big_font, 1, 19, 4, 3, 1, "sw", lambda:load_fan_settings_frame())
+	cam_set_btn = MyButton("Camera Intervals", big_font, 1, 19, 5, 1, 1, "sw", lambda:load_camera_settings_frame())
+	atmos_set_btn = MyButton("Atmospheric Sensor", big_font, 1, 19, 5, 2, 1, "sw", lambda:load_atmos_sensor_frame())
+	if comp_count <= 5:
+		data_res_btn = MyButton("Data Results", big_font, 1, 19, 5, 3, 1, "sw", lambda:load_data_results_frame())
+	set_preview_btn = MyButton("Send settings to your NanoLab", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", lambda:load_set_preview_frame())
+	if beta == True:
+		beta_btn = MyButton("Rate your experience", ("Ubuntu", 10), 0, 19, 7, 0, 2, "sw", lambda:openbetaform())
 
 	# print("settings loaded")
 
