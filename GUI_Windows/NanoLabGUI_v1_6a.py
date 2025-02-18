@@ -522,7 +522,16 @@ def load_settings_frame():
 	# Add start and end calendars
 	start_date = ""
 	end_date = ""
-	def select_date():
+	dates = []
+	def sel_date():
+		print("test")
+		print(start_cal.get_date())
+		print(end_cal.get_date())
+		print(f"Experiment will run from {start_cal.get_date()} - {end_cal.get_date()}")
+		dates.append(start_cal.get_date())
+		dates.append(end_cal.get_date())
+		print(dates)
+		"""
 		# date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 		start_date = start_cal.get_date()
 		end_date = end_cal.get_date()
@@ -531,24 +540,25 @@ def load_settings_frame():
 		print(start_date)
 		print(end_date)
 		print(f"Experiment will run from {start_date} - {end_date}")
+		"""
 
-	schedule_label = Label(settings_frame, text = "Schedule", font=("Ubuntu", 18), bg=bg_color, fg=fg_color)
+	schedule_label = Label(settings_frame, text="Schedule", font=("Ubuntu", 18), bg=bg_color, fg=fg_color)
 	schedule_label.grid(row=1, columnspan=1, column=2, sticky="n", padx="8", pady="5")
 
-	start_label = Label(settings_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
+	start_label = Label(settings_frame, text="Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	start_label.grid(row=1, columnspan=2, column=1, padx="8", pady="5")
 
-	start_cal = Calendar(settings_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, mindate=datetime.date(2, 11, 25), font=("Arial", 10)) #date m/d/yy (no starting zeros)
+	start_cal = Calendar(settings_frame, selectmode='day',
+			year=cur_year, month=cur_month,
+			day=cur_day, mindate=datetime.date(year=cur_year, month=cur_month, day=cur_day), font=calender_font) #date yyyy/mm/dd (no starting zeros)
 	start_cal.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
-	end_label = Label(settings_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
+	end_label = Label(settings_frame, text="End Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	end_label.grid(row=1, columnspan=2, column=2, padx="8", pady="5")
 
-	end_cal = Calendar(settings_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
+	end_cal = Calendar(settings_frame, selectmode='day',
+			year=cur_year, month=cur_month,
+			day=cur_day, mindate=datetime.date(year=cur_year, month=cur_month, day=cur_day), font=calender_font)
 	end_cal.grid(row=2, columnspan=2, column=2, padx="8", pady="5")
 
 	tk.Button(
@@ -562,7 +572,7 @@ def load_settings_frame():
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
-			command=select_date() # select dates and print them
+			command=lambda:sel_date() # print select dates
 			).grid(row=3, columnspan=1, column=2, sticky="", padx="5", pady="3")
 
 	# text, font, height, width, row, column, columnspan, sticky, command
