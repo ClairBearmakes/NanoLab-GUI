@@ -524,13 +524,9 @@ def load_settings_frame():
 	end_date = ""
 	dates = []
 	def sel_date():
-		print("test")
-		print(start_cal.get_date())
-		print(end_cal.get_date())
-		print(f"Experiment will run from {start_cal.get_date()} - {end_cal.get_date()}")
-		dates.append(start_cal.get_date())
 		dates.append(end_cal.get_date())
-		print(dates)
+		dates.append(start_cal.get_date())
+		print(f"Experiment will run from {dates[1]} - {dates[0]}")
 		"""
 		# date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 		start_date = start_cal.get_date()
@@ -617,34 +613,6 @@ def load_w_pump_settings_frame():
 	if dev_mode == True:
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn1 = TestButton(w_pump_settings_frame, 1, 1, 1, "w", lambda:test_pump())
-
-	# Add start and end calendars
-	def grad_date():
-		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
-
-	start_label = Label(w_pump_settings_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
-	start_label.grid(row=1, columnspan=2, column=1, padx="8", pady="5")
-
-	start_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, mindate=datetime.date(1, 6, 25), font=("Arial", 10)) #date m/d/yy (no starting zeros)
-	start_cal.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
-
-	end_label = Label(w_pump_settings_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
-	end_label.grid(row=1, columnspan=2, column=3, padx="8", pady="5")
-
-	end_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
-	end_cal.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
-
-	# Add Button and Label
-	# select = Button(w_pump_settings_frame, text = "Selected dates are: ", font=normal_font, bg=bg_color, fg=fg_color, command = grad_date)
-	# select.grid(row=3, columnspan=2, column=1, padx="8", pady="5", sticky="e")
-
-	# date = Label(w_pump_settings_frame, text = "", font=normal_font, bg=bg_color, fg=fg_color)
-	# date.grid(row=3, columnspan=2, column=3, padx="8", pady="5", sticky="w")
-
 
 	# frequency stuff
 	# declaring string variables for storing frequencys
@@ -936,33 +904,6 @@ def load_led_settings_frame():
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn2 = TestButton(led_settings_frame, 1, 1, 1, "w", lambda:test_LED())
 
-	# Add start and end calendars
-	def grad_date():
-		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
-
-	start_label = Label(led_settings_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
-	start_label.grid(row=1, columnspan=4, column=1, padx="8", pady="5")
-
-	start_cal = Calendar(led_settings_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
-	start_cal.grid(rowspan=4, row=2, columnspan=4, column=1, padx="8", pady="5")
-
-	end_label = Label(led_settings_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
-	end_label.grid(row=1, columnspan=4, column=5, padx="8", pady="5")
-
-	end_cal = Calendar(led_settings_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
-	end_cal.grid(rowspan=4, row=2, columnspan=4, column=5, padx="8", pady="5", sticky="e")
-
-	# Add Button and Label
-	# select = Button(led_settings_frame, text = "Selected dates are: ", font=normal_font, bg=bg_color, fg=fg_color, command = grad_date)
-	# select.grid(row=9, columnspan=4, column=1, padx="8", pady="5", sticky="e")
-
-	# date = Label(led_settings_frame, text = "", font=normal_font, bg=bg_color, fg=fg_color)
-	# date.grid(row=9, columnspan=4, column=5, padx="8", pady="5", sticky="w")
-
 	# frequency stuff
 	# declaring string variables for storing frequencys
 	fre1_in = tk.StringVar()
@@ -1090,34 +1031,6 @@ def load_fan_settings_frame():
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn3 = TestButton(fan_settings_frame, 1, 1, 3, "w", lambda:test_fan())
 
-	# Add start and end calendars
-	def grad_date():
-		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
-
-	start_label = Label(fan_settings_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
-	start_label.grid(row=3, columnspan=2, column=1, padx="8", pady="5")
-
-	start_cal = Calendar(fan_settings_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
-	start_cal.grid(row=4, columnspan=2, column=1, padx="8", pady="5")
-
-	end_label = Label(fan_settings_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
-	end_label.grid(row=3, columnspan=2, column=3, padx="8", pady="5")
-
-	end_cal = Calendar(fan_settings_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
-	end_cal.grid(row=4, columnspan=2, column=3, padx="8", pady="5")
-
-	# Add Button and Label
-	# select = Button(fan_settings_frame, text = "Selected dates are: ", font=normal_font, bg=bg_color, fg=fg_color, command = grad_date)
-	# select.grid(row=5, columnspan=2, column=1, padx="8", pady="5", sticky="e")
-
-	# date = Label(fan_settings_frame, text = "", font=normal_font, bg=bg_color, fg=fg_color)
-	# date.grid(row=5, columnspan=2, column=3, padx="8", pady="5", sticky="w")
-
-
 	# frequency stuff
 	# declaring string variables for storing frequencys
 	fre1_in = tk.StringVar()
@@ -1197,34 +1110,6 @@ def load_camera_settings_frame():
 	if dev_mode == True:
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn4 = TestButton(camera_settings_frame, 2, 1, 1, "w", lambda:take_picture())
-
-	# Add start and end calendars
-	def grad_date():
-		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
-
-	start_label = Label(camera_settings_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
-	start_label.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
-
-	start_cal = Calendar(camera_settings_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
-	start_cal.grid(row=3, columnspan=2, column=1, padx="8", pady="5")
-
-	end_label = Label(camera_settings_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
-	end_label.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
-
-	end_cal = Calendar(camera_settings_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
-	end_cal.grid(row=3, columnspan=2, column=3, padx="8", pady="5")
-
-	# Add Button and Label
-	# select = Button(camera_settings_frame, text = "Selected dates are: ", font=normal_font, bg=bg_color, fg=fg_color, command = grad_date)
-	# select.grid(row=4, columnspan=1, column=1, padx="8", pady="5", sticky="e")
-
-	# date = Label(camera_settings_frame, text = "", font=normal_font, bg=bg_color, fg=fg_color)
-	# date.grid(row=4, columnspan=1, column=2, padx="8", pady="5", sticky="w")
-
 
 	# frequency stuff
 	# declaring string variables for storing frequencys
@@ -1310,36 +1195,6 @@ def load_atmos_sensor_frame():
 	if dev_mode == True:
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn5 = TestButton(atmos_sensor_frame, 2, 1, 1, "w", lambda:take_atmos_reading())
-
-	# Add start and end calendars
-	def grad_date():
-		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
-		# print(start_cal.get_date())
-		# print(end_cal.get_date())
-
-	start_label = Label(atmos_sensor_frame, text = "Start Date:", font=normal_font, bg=bg_color, fg=fg_color)
-	start_label.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
-
-	start_cal = Calendar(atmos_sensor_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
-	start_cal.grid(row=3, columnspan=2, column=1, padx="8", pady="5", sticky="w")
-
-	end_label = Label(atmos_sensor_frame, text = "End Date:", font=normal_font, bg=bg_color, fg=fg_color)
-	end_label.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
-
-	end_cal = Calendar(atmos_sensor_frame, selectmode = 'day',
-			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
-	end_cal.grid(row=3, columnspan=2, column=3, padx="8", pady="5", sticky="w")
-
-	# Add Button and Label
-	# select = Button(atmos_sensor_frame, text = "Selected dates are: ", font=normal_font, bg=bg_color, fg=fg_color, command=grad_date)
-	# select.grid(row=4, columnspan=1, column=1, padx="8", pady="5", sticky="e")
-
-	# date = Label(atmos_sensor_frame, text = "", font=normal_font, bg=bg_color, fg=fg_color)
-	# date.grid(row=4, columnspan=2, column=2, padx="8", pady="5", sticky="w")
-
 
 	# frequency stuff
 	# declaring string variables for storing frequencys
