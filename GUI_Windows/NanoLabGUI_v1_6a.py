@@ -292,8 +292,8 @@ error_404_frame = tk.Frame(root, highlightbackground="red", highlightthickness=1
 # place main frame widgets in window
 menu.grid(row=0, column=0, sticky="nsew")
 menu.grid_rowconfigure(0, minsize=35)
-settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-error_404_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+# settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+# error_404_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 # set websites
 nano_site = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
@@ -585,6 +585,8 @@ def load_settings_frame():
 	if beta == True:
 		beta_btn = MyButton("Rate your experience", ("Ubuntu", 10), 0, 19, 7, 0, 2, "sw", lambda:openbetaform())
 
+
+	settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	# print("settings loaded")
 
 def load_w_pump_settings_frame(): 
@@ -1394,6 +1396,9 @@ def load_error():
 
 	e404_title2 = Label(error_404_frame, bg="grey", text = "Sorry! That page doesn't exist.", font=("Ubuntu", 30))
 	e404_title2.pack(fill="both", expand=True, side="bottom")
+
+
+	error_404_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 def load_log_frame(): # log of what is happening on Arduino right now
 	# clear_widgets()
