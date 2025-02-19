@@ -287,11 +287,13 @@ atmos_sensor_frame = tk.Frame(root, highlightbackground="grey", highlightthickne
 set_preview_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - menu_height, bg=bg_color)
 data_results_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - menu_height, bg=bg_color)
 log_frame = tk.Frame(root, highlightbackground="grey", highlightthickness=1, width=width, height=height - menu_height, bg=bg_color)
+error_404_frame = tk.Frame(root, highlightbackground="red", highlightthickness=1, width=width, height=height, bg="grey")
 
 # place main frame widgets in window
 menu.grid(row=0, column=0, sticky="nsew")
 menu.grid_rowconfigure(0, minsize=35)
 settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+error_404_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 # set websites
 nano_site = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
@@ -721,8 +723,9 @@ def purpleLED():
 	time.sleep(0.05)
 
 def PARTYLED():
-	arduino.write(bytes("ROYGBPROYGBPROYGBPROYGBP", 'utf-8'))
+	# arduino.write(bytes("ROYGBPROYGBPROYGBPROYGBP", 'utf-8'))
 	time.sleep(0.05)
+	load_error()
 
 def noLED():
 	arduino.write(bytes('CC', 'utf-8'))
@@ -1371,6 +1374,26 @@ def load_data_results_frame():
 	data_results_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 	# print("data results loaded")
+
+def load_error():
+	error_404_frame.tkraise()
+	# prevent widgets from modifying the frame
+	error_404_frame.pack_propagate(False)
+
+	e404_title = Label(error_404_frame, bg="grey", text = "error_404", font=("Ubuntu", 60))
+	e404_title.pack(fill="both", expand=True, side="top")
+
+	# Read the Image
+	image = Image.open("assets/error_404.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((200, 200))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Label(error_404_frame, image=logo_img, bg="grey")
+	logo_widget.image = logo_img
+	logo_widget.pack()
+
+	e404_title2 = Label(error_404_frame, bg="grey", text = "Sorry! That page doesn't exist.", font=("Ubuntu", 30))
+	e404_title2.pack(fill="both", expand=True, side="bottom")
 
 def load_log_frame(): # log of what is happening on Arduino right now
 	# clear_widgets()
