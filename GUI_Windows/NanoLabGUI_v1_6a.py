@@ -637,7 +637,7 @@ def load_w_pump_settings_frame():
 
 	# creating a entry for input
 	fre1_entry = tk.Entry(w_pump_settings_frame, textvariable = fre1_in, font=normal_font, bg=bg_color, fg=fg_color, width=3)
-	fre1_entry.grid(row=5, columnspan=1, column=2, sticky="e")
+	fre1_entry.grid(row=5, columnspan=1, column=1, sticky="e")
 
 	def character_limit(fre1_in):
 		if len(fre1_in.get()) > 1:
@@ -660,11 +660,11 @@ def load_w_pump_settings_frame():
 	# Create Dropdown menu 
 	fre2_drop = tk.OptionMenu(w_pump_settings_frame, fre2_in, *fre2_options)
 	fre2_drop.config(font=normal_font, bg=bg_color, fg=fg_color)
-	fre2_drop.grid(row=5, columnspan=2, column=3, sticky="w", padx="7")
+	fre2_drop.grid(row=5, columnspan=1, column=2, sticky="", padx="7", pady="5")
 	 
 	# creating a button that will call the fre_set function  
 	sub_btn=tk.Button(w_pump_settings_frame,text = 'Save', font=normal_font, bg=bg_color, fg=fg_color, command = fre_set)
-	sub_btn.grid(row=5, columnspan=2, column=3, padx="7", pady="5", sticky="")
+	sub_btn.grid(row=5, columnspan=1, column=3, padx="7", pady="5", sticky="w")
 
 	# set frame in window
 	w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
@@ -961,7 +961,7 @@ def load_led_settings_frame():
 	time_label.grid(row=11, columnspan=4, column=1, sticky="w")
 
 	time_entry = tk.Entry(led_settings_frame,textvariable = time_in, font=normal_font, bg=bg_color, fg=fg_color, width=3)
-	time_entry.grid(row=11, columnspan=2, column=4, padx="7", pady="5", sticky="")
+	time_entry.grid(row=11, columnspan=1, column=5, padx="7", pady="5", sticky="")
 
 	def character_limit(time_in):
 		if len(time_in.get()) > 1:
