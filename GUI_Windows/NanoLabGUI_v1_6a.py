@@ -34,14 +34,15 @@ calender_font= ("Arial", 10)
 arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
 # check which port was really used
 print(arduino.name)
-
+"""
+"""
 # close serial port from https://stackoverflow.com/questions/35235436/python-arduino-prototyping-api-v2-closing-serial-port
-def closeport(): #Closes port if currently open
+def closeport(): # closes port if currently open
     ser = serial.Serial(usbport) 
     if ser.isOpen() == True:
         ser.close()
 
-# closeport() #make sure port is available
+# closeport()
 """
 
 # set starting variables
@@ -63,13 +64,19 @@ if dark_mode == False: # fix these
 	act_fg_color = "#808080"
 else:
 	# set dark mode colors
-	menu_bg_color = "#ffffff"
-	menu_fg_color = "#000000"
+	menu_bg_color = "#000000"
+	menu_fg_color = "#ffffff"
 	menu_act_bg_color = "#ffffff"
 	bg_color = "#000000"
 	fg_color = "#ffffff"
 	act_bg_color = "#808080"
 	act_fg_color = "#ffffff"
+
+def dark_toggle(dark_mode):
+	if dark_mode == True:
+		dark_mode = False
+	else:
+		dark_mode = True
 
 
 #"""
@@ -124,10 +131,10 @@ def load_setup1():
 	setup1_frame.grid_propagate(False)
 
 	# Set Label
-	welcome_label = Label(setup1_frame, text="Welcome to your NanoLab!", font=("Ubuntu-Bold", 20), bg=bg_color)
+	welcome_label = Label(setup1_frame, text="Welcome to your NanoLab!", font=("Ubuntu-Bold", 20), bg=bg_color, fg=fg_color)
 	welcome_label.grid(row=0, columnspan=8, column=0, sticky="")
 
-	welcome_label = Label(setup1_frame, text="Pick Your Version", font=("Ubuntu-Bold", 18), bg=bg_color)
+	welcome_label = Label(setup1_frame, text="Pick Your Version", font=("Ubuntu-Bold", 18), bg=bg_color, fg=fg_color)
 	welcome_label.grid(row=1, columnspan=8, column=0, sticky="")
 
 
@@ -144,7 +151,7 @@ def load_setup1():
 	hydro_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
 
 	# add HydroFuge label under button
-	hydrofuge_label = Label(setup1_frame, text="HydroFuge", font=normal_font, bg=bg_color)
+	hydrofuge_label = Label(setup1_frame, text="HydroFuge", font=normal_font, bg=bg_color, fg=fg_color)
 	hydrofuge_label.grid(row=3, columnspan=3, column=1, sticky="", padx="5", pady="3")
 
 	# Universal
@@ -158,7 +165,7 @@ def load_setup1():
 	uni_logo_widget.grid(row=2, columnspan=3, column=4, sticky="", padx="8", pady="5")
 
 	# add Universal label under button
-	hydrofuge_label = Label(setup1_frame, text="Universal (Coming Soon)", font=normal_font, bg=bg_color)
+	hydrofuge_label = Label(setup1_frame, text="Universal (Coming Soon)", font=normal_font, bg=bg_color, fg=fg_color)
 	hydrofuge_label.grid(row=3, columnspan=3, column=4, sticky="", padx="5", pady="3")
 
 	# Finish setup or go to next frame
@@ -351,6 +358,44 @@ class TestButton: # master, rownum, columnnum, colspan, stickdir, command
 	# def on_change(self):
 		# print(f"Record {self.checktext} = {self.checkbox_value.get()}") 
 
+# slider
+class Slider: # master, label_txt, rownum, colnum, stickdir, command
+	# class variables (attributes)
+	# current_value = tk.DoubleVar()
+	value_label=0
+
+	def __init__(self, master, label_txt, rownum, colnum, stickdir, command):
+		self.master = master
+		self.label_txt = label_txt
+		self.rownum = rownum
+		self.colnum = colnum
+		self.colspan = 3
+		self.stickdir = stickdir
+		self.command = command
+		self.current_value = tk.DoubleVar()
+
+		# label for the slider
+		self.slider_label = tk.Label(
+			master=self.master,
+			text=self.label_txt,
+			font=normal_font,
+			bg=bg_color,
+			fg=fg_color)
+		self.slider_label.grid(row=self.rownum, columnspan=self.colspan-1, column=self.colnum, sticky="", padx="0", pady="5")
+
+		self.slider = Scale(self.master, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL, 
+			variable=current_value, label=current_value, bg=bg_color, fg=fg_color, command=slider_changed)
+		self.slider.set(10)
+		self.slider.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+
+	# class methods
+	def get_current_value():
+		return '{:.2f}'.format(current_value.get())
+
+	def slider_changed():
+		# value_label.configure(text=get_current_value())
+		# ser.write(get_current_value()) # relace with writing to txt file
+		print(hardware, self.current_value.get())
 
 # set functions
 # functions for website buttons
@@ -495,6 +540,15 @@ def load_menu():
 			command=lambda:load_log_frame() # open a log of what is happening right now on the Arduino
 			).grid(row=0, column=6, sticky="w", padx="5", pady="3")
 
+	# Read the Image
+	image = Image.open("assets/night-mode.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((30, 30))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Button(menu, image=logo_img, bg="#ffffff", command=dark_toggle)
+	logo_widget.image = logo_img
+	logo_widget.grid(row=0, columnspan=1, column=8, sticky="e", padx="3", pady="1")
+
 	# print("loaded menu")
 
 def load_settings_frame():
@@ -518,7 +572,7 @@ def load_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	settings_title = Label(settings_frame, bg="white", text = "Main Settings", font=title_font)
+	settings_title = Label(settings_frame, text = "Main Settings", font=title_font, bg=bg_color, fg=fg_color)
 	settings_title.grid(row=0, columnspan=3, column=1, padx="8", pady="5")
 
 	# Add start and end calendars
@@ -611,66 +665,21 @@ def load_w_pump_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	w_pump_title = Label(w_pump_settings_frame, bg="white", text = "Water Pump Settings", font=title_font)
+	w_pump_title = Label(w_pump_settings_frame, text = "Water Pump Settings", font=title_font, bg=bg_color, fg=fg_color)
 	w_pump_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	if dev_mode == True:
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn1 = TestButton(w_pump_settings_frame, 1, 1, 1, "w", lambda:test_pump())
 
-	# frequency stuff
-	# declaring string variables for storing frequencys
-	fre1_in = tk.StringVar()
-	fre2_in = tk.StringVar()
-	 
-	# defining a function that will get the two frequencys and print them
-	def fre_set(): # eventually set to take all values of screen/component and save those
-
-	    fre1 = fre1_in.get()
-	    fre2 = fre2_in.get()
-	    
-	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + " " + fre1 + " times/ " + fre2)	    
-	    fre1_in.set("")
-	    
-	    
-	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(w_pump_settings_frame, text = 'Frequency of ' + hardware + ": ", font=normal_font, bg=bg_color, fg=fg_color)
-	fre_label.grid(row=5, column=1, sticky="w")
-
-	# creating a entry for input
-	fre1_entry = tk.Entry(w_pump_settings_frame, textvariable = fre1_in, font=normal_font, bg=bg_color, fg=fg_color, width=3)
-	fre1_entry.grid(row=5, columnspan=1, column=1, sticky="e")
-
-	def character_limit(fre1_in):
-		if len(fre1_in.get()) > 1:
-			fre1_in.set(fre1_in.get()[-1])
-
-	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
-
-	# creating a dropdown for frequency2
-	# Dropdown menu options 
-	fre2_options = [ 
-	    "hour", 
-	    "day", 
-	    "week", 
-	    "month"
-	] 
-
-	# initial menu text 
-	fre2_in.set("day")
-
-	# Create Dropdown menu 
-	fre2_drop = tk.OptionMenu(w_pump_settings_frame, fre2_in, *fre2_options)
-	fre2_drop.config(font=normal_font, bg=bg_color, fg=fg_color)
-	fre2_drop.grid(row=5, columnspan=1, column=2, sticky="", padx="7", pady="5")
-	 
-	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(w_pump_settings_frame,text = 'Save', font=normal_font, bg=bg_color, fg=fg_color, command = fre_set)
-	sub_btn.grid(row=5, columnspan=1, column=3, padx="7", pady="5", sticky="w")
+	# sliders
+	# master, label_txt, rownum, colnum, colspan, stickdir, command
+	longslider1 = Slider(w_pump_settings_frame, f"How long do you want {hardware} to run?", 2, 1, "w", test_fan)
+	freslider1 = Slider(w_pump_settings_frame, f"How often do you want {hardware} to run?", 4, 1, "w", test_fan)
+	delayslider1 = Slider(w_pump_settings_frame, "How much delay do you want between runs?", 6, 1, "w", test_fan)
 
 	# set frame in window
 	w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-
 	# print("H2O pump settings loaded")
 
 
@@ -754,7 +763,7 @@ def load_led_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	led_settings_title = Label(led_settings_frame, bg="white", text = "LED Settings", font=title_font)
+	led_settings_title = Label(led_settings_frame, text = "LED Settings", font=title_font, bg=bg_color, fg=fg_color)
 	led_settings_title.grid(row=0, columnspan=12, column=1, padx="8", pady="5")
 
 	# create red color button widget
@@ -1002,7 +1011,7 @@ def load_fan_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	fan_settings_title = Label(fan_settings_frame, bg="white", text = "Fan Settings", font=title_font)
+	fan_settings_title = Label(fan_settings_frame, text = "Fan Settings", font=title_font, bg=bg_color, fg=fg_color)
 	fan_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	# slider current value
@@ -1109,7 +1118,7 @@ def load_camera_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	cam_settings_title = Label(camera_settings_frame, bg="white", text = "Camera Intervals", font=title_font)
+	cam_settings_title = Label(camera_settings_frame, text = "Camera Intervals", font=title_font, bg=bg_color, fg=fg_color)
 	cam_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 	
 	if dev_mode == True:
@@ -1194,7 +1203,7 @@ def load_atmos_sensor_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	atmos_sensor_title = Label(atmos_sensor_frame, bg="white", text = "Atmospheric Sensor Settings", font=title_font)
+	atmos_sensor_title = Label(atmos_sensor_frame, text = "Atmospheric Sensor Settings", font=title_font, bg=bg_color, fg=fg_color)
 	atmos_sensor_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	if dev_mode == True:
@@ -1294,15 +1303,14 @@ def load_data_results_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	data_r_title = Label(data_results_frame, bg="white", text = "Data Results", font=title_font)
+	data_r_title = Label(data_results_frame, text = "Data Results", font=title_font, bg=bg_color, fg=fg_color)
 	data_r_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	# graph
 	def load_graph(): 
 
 	    # the figure that will contain the plot 
-	    fig = Figure(figsize = (6, 4), 
-	                dpi = 100) 
+	    fig = Figure(figsize = (6, 4), dpi = 100) 
 
 	    # list of squares 
 	    y = [i**2 for i in range(101)] 
@@ -1415,7 +1423,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	log_title = Label(log_frame, bg="white", text = "Log", font=title_font)
+	log_title = Label(log_frame, text = "Log", font=title_font, bg=bg_color, fg=fg_color)
 	log_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	# Read the Image
@@ -1447,22 +1455,22 @@ def load_set_preview_frame(): # preview of settings
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	set_preview_title = Label(set_preview_frame, bg=bg_color, text = "Preview Your Settings", font=title_font)
+	set_preview_title = Label(set_preview_frame, text = "Preview Your Settings", font=title_font, bg=bg_color, fg=fg_color)
 	set_preview_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
-	w_pump_preview_title = Label(set_preview_frame, bg=bg_color, text = "Water Pump", font=("Ubuntu", 14))
+	w_pump_preview_title = Label(set_preview_frame, bg=bg_color, fg=fg_color, text = "Water Pump", font=("Ubuntu", 14))
 	w_pump_preview_title.grid(row=1, columnspan=2, column=1, padx="8", pady="5")
 
-	LED_preview_title = Label(set_preview_frame, bg=bg_color, text = "LED", font=("Ubuntu", 14))
+	LED_preview_title = Label(set_preview_frame, bg=bg_color, fg=fg_color, text = "LED", font=("Ubuntu", 14))
 	LED_preview_title.grid(row=1, columnspan=2, column=3, padx="8", pady="5")
 
-	fan_preview_title = Label(set_preview_frame, bg=bg_color, text = "Fan", font=("Ubuntu", 14))
+	fan_preview_title = Label(set_preview_frame, bg=bg_color, fg=fg_color, text = "Fan", font=("Ubuntu", 14))
 	fan_preview_title.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
-	camera_preview_title = Label(set_preview_frame, bg=bg_color, text = "Camera", font=("Ubuntu", 14))
+	camera_preview_title = Label(set_preview_frame, bg=bg_color, fg=fg_color, text = "Camera", font=("Ubuntu", 14))
 	camera_preview_title.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
 
-	atmos_preview_title = Label(set_preview_frame, bg=bg_color, text = "Atmospheric Sensor", font=("Ubuntu", 14))
+	atmos_preview_title = Label(set_preview_frame, bg=bg_color, fg=fg_color, text = "Atmospheric Sensor", font=("Ubuntu", 14))
 	atmos_preview_title.grid(row=3, columnspan=2, column=1, padx="8", pady="5")
 
 	# create cancel button widget

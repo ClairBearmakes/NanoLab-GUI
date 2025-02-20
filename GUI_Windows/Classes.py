@@ -1,5 +1,7 @@
 # classes
 
+# https://pythonprogramming.net/object-oriented-programming-crash-course-tkinter/
+
 # create class
 class person:
 	lastname = "Powell" # class attribute
