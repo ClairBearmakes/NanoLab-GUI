@@ -1,1 +1,1 @@
-w_pump_set = [] LED_set = [] fan_set = [] cam_set = [] atmos_sen_set = []
+w_pump_set = [50, 5, 'd/w'] LED_set = ['red', 105] fan_set = [90, 30, 3, 'd/w'] cam_set = [1, 'w'] atmos_sen_set = [2, 'd']

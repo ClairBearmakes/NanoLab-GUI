@@ -48,12 +48,20 @@ def closeport(): # closes port if currently open
 # set starting variables
 dev_mode = True # if True will show log button and test buttons
 beta = True # enable beta testing form button
-dark_mode = False
+dark_mode = False # changes colors
 comp_count = 5 # number of components
 type_selected = False
 box_type = ""
 
-if dark_mode == False: # fix these
+print(dark_mode)
+def toggle_bool(value):
+	value = not value
+	print(value)
+	return value
+dark_mode = toggle_bool(dark_mode)
+print(dark_mode)
+
+if dark_mode == False:
 	# set normal colors
 	menu_bg_color = "#000000"
 	menu_fg_color = "#ffffff"
@@ -71,13 +79,6 @@ else:
 	fg_color = "#ffffff"
 	act_bg_color = "#808080"
 	act_fg_color = "#ffffff"
-
-def dark_toggle(dark_mode):
-	if dark_mode == True:
-		dark_mode = False
-	else:
-		dark_mode = True
-
 
 #"""
 # =======================
@@ -252,12 +253,24 @@ cur_day = todays_date.day
 cur_year = todays_date.year
 
 # lists # move to respective places
-w_pump_set = [] #"50mL", "5d/w"
-LED_set = [] #"red", "105"
-fan_set = [] #"90%", "30m/3d/w"
-cam_set = [] #"1/w"
-atmos_sen_set = [] #"2/d"
+w_pump_set = [50, 5, 'd/w'] #"50mL", "5d/w"
+LED_set = ['red', 105] #"red", "105"
+fan_set = [90, 30, 3, 'd/w'] #"90%", "30m/3d/w"
+cam_set = [1, 'w'] #"1/w"
+atmos_sen_set = [2, 'd'] #"2/d"
 all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
+# all_set_array = array.array(all_set)
+
+"""
+w_pump_set = array.array(50, 5, 'd/w')
+LED_set = array.array('red', 105)
+fan_set = array.array(90, 30, 3, 'd/w')
+cam_set = array.array(1, 'w')
+atmos_sen_set = array.array(2, 'd')
+all_set = array.array(w_pump_set, LED_set, fan_set, cam_set, atmos_sen_set)
+"""
+print(all_set)
+# print(all_set_array)
 
 with open("data/variablesfile.txt", 'w') as f:
 	f.write(all_set + '\n')
@@ -359,14 +372,20 @@ class TestButton: # master, rownum, columnnum, colspan, stickdir, command
 		# print(f"Record {self.checktext} = {self.checkbox_value.get()}") 
 
 # slider
-class Slider: # master, label_txt, rownum, colnum, stickdir, command
+class Sliders: # master, label_txt, rownum, colnum, stickdir, command
 	# class variables (attributes)
-	# current_value = tk.DoubleVar()
+	current_value = tk.DoubleVar()
+	current_value2 = tk.DoubleVar()
+	current_value3 = tk.DoubleVar()
 	value_label=0
+	value_label2=0
+	value_label3=0
 
-	def __init__(self, master, label_txt, rownum, colnum, stickdir, command):
+	def __init__(self, master, label_txt, label_txt2, label_txt3, rownum, colnum, stickdir, command):
 		self.master = master
 		self.label_txt = label_txt
+		self.label_txt2 = label_txt2
+		self.label_txt3 = label_txt3
 		self.rownum = rownum
 		self.colnum = colnum
 		self.colspan = 3
@@ -384,18 +403,31 @@ class Slider: # master, label_txt, rownum, colnum, stickdir, command
 		self.slider_label.grid(row=self.rownum, columnspan=self.colspan-1, column=self.colnum, sticky="", padx="0", pady="5")
 
 		self.slider = Scale(self.master, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL, 
-			variable=current_value, label=current_value, bg=bg_color, fg=fg_color, command=slider_changed)
+			variable=self.current_value, label=label_txt, font=normal_font, bg=bg_color, fg=fg_color, command=lambda:get_current_value())
 		self.slider.set(10)
 		self.slider.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
-	# class methods
-	def get_current_value():
-		return '{:.2f}'.format(current_value.get())
+		self.slider2 = Scale(self.master, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL, 
+			variable=self.current_value2, label=label_txt2, font=normal_font, bg=bg_color, fg=fg_color, command=lambda:get_current_value())
+		self.slider2.set(10)
+		self.slider2.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
-	def slider_changed():
+		self.slider3 = Scale(self.master, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL, 
+			variable=self.current_value3, label=label_txt3, font=normal_font, bg=bg_color, fg=fg_color, command=lambda:get_current_value())
+		self.slider3.set(10)
+		self.slider3.grid(row=self.rownum+3, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+
+	# class methods
+	def get_current_value(self, current_value, current_value2, current_value3):
+		return '{:.2f}'.format(self.current_value.get())
+		return '{:.2f}'.format(self.current_value2.get())
+		return '{:.2f}'.format(self.current_value3.get())
+		slider_changed()
+
+	def slider_changed(hardware, get_current_value):
 		# value_label.configure(text=get_current_value())
 		# ser.write(get_current_value()) # relace with writing to txt file
-		print(hardware, self.current_value.get())
+		print(hardware, get_current_value())
 
 # set functions
 # functions for website buttons
@@ -545,7 +577,7 @@ def load_menu():
 	# Resize the image using resize() method
 	resize_image = image.resize((30, 30))
 	logo_img = ImageTk.PhotoImage(resize_image)
-	logo_widget = tk.Button(menu, image=logo_img, bg="#ffffff", command=dark_toggle)
+	logo_widget = tk.Button(menu, image=logo_img, bg="#ffffff", command=lambda:toggle_bool(dark_mode))
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, columnspan=1, column=8, sticky="e", padx="3", pady="1")
 
@@ -610,7 +642,7 @@ def load_settings_frame():
 
 	end_cal = Calendar(settings_frame, selectmode='day',
 			year=cur_year, month=cur_month,
-			day=cur_day, mindate=datetime.date(year=cur_year, month=cur_month, day=cur_day), font=calender_font)
+			day=cur_day+1, mindate=datetime.date(year=cur_year, month=cur_month, day=cur_day), font=calender_font)
 	end_cal.grid(row=2, columnspan=2, column=2, padx="8", pady="5")
 
 	tk.Button(
@@ -674,9 +706,10 @@ def load_w_pump_settings_frame():
 
 	# sliders
 	# master, label_txt, rownum, colnum, colspan, stickdir, command
-	longslider1 = Slider(w_pump_settings_frame, f"How long do you want {hardware} to run?", 2, 1, "w", test_fan)
-	freslider1 = Slider(w_pump_settings_frame, f"How often do you want {hardware} to run?", 4, 1, "w", test_fan)
-	delayslider1 = Slider(w_pump_settings_frame, "How much delay do you want between runs?", 6, 1, "w", test_fan)
+	slider1 = Sliders(w_pump_settings_frame, f"How long do you want {hardware} to run?", 
+		f"How often do you want {hardware} to run?", f"How much delay do you want between runs?", 2, 1, "w", test_fan)
+	#freslider1 = Slider(w_pump_settings_frame, f"How often do you want {hardware} to run?", 4, 1, "w", test_fan)
+	#delayslider1 = Slider(w_pump_settings_frame, "How much delay do you want between runs?", 6, 1, "w", test_fan)
 
 	# set frame in window
 	w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
@@ -880,7 +913,7 @@ def load_led_settings_frame():
 		width=("4"),
 		bg=bg_color,
 		fg=fg_color,
-		cursor="hand2",
+		cursor="hand1",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=PARTYLED
