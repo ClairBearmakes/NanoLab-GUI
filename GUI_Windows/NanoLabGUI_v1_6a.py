@@ -312,7 +312,7 @@ error_404_frame = tk.Frame(root, highlightbackground="red", highlightthickness=1
 # place main frame widgets in window
 menu.grid(row=0, column=0, sticky="nsew")
 menu.grid_rowconfigure(0, minsize=35)
-# settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 # error_404_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 # set websites
@@ -584,7 +584,7 @@ def load_menu():
 	# print("loaded menu")
 
 def load_settings_frame():
-	# clear_widgets(data_results_frame)
+	clear_widgets(settings_frame)
 	# clear_widgets(w_pump_settings_frame)
 	# clear_widgets(led_settings_frame)
 	# clear_widgets(fan_settings_frame)
@@ -610,8 +610,8 @@ def load_settings_frame():
 	# Add start and end calendars
 	start_date = ""
 	end_date = ""
-	dates = []
 	def sel_date():
+		dates = []
 		dates.append(end_cal.get_date())
 		dates.append(start_cal.get_date())
 		print(f"Experiment will run from {dates[1]} - {dates[0]}")
@@ -672,8 +672,8 @@ def load_settings_frame():
 		beta_btn = MyButton("Rate your experience", ("Ubuntu", 10), 0, 19, 7, 0, 2, "sw", lambda:openbetaform())
 
 
-	settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-	# print("settings loaded")
+	# settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+	print("settings loaded")
 
 def load_w_pump_settings_frame(): 
 	# clear_widgets(settings_frame)
