@@ -434,41 +434,41 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 		self.showbtn.grid(row=self.rownum+3, columnspan=1, column=self.colnum, padx="7", pady="5", sticky="w")
 
 	# class methods
-	def show_values():
+	def show_values(self):
 		print(self.slider.get(), self.slider2.get(), self.slider3.get())
 
-		"""
-		def get_current_value1(self): # put on indiv. sliders
-			# return '{:.2f}'.format(self.slider.get())
-			# return '{:.2f}'.format(self.slider2.get())
-			# return '{:.2f}'.format(self.slider3.get())
-			print(self.slider.get(current_value))
-			# slider_changed()
+	"""
+	def get_current_value1(self): # put on indiv. sliders
+		# return '{:.2f}'.format(self.slider.get())
+		# return '{:.2f}'.format(self.slider2.get())
+		# return '{:.2f}'.format(self.slider3.get())
+		print(self.slider.get(current_value))
+		# slider_changed()
 
-		def get_current_value2(self):
-			# return '{:.2f}'.format(self.slider.get())
-			# return '{:.2f}'.format(self.slider2.get())
-			# return '{:.2f}'.format(self.slider3.get())
-			print(self.slider2.get(current_value2))
-			# slider_changed()
+	def get_current_value2(self):
+		# return '{:.2f}'.format(self.slider.get())
+		# return '{:.2f}'.format(self.slider2.get())
+		# return '{:.2f}'.format(self.slider3.get())
+		print(self.slider2.get(current_value2))
+		# slider_changed()
 
-		def get_current_value3(self):
-			# return '{:.2f}'.format(self.slider.get())
-			# return '{:.2f}'.format(self.slider2.get())
-			# return '{:.2f}'.format(self.slider3.get())
-			print(self.slider3.get(current_value3))
-			# slider_changed()
+	def get_current_value3(self):
+		# return '{:.2f}'.format(self.slider.get())
+		# return '{:.2f}'.format(self.slider2.get())
+		# return '{:.2f}'.format(self.slider3.get())
+		print(self.slider3.get(current_value3))
+		# slider_changed()
 
-		def slider_changed():
-			# value_label.configure(text=get_current_value())
-			# ser.write(get_current_value()) # relace with writing to txt file
-			slide1_val = get_current_value1()
-			slide2_val = get_current_value2()
-			slide3_val = get_current_value3()
-			print(slide1_val)
-			print(slide2_val)
-			print(slide3_val)
-		"""
+	def slider_changed():
+		# value_label.configure(text=get_current_value())
+		# ser.write(get_current_value()) # relace with writing to txt file
+		slide1_val = get_current_value1()
+		slide2_val = get_current_value2()
+		slide3_val = get_current_value3()
+		print(slide1_val)
+		print(slide2_val)
+		print(slide3_val)
+	"""
 
 class SaveBtn: # master, rownum, colnum, colspan, command
 	# class variables (attributes)
