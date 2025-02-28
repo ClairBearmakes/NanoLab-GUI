@@ -4,6 +4,7 @@
 
 # import dependencies
 import tkinter as tk
+# import tkinter.ttk as ttk
 from tkinter import *
 from tkinter import colorchooser
 from PIL import Image, ImageTk
@@ -34,8 +35,7 @@ calender_font= ("Arial", 10)
 arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
 # check which port was really used
 print(arduino.name)
-"""
-"""
+
 # close serial port from https://stackoverflow.com/questions/35235436/python-arduino-prototyping-api-v2-closing-serial-port
 def closeport(): # closes port if currently open
     ser = serial.Serial(usbport) 
@@ -52,14 +52,6 @@ dark_mode = False # changes colors
 comp_count = 5 # number of components
 type_selected = False
 box_type = ""
-
-print(dark_mode)
-def toggle_bool(value):
-	value = not value
-	print(value)
-	return value
-dark_mode = toggle_bool(dark_mode)
-print(dark_mode)
 
 if dark_mode == False:
 	# set normal colors
@@ -79,6 +71,36 @@ else:
 	fg_color = "#ffffff"
 	act_bg_color = "#808080"
 	act_fg_color = "#ffffff"
+
+# ttk.Style().theme_use('black') https://stackoverflow.com/questions/24367710/how-do-i-change-the-overall-theme-of-a-tkinter-application?rq=3
+def toggle_bool(value): # maybe use stackoverflow.com/questions/60595078/implementing-dark-mode-with-on-off-function-in-simple-python-tkinter-program
+	value = not value
+	print(value)
+	return value
+dark_mode = toggle_bool(dark_mode)
+print(dark_mode)
+def color_mode_switch():
+	if dark_mode == False:
+		# set normal colors
+		menu_bg_color = "#000000"
+		menu_fg_color = "#ffffff"
+		menu_act_bg_color = "#000000"
+		bg_color = "#ffffff"
+		fg_color = "#000000"
+		act_bg_color = "#ffffff"
+		act_fg_color = "#808080"
+		return(menu_bg_color, menu_fg_color, menu_act_bg_color, bg_color, fg_color, act_bg_color, act_fg_color)
+	else:
+		# set dark mode colors
+		menu_bg_color = "#000000"
+		menu_fg_color = "#ffffff"
+		menu_act_bg_color = "#ffffff"
+		bg_color = "#000000"
+		fg_color = "#ffffff"
+		act_bg_color = "#808080"
+		act_fg_color = "#ffffff"
+		return(menu_bg_color, menu_fg_color, menu_act_bg_color, bg_color, fg_color, act_bg_color, act_fg_color)
+color_mode_switch()
 
 #"""
 # =======================
@@ -253,11 +275,11 @@ cur_day = todays_date.day
 cur_year = todays_date.year
 
 # lists # move to respective places
-w_pump_set = [50, 5, 'd/w'] #"50mL", "5d/w"
-LED_set = ['red', 105] #"red", "105"
-fan_set = [90, 30, 3, 'd/w'] #"90%", "30m/3d/w"
-cam_set = [1, 'w'] #"1/w"
-atmos_sen_set = [2, 'd'] #"2/d"
+w_pump_set = [] #"50mL", "5d/w"
+LED_set = [] #"red", "105"
+fan_set = [] #"90%", "30m/3d/w"
+cam_set = [] #"1/w"
+atmos_sen_set = [] #"2/d"
 all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
 # all_set_array = array.array(all_set)
 
@@ -269,7 +291,7 @@ cam_set = array.array(1, 'w')
 atmos_sen_set = array.array(2, 'd')
 all_set = array.array(w_pump_set, LED_set, fan_set, cam_set, atmos_sen_set)
 """
-print(all_set)
+# print(all_set)
 # print(all_set_array)
 
 with open("data/variablesfile.txt", 'w') as f:
@@ -372,62 +394,95 @@ class TestButton: # master, rownum, columnnum, colspan, stickdir, command
 		# print(f"Record {self.checktext} = {self.checkbox_value.get()}") 
 
 # slider
-class Sliders: # master, label_txt, rownum, colnum, stickdir, command
+class Sliders: # master, hardware, rownum, colnum, stickdir, command
 	# class variables (attributes)
-	current_value = tk.DoubleVar()
-	current_value2 = tk.DoubleVar()
-	current_value3 = tk.DoubleVar()
-	value_label=0
-	value_label2=0
-	value_label3=0
+	value_label = 0
+	value_label2 = 0
+	value_label3 = 0
 
-	def __init__(self, master, label_txt, label_txt2, label_txt3, rownum, colnum, stickdir, command):
+	def __init__(self, master, hardware, rownum, colnum, stickdir, command):
 		self.master = master
-		self.label_txt = label_txt
-		self.label_txt2 = label_txt2
-		self.label_txt3 = label_txt3
+		self.hardware = hardware
+		self.label_txt = f"How long do you want {hardware} to run? (minutes)"
+		self.label_txt2 = f"How many times should {hardware} run? (24h period)"
+		self.label_txt3 = f"How much delay do you want between runs? (minutes)"
 		self.rownum = rownum
 		self.colnum = colnum
 		self.colspan = 3
 		self.stickdir = stickdir
 		self.command = command
 		self.current_value = tk.DoubleVar()
+		self.current_value2 = tk.DoubleVar()
+		self.current_value3 = tk.DoubleVar()
 
-		# label for the slider
-		self.slider_label = tk.Label(
-			master=self.master,
-			text=self.label_txt,
-			font=normal_font,
-			bg=bg_color,
-			fg=fg_color)
-		self.slider_label.grid(row=self.rownum, columnspan=self.colspan-1, column=self.colnum, sticky="", padx="0", pady="5")
-
-		self.slider = Scale(self.master, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL, 
-			variable=self.current_value, label=label_txt, font=normal_font, bg=bg_color, fg=fg_color, command=lambda:get_current_value())
+		self.slider = Scale(self.master, from_=0, to=360, length=700, resolution=10, orient=HORIZONTAL, 
+			variable=self.current_value, label=self.label_txt, font=normal_font, bg=bg_color, fg=fg_color)
 		self.slider.set(10)
-		self.slider.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+		self.slider.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
-		self.slider2 = Scale(self.master, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL, 
-			variable=self.current_value2, label=label_txt2, font=normal_font, bg=bg_color, fg=fg_color, command=lambda:get_current_value())
+		self.slider2 = Scale(self.master, from_=0, to=24, length=700, resolution=1, orient=HORIZONTAL, 
+			variable=self.current_value2, label=self.label_txt2, font=normal_font, bg=bg_color, fg=fg_color)
 		self.slider2.set(10)
-		self.slider2.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+		self.slider2.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
-		self.slider3 = Scale(self.master, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL, 
-			variable=self.current_value3, label=label_txt3, font=normal_font, bg=bg_color, fg=fg_color, command=lambda:get_current_value())
+		self.slider3 = Scale(self.master, from_=0, to=360, length=700, resolution=10, orient=HORIZONTAL, 
+			variable=self.current_value3, label=self.label_txt3, font=normal_font, bg=bg_color, fg=fg_color)
 		self.slider3.set(10)
-		self.slider3.grid(row=self.rownum+3, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+		self.slider3.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+
+		self.showbtn = tk.Button(self.master, text='Show slider values', font=normal_font, bg=bg_color, fg=fg_color, command=self.show_values)
+		self.showbtn.grid(row=self.rownum+3, columnspan=1, column=self.colnum, padx="7", pady="5", sticky="w")
 
 	# class methods
-	def get_current_value(self, current_value, current_value2, current_value3):
-		return '{:.2f}'.format(self.current_value.get())
-		return '{:.2f}'.format(self.current_value2.get())
-		return '{:.2f}'.format(self.current_value3.get())
-		slider_changed()
+	def show_values():
+		print(self.slider.get(), self.slider2.get(), self.slider3.get())
 
-	def slider_changed(hardware, get_current_value):
-		# value_label.configure(text=get_current_value())
-		# ser.write(get_current_value()) # relace with writing to txt file
-		print(hardware, get_current_value())
+		"""
+		def get_current_value1(self): # put on indiv. sliders
+			# return '{:.2f}'.format(self.slider.get())
+			# return '{:.2f}'.format(self.slider2.get())
+			# return '{:.2f}'.format(self.slider3.get())
+			print(self.slider.get(current_value))
+			# slider_changed()
+
+		def get_current_value2(self):
+			# return '{:.2f}'.format(self.slider.get())
+			# return '{:.2f}'.format(self.slider2.get())
+			# return '{:.2f}'.format(self.slider3.get())
+			print(self.slider2.get(current_value2))
+			# slider_changed()
+
+		def get_current_value3(self):
+			# return '{:.2f}'.format(self.slider.get())
+			# return '{:.2f}'.format(self.slider2.get())
+			# return '{:.2f}'.format(self.slider3.get())
+			print(self.slider3.get(current_value3))
+			# slider_changed()
+
+		def slider_changed():
+			# value_label.configure(text=get_current_value())
+			# ser.write(get_current_value()) # relace with writing to txt file
+			slide1_val = get_current_value1()
+			slide2_val = get_current_value2()
+			slide3_val = get_current_value3()
+			print(slide1_val)
+			print(slide2_val)
+			print(slide3_val)
+		"""
+
+class SaveBtn: # master, rownum, colnum, colspan, command
+	# class variables (attributes)
+
+	def __init__(self, master, rownum, colnum, colspan, command):
+		self.master = master
+		self.rownum = rownum
+		self.colnum = colnum
+		self.colspan = colspan
+		self.command = command
+
+		self.save_btn = tk.Button(self.master, text='Save', font=normal_font, bg=bg_color, fg=fg_color, command=self.command)
+		self.save_btn.grid(row=rownum, columnspan=colspan, column=colnum, padx="7", pady="5", sticky="")
+
 
 # set functions
 # functions for website buttons
@@ -444,11 +499,11 @@ def open_files():
     webbrowser.open_new("C:") # replace with txt file with list of sd cards files
 
 # test functions
-def take_picture():
+def test_camera():
 	print("*click*")
 	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # take picture and save it
 
-def take_atmos_reading():
+def test_atmos():
 	print("read atmos")
 	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # take atmos reading and save it
 
@@ -473,6 +528,10 @@ def clear_widgets(root):
 	for frame in root.winfo_children():
 		frame.destroy()
 
+def raise_main_set():
+	settings_frame.tkraise()
+
+
 # defining button bar on top
 def load_menu(): 
 	# clear_widgets()
@@ -480,7 +539,7 @@ def load_menu():
 	# prevent widgets from modifying the frame
 	menu.grid_propagate(False)
 
-	# create back button widget
+	# create back button widget to go back to main settings
 	tk.Button(
 		menu,
 		text="Back",
@@ -492,7 +551,7 @@ def load_menu():
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=act_fg_color, 
-		command=lambda:load_settings_frame()
+		command=lambda:raise_main_set()
 		).grid(row=0, column=0, sticky="w", padx="5", pady="3") # row==up and down, column==left and right
 
 	# create about button widget
@@ -635,7 +694,7 @@ def load_settings_frame():
 	start_cal = Calendar(settings_frame, selectmode='day',
 			year=cur_year, month=cur_month,
 			day=cur_day, mindate=datetime.date(year=cur_year, month=cur_month, day=cur_day), font=calender_font) #date yyyy/mm/dd (no starting zeros)
-	start_cal.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
+	start_cal.grid(row=2, columnspan=2, column=1, padx="8", pady="5", sticky="")
 
 	end_label = Label(settings_frame, text="End Date:", font=normal_font, bg=bg_color, fg=fg_color)
 	end_label.grid(row=1, columnspan=2, column=2, padx="8", pady="5")
@@ -643,7 +702,7 @@ def load_settings_frame():
 	end_cal = Calendar(settings_frame, selectmode='day',
 			year=cur_year, month=cur_month,
 			day=cur_day+1, mindate=datetime.date(year=cur_year, month=cur_month, day=cur_day), font=calender_font)
-	end_cal.grid(row=2, columnspan=2, column=2, padx="8", pady="5")
+	end_cal.grid(row=2, columnspan=2, column=2, padx="8", pady="5", sticky="")
 
 	tk.Button(
 			settings_frame,
@@ -673,7 +732,7 @@ def load_settings_frame():
 
 
 	# settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-	print("settings loaded")
+	# print("settings loaded")
 
 def load_w_pump_settings_frame(): 
 	# clear_widgets(settings_frame)
@@ -704,12 +763,13 @@ def load_w_pump_settings_frame():
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn1 = TestButton(w_pump_settings_frame, 1, 1, 1, "w", lambda:test_pump())
 
-	# sliders
-	# master, label_txt, rownum, colnum, colspan, stickdir, command
-	slider1 = Sliders(w_pump_settings_frame, f"How long do you want {hardware} to run?", 
-		f"How often do you want {hardware} to run?", f"How much delay do you want between runs?", 2, 1, "w", test_fan)
-	#freslider1 = Slider(w_pump_settings_frame, f"How often do you want {hardware} to run?", 4, 1, "w", test_fan)
-	#delayslider1 = Slider(w_pump_settings_frame, "How much delay do you want between runs?", 6, 1, "w", test_fan)
+	# master, rownum, colnum, stickdir, command
+	sliders1 = Sliders(w_pump_settings_frame, hardware, 2, 1, "w", test_fan) # change command
+
+	# master, rownum, colnum, colspan, command
+	savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, test_pump) # change command
+
+	w_pump_set = [50, 5, 'd/w'] #"50mL", "5d/w"
 
 	# set frame in window
 	w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
@@ -719,7 +779,7 @@ def load_w_pump_settings_frame():
 # LED settings stuff
 # slider current value
 current_value = tk.DoubleVar()
-value_label=0
+value_label = 0
 
 def get_current_value():
 	return '{:.2f}'.format(current_value.get())
@@ -730,7 +790,7 @@ def slider_changed():
 	# arduino.write(bytes(get_current_value(), 'utf-8'))  # Convert to bytes
 	print('brightness', get_current_value())
 
-# set LED screen colors
+# set colors for default color buttons
 led_bg = "#ECECEC"
 red_fg = "red"
 orange_fg = "#834e02"
@@ -771,7 +831,7 @@ def PARTYLED():
 	time.sleep(0.05)
 	load_error()
 
-def noLED():
+def clearLED():
 	arduino.write(bytes('CC', 'utf-8'))
 
 def load_led_settings_frame():
@@ -799,6 +859,13 @@ def load_led_settings_frame():
 	led_settings_title = Label(led_settings_frame, text = "LED Settings", font=title_font, bg=bg_color, fg=fg_color)
 	led_settings_title.grid(row=0, columnspan=12, column=1, padx="8", pady="5")
 
+	if dev_mode == True:
+		# master, rownum, columnnum, colspan, stickdir, command
+		testbtn2 = TestButton(led_settings_frame, 1, 1, 1, "w", lambda:test_LED())
+
+	# master, rownum, colnum, stickdir, command
+	sliders1 = Sliders(led_settings_frame, hardware, 2, 1, "w", test_fan)
+
 	# create red color button widget
 	tk.Button(
 		led_settings_frame,
@@ -812,7 +879,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
     	command=redLED
-		).grid(row=2, column=10, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=10, sticky="n", padx="5", pady="3")
 
 	# create orange color button widget
 	tk.Button(
@@ -827,7 +894,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=orangeLED
-		).grid(row=2, column=11, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=11, sticky="n", padx="5", pady="3")
 
 	# create yellow color button widget
 	tk.Button(
@@ -842,7 +909,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=yellowLED
-		).grid(row=2, column=12, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=12, sticky="n", padx="5", pady="3")
 
 	# create green color button widget
 	tk.Button(
@@ -857,7 +924,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
     	command=greenLED
-		).grid(row=2, column=13, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=13, sticky="n", padx="5", pady="3")
 
 	# create blue color button widget
 	tk.Button(
@@ -872,7 +939,7 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
     	command=blueLED
-		).grid(row=2, column=14, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=14, sticky="n", padx="5", pady="3")
 
 	# create purple color button widget
 	tk.Button(
@@ -887,9 +954,9 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=purpleLED
-		).grid(row=2, column=15, sticky="w", padx="5", pady="3")
+		).grid(row=2, column=15, sticky="n", padx="5", pady="3")
 
-	# create no color button widget
+	# create clear color button widget
 	tk.Button(
 		led_settings_frame,
 		text="Clear",
@@ -901,8 +968,8 @@ def load_led_settings_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		command=noLED
-		).grid(row=2, column=16, sticky="w", padx="5", pady="3")
+		command=clearLED
+		).grid(row=2, column=16, sticky="n", padx="5", pady="3")
 
 	# create PARTY color button widget
 	tk.Button(
@@ -917,109 +984,46 @@ def load_led_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=PARTYLED
-		).grid(row=2, columnspan=3, column=11, sticky="s", padx="5", pady="3")
-
-	rgb_code = ""
+		).grid(row=2, columnspan=1, column=12, sticky="wn", padx="5", pady="3")
 
 	# RGB color picker
-	def choose_color():
+	rgb_code = ""
+	def choose_color(value):
 		# variable to store hexadecimal code of color
 		color_code = colorchooser.askcolor(title ="Choose color", initialcolor="#7714b9")
-		rgb_code = color_code[0]
-		print(rgb_code)
-	
-	print(rgb_code)
+		value = color_code[0]
+		print(value)
+		return value
+	# rgb_code = choose_color(rgb_code)
+	# print(rgb_code)
 
 	# button to open color picker
-	color_btn = tk.Button(led_settings_frame,text = 'Select precise color', font=normal_font, bg=bg_color, fg=fg_color, command = choose_color)
-	color_btn.grid(row=3, columnspan=3, column=12, padx="7", pady="5", sticky="")
+	color_btn = tk.Button(led_settings_frame,text = 'Select precise color', font=normal_font, bg=bg_color, fg=fg_color, command = lambda:choose_color(rgb_code))
+	color_btn.grid(row=2, columnspan=3, column=12, padx="8", pady="5", sticky="s")
 
-	# label for the slider
+	# label for brightness slider
 	slider_label = tk.Label(
     	led_settings_frame,
     	text='Brightness',
     	font=normal_font,
     	bg=bg_color,
 		fg=fg_color
-	).grid(row=4, columnspan=8, column=10, sticky="n", padx="0", pady="0")
+	).grid(rowspan=2, row=2, columnspan=8, column=10, sticky="s", padx="0", pady="0")
 
-	led_slider = Scale(led_settings_frame, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	# brightness slider  # highlightbackground="#ffffff"
+	led_slider = Scale(led_settings_frame, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL,
+		variable=current_value, bg=bg_color, fg=fg_color)
 	led_slider.set(200)
-	led_slider.grid(row=5, columnspan=8, column=10, sticky="n")
+	led_slider.grid(rowspan=1, row=4, columnspan=8, column=10, sticky="n")
 
-	if dev_mode == True:
-		# master, rownum, columnnum, colspan, stickdir, command
-		testbtn2 = TestButton(led_settings_frame, 1, 1, 1, "w", lambda:test_LED())
+	# save button using classes
+	# master, rownum, colnum, colspan, command
+	savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, test_LED) # change command
 
-	# frequency stuff
-	# declaring string variables for storing frequencys
-	fre1_in = tk.StringVar()
-	fre2_in = tk.StringVar()
-	time_in = tk.StringVar()
-	 
-	# defining a function that will get the two frequencys and print them
-	def fre_set(): # eventually set to take all values of screen/component and save those
-
-	    fre1 = fre1_in.get()
-	    fre2 = fre2_in.get()
-	    time = time_in.get()
-	    
-	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + "" + " for " + time + " hours " + fre1 + " times/ " + fre2 + " with RGB value of " + rgb_code)
-	    
-	    fre1_in.set("")
-	    time_in.set("")
-	    
-
-	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(led_settings_frame, text = 'Frequency of ' + hardware + ": ", font=normal_font, bg=bg_color, fg=fg_color)
-	fre_label.grid(row=10, columnspan=1, column=1, sticky="w")
-
-	# creating a entry for input
-	fre1_entry = tk.Entry(led_settings_frame, textvariable = fre1_in, font=normal_font, bg=bg_color, fg=fg_color, width=3)
-	fre1_entry.grid(row=10, columnspan=1, column=2, padx="5", pady="5", sticky="w")
-
-	def character_limit(fre1_in):
-		if len(fre1_in.get()) > 1:
-			fre1_in.set(fre1_in.get()[-1])
-
-	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
-
-	# creating a dropdown for frequency2
-	# Dropdown menu options 
-	fre2_options = [ 
-	    "hour", 
-	    "day", 
-	    "week", 
-	    "month"
-	] 
-
-	# initial menu text 
-	fre2_in.set("day")
-
-	# Create Dropdown menu 
-	fre2_drop = tk.OptionMenu(led_settings_frame, fre2_in, *fre2_options)
-	fre2_drop.config(font=normal_font, bg=bg_color, fg=fg_color)
-	fre2_drop.grid(row=10, columnspan=2, column=3, padx="5", pady="5", sticky="e")
-
-	time_label = tk.Label(led_settings_frame, text = 'Time (in hours) that ' + hardware + "s will run for: ", font=normal_font, bg=bg_color, fg=fg_color)
-	time_label.grid(row=11, columnspan=4, column=1, sticky="w")
-
-	time_entry = tk.Entry(led_settings_frame,textvariable = time_in, font=normal_font, bg=bg_color, fg=fg_color, width=3)
-	time_entry.grid(row=11, columnspan=1, column=5, padx="7", pady="5", sticky="")
-
-	def character_limit(time_in):
-		if len(time_in.get()) > 1:
-			time_in.set(time_in.get()[-1])
-
-	time_in.trace("w", lambda *args: character_limit(time_in))
-
-	# creating a button that calls the fre_set function
-	sub_btn = tk.Button(led_settings_frame,text = 'Save', font=normal_font, bg=bg_color, fg=fg_color, command = fre_set)
-	sub_btn.grid(row=12, columnspan=1, column=1, padx="7", pady="5", sticky="w")
+	LED_set = ['red', 105] #"red", "105"
 
 	# set frame in window
 	led_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-
 	# print("LED settings loaded")
 
 def load_fan_settings_frame(): 
@@ -1047,6 +1051,10 @@ def load_fan_settings_frame():
 	fan_settings_title = Label(fan_settings_frame, text = "Fan Settings", font=title_font, bg=bg_color, fg=fg_color)
 	fan_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
+	if dev_mode == True:
+		# master, rownum, columnnum, colspan, stickdir, command
+		testbtn3 = TestButton(fan_settings_frame, 1, 1, 3, "w", lambda:test_fan())
+
 	# slider current value
 	current_value = tk.DoubleVar()
 	value_label=0
@@ -1068,65 +1076,22 @@ def load_fan_settings_frame():
     	font=normal_font, 
 		bg=bg_color,
 		fg=fg_color
-	).grid(row=1, columnspan=3, column=1, sticky="n")
+	).grid(row=2, columnspan=8, column=9, sticky="n")
 
 	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=755, resolution=10, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
 	fan_strength_slider.set(70)
-	fan_strength_slider.grid(row=2, columnspan=8, column=1, sticky="n")
+	fan_strength_slider.grid(row=2, columnspan=8, column=9, sticky="s")
 
-	if dev_mode == True:
-		# master, rownum, columnnum, colspan, stickdir, command
-		testbtn3 = TestButton(fan_settings_frame, 1, 1, 3, "w", lambda:test_fan())
+	# master, rownum, colnum, stickdir, command
+	sliders1 = Sliders(fan_settings_frame, hardware, 2, 1, "w", test_fan)
 
-	# frequency stuff
-	# declaring string variables for storing frequencys
-	fre1_in = tk.StringVar()
-	fre2_in = tk.StringVar()
-	 
-	# defining a function that will get the two frequencys and print them
-	def fre_set(): # eventually set to take all values of screen/component and save those
+	# master, rownum, colnum, colspan, command
+	savebtn3 = SaveBtn(fan_settings_frame, 5, 1, 16, test_fan) # change command
 
-	    fre1 = fre1_in.get()
-	    fre2 = fre2_in.get()
-	    
-	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + " with " + str(current_value.get()) + "% power")
-	    
-	    fre1_in.set("")
-	    
-	"""
-	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(fan_settings_frame, text = 'Frequency of ' + hardware + ": ", font=normal_font, bg=bg_color, fg=fg_color)
-	fre_label.grid(row=6, column=1, sticky="w")
-
-	# creating a entry for input
-	fre1_entry = tk.Entry(fan_settings_frame,textvariable = fre1_in, font=normal_font, bg=bg_color, fg=fg_color, width=18)
-	fre1_entry.grid(row=6, columnspan=2, column=1)
-
-	# creating a dropdown for frequency2
-	# Dropdown menu options 
-	fre2_options = [ 
-	    "hour", 
-	    "day", 
-	    "week", 
-	    "month"
-	] 
-
-	# initial menu text 
-	fre2_in.set("day")
-
-	# Create Dropdown menu 
-	fre2_drop = tk.OptionMenu(fan_settings_frame, fre2_in, *fre2_options)
-	fre2_drop.config(font=normal_font, bg=bg_color, fg=fg_color)
-	fre2_drop.grid(row=6, column=2)
-	"""
-
-	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(fan_settings_frame,text = 'Save', font=normal_font, bg=bg_color, fg=fg_color, command = fre_set)
-	sub_btn.grid(row=6, columnspan=2, column=2, padx="7", pady="5", sticky="")
+	fan_set = [90, 30, 3, 'd/w'] #"90%", "30m/3d/w"
 
 	# set frame in window
 	fan_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-	
 	# print("fan settings loaded")
 
 def load_camera_settings_frame(): 
@@ -1156,62 +1121,18 @@ def load_camera_settings_frame():
 	
 	if dev_mode == True:
 		# master, rownum, columnnum, colspan, stickdir, command
-		testbtn4 = TestButton(camera_settings_frame, 2, 1, 1, "w", lambda:take_picture())
+		testbtn4 = TestButton(camera_settings_frame, 1, 1, 1, "w", lambda:take_picture())
 
-	# frequency stuff
-	# declaring string variables for storing frequencys
-	fre1_in = tk.StringVar()
-	fre2_in = tk.StringVar()
+	# master, rownum, colnum, stickdir, command
+	slider4 = Sliders(camera_settings_frame, hardware, 2, 1, "w", test_camera)
 	 
-	# defining a function that will get the two frequencys and print them
-	def fre_set(): # eventually set to take all values of screen/component and save those
+	# master, rownum, colnum, colspan, command
+	savebtn4 = SaveBtn(camera_settings_frame, 5, 1, 16, test_camera) # change command
 
-	    fre1 = fre1_in.get()
-	    fre2 = fre2_in.get()
-	    
-	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + " " + fre1 + " times/ " + fre2)
-	    
-	    fre1_in.set("")
-	    
-	    
-	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(camera_settings_frame, text = 'Frequency of ' + hardware + ": ", font=normal_font, bg=bg_color, fg=fg_color)
-	fre_label.grid(row=5, columnspan=2, column=1, sticky="w")
-
-	# creating a entry for input
-	fre1_entry = tk.Entry(camera_settings_frame,textvariable = fre1_in, font=normal_font, bg=bg_color, fg=fg_color, width=4)
-	fre1_entry.grid(row=5, columnspan=1, column=2, sticky="")
-
-	def character_limit(fre1_in):
-		if len(fre1_in.get()) > 1:
-			fre1_in.set(fre1_in.get()[-1])
-
-	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
-
-	# creating a dropdown for frequency2
-	# Dropdown menu options 
-	fre2_options = [ 
-	    "hour", 
-	    "day", 
-	    "week", 
-	    "month"
-	] 
-
-	# initial menu text 
-	fre2_in.set("day")
-
-	# Create Dropdown menu 
-	fre2_drop = tk.OptionMenu(camera_settings_frame, fre2_in, *fre2_options)
-	fre2_drop.config(font=normal_font, bg=bg_color, fg=fg_color) 
-	fre2_drop.grid(row=5, columnspan=2, column=2, padx="7", pady="5", sticky="")
-	 
-	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(camera_settings_frame,text = 'Save', font=normal_font, bg=bg_color, fg=fg_color, command = fre_set)
-	sub_btn.grid(row=5, columnspan=1, column=3, padx="7", pady="5", sticky="")
+	cam_set = [1, 'w'] #"1/w"
 
 	# set frame in window
 	camera_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-
 	# print("camera settings loaded")
 
 def load_atmos_sensor_frame(): 
@@ -1241,83 +1162,42 @@ def load_atmos_sensor_frame():
 
 	if dev_mode == True:
 		# master, rownum, columnnum, colspan, stickdir, command
-		testbtn5 = TestButton(atmos_sensor_frame, 2, 1, 1, "w", lambda:take_atmos_reading())
+		testbtn5 = TestButton(atmos_sensor_frame, 1, 1, 1, "w", lambda:take_atmos_reading())
 
-	# frequency stuff
-	# declaring string variables for storing frequencys
-	fre1_in = tk.StringVar()
-	fre2_in = tk.StringVar()
-	 
-	# defining a function that will get the two frequencys and print them
-	def fre_set(): # eventually set to take all values of screen/component and save those
-
-	    fre1 = fre1_in.get()
-	    fre2 = fre2_in.get()
-	    
-	    print(hardware + " will run from: " + start_cal.get_date() + "-" + end_cal.get_date() + " " + fre1 + " times/ " + fre2)
-	    
-	    fre1_in.set("")
-	    
-	    
-	# creating a label for frequency input using widget Label
-	fre_label = tk.Label(atmos_sensor_frame, text = 'Frequency of ' + hardware + ": ", font=normal_font, bg=bg_color, fg=fg_color)
-	fre_label.grid(row=5, columnspan=2, column=1, sticky="w")
-
-	# creating a entry for input
-	fre1_entry = tk.Entry(atmos_sensor_frame,textvariable = fre1_in, font=normal_font, bg=bg_color, fg=fg_color, width=8)
-	fre1_entry.grid(row=5, columnspan=1, column=3, padx="7", pady="5", sticky="w")
-
-	def character_limit(fre1_in):
-		if len(fre1_in.get()) > 1:
-			fre1_in.set(fre1_in.get()[-1])
-
-	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
-
-	# creating a dropdown for frequency2
-	# Dropdown menu options 
-	fre2_options = [ 
-	    "hour", 
-	    "day", 
-	    "week", 
-	    "month"
-	] 
-
-	# initial menu text 
-	fre2_in.set("day")
-
-	# Create Dropdown menu 
-	fre2_drop = tk.OptionMenu(atmos_sensor_frame, fre2_in, *fre2_options)
-	fre2_drop.config(font=normal_font, bg=bg_color, fg=fg_color)
-	fre2_drop.grid(row=5, columnspan=2, column=3, padx="7", pady="5", sticky="")
-	 
-	# creating a button that will call the fre_set function  
-	sub_btn = tk.Button(atmos_sensor_frame,text = 'Save', font=normal_font, bg=bg_color, fg=fg_color, command = fre_set)
-	sub_btn.grid(row=5, columnspan=2, column=4, padx="7", pady="5", sticky="e")
+	# master, rownum, colnum, stickdir, command
+	sliders5 = Sliders(atmos_sensor_frame, hardware, 2, 1, "w", test_fan)
 
 	# checkbox made with class
-	class MyCheckbox:
-		def __init__(self, master, checktext, rownum, columnnum, stickdir):
+	class MyCheckbox: # master, checktext, rownum, columnnum, rowspan, stickdir
+		def __init__(self, master, checktext, rownum, columnnum, rowspan, stickdir):
 			self.master = master
 			self.checkbox_value = tk.BooleanVar()
 			self.checktext = checktext
-			self.checkbox = tk.Checkbutton(master, text=self.checktext, variable=self.checkbox_value, command=self.on_change)
-			self.checkbox.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor="white", relief="raised", padx=10, pady=5)
 			self.rownum = rownum
 			self.columnnum = columnnum
+			self.rowspan = rowspan
 			self.stickdir = stickdir
-			self.checkbox.grid(row=self.rownum, column=self.columnnum, padx="7", pady="5", sticky=stickdir)
+
+			self.checkbox = tk.Checkbutton(master, text=self.checktext, variable=self.checkbox_value, command=self.on_change)
+			self.checkbox.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor="white", relief="raised", padx=10, pady=5)
+			self.checkbox.grid(row=self.rownum, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky=stickdir)
 
 		def on_change(self):
 			print(f"Record {self.checktext} = {self.checkbox_value.get()}")
 
-	gas_checkbox = MyCheckbox(atmos_sensor_frame, "Gas (VOCs)", 1, 6, "")
-	temp_checkbox = MyCheckbox(atmos_sensor_frame, "Temperature", 2, 6, "")
-	humid_checkbox = MyCheckbox(atmos_sensor_frame, "Humidity", 3, 6, "n")
-	press_checkbox = MyCheckbox(atmos_sensor_frame, "Barometric pressure", 3, 6, "")
+	# master, checktext, rownum, columnnum, rowspan, stickdir
+	gas_checkbox = MyCheckbox(atmos_sensor_frame, "Gas (VOCs)", 2, 6, 1, "n")
+	temp_checkbox = MyCheckbox(atmos_sensor_frame, "Temperature", 2, 6, 2, "")
+	humid_checkbox = MyCheckbox(atmos_sensor_frame, "Humidity", 3, 6, 2, "")
+	press_checkbox = MyCheckbox(atmos_sensor_frame, "Barometric pressure", 4, 6, 2, "")
+
+	# master, rownum, colnum, colspan, command
+	savebtn5 = SaveBtn(atmos_sensor_frame, 5, 1, 15, test_atmos) # change command
+
+	atmos_sen_set = [2, 'd'] #"2/d"
 
 	# set frame in window
 	atmos_sensor_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-
 	# print("atmos sensor frame loaded")
 
 def load_data_results_frame(): 
@@ -1415,7 +1295,6 @@ def load_data_results_frame():
 
 	# set frame in window
 	data_results_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-
 	# print("data results loaded")
 
 def load_error():
@@ -1438,8 +1317,9 @@ def load_error():
 	e404_title2 = Label(error_404_frame, bg="grey", text = "Sorry! That page doesn't exist.", font=("Ubuntu", 30))
 	e404_title2.pack(fill="both", expand=True, side="bottom")
 
-
+	# set frame in window
 	error_404_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+	# print("error 404")
 
 def load_log_frame(): # log of what is happening on Arduino right now
 	# clear_widgets()
@@ -1470,7 +1350,6 @@ def load_log_frame(): # log of what is happening on Arduino right now
 
 	# set frame in window
 	log_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-
 	# print("log loaded")
 
 def load_set_preview_frame(): # preview of settings
@@ -1536,9 +1415,10 @@ def load_set_preview_frame(): # preview of settings
 		command=send_settings # command to send settings to NanoLab
 		).grid(row=3, columnspan=1, column=4, sticky="w", padx="5", pady="3")
 
+	print(all_set)
+
 	# set frame in window
 	set_preview_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
-
 	# print("settings preview loaded")
 
 # run main app
