@@ -436,6 +436,10 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 	# class methods
 	def show_values(self):
 		print(self.slider.get(), self.slider2.get(), self.slider3.get())
+		return(self.slider.get(), self.slider2.get(), self.slider3.get())
+
+	def __str__(self):
+		return f"{self.slider.get()} {self.slider2.get()} {self.slider3.get()}"
 
 	"""
 	def get_current_value1(self): # put on indiv. sliders
@@ -764,10 +768,13 @@ def load_w_pump_settings_frame():
 		testbtn1 = TestButton(w_pump_settings_frame, 1, 1, 1, "w", lambda:test_pump())
 
 	# master, rownum, colnum, stickdir, command
-	sliders1 = Sliders(w_pump_settings_frame, hardware, 2, 1, "w", test_fan) # change command
+	sliders1 = Sliders(w_pump_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
+
+	def save_wp_set():
+		print(sliders1)
 
 	# master, rownum, colnum, colspan, command
-	savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, test_pump) # change command
+	savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, save_wp_set) # fix command
 
 	w_pump_set = [50, 5, 'd/w'] #"50mL", "5d/w"
 
@@ -864,7 +871,7 @@ def load_led_settings_frame():
 		testbtn2 = TestButton(led_settings_frame, 1, 1, 1, "w", lambda:test_LED())
 
 	# master, rownum, colnum, stickdir, command
-	sliders1 = Sliders(led_settings_frame, hardware, 2, 1, "w", test_fan)
+	sliders2 = Sliders(led_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 
 	# create red color button widget
 	tk.Button(
@@ -1017,8 +1024,12 @@ def load_led_settings_frame():
 	led_slider.grid(rowspan=1, row=4, columnspan=8, column=10, sticky="n")
 
 	# save button using classes
+
+	def save_led_set(): # add more stuff
+		print(sliders2)
+
 	# master, rownum, colnum, colspan, command
-	savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, test_LED) # change command
+	savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, save_led_set)
 
 	LED_set = ['red', 105] #"red", "105"
 
@@ -1083,10 +1094,13 @@ def load_fan_settings_frame():
 	fan_strength_slider.grid(row=2, columnspan=8, column=9, sticky="s")
 
 	# master, rownum, colnum, stickdir, command
-	sliders1 = Sliders(fan_settings_frame, hardware, 2, 1, "w", test_fan)
+	sliders3 = Sliders(fan_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
+
+	def save_fan_set(): # add more stuff
+		print(sliders3)
 
 	# master, rownum, colnum, colspan, command
-	savebtn3 = SaveBtn(fan_settings_frame, 5, 1, 16, test_fan) # change command
+	savebtn3 = SaveBtn(fan_settings_frame, 5, 1, 16, save_fan_set)
 
 	fan_set = [90, 30, 3, 'd/w'] #"90%", "30m/3d/w"
 
@@ -1124,10 +1138,13 @@ def load_camera_settings_frame():
 		testbtn4 = TestButton(camera_settings_frame, 1, 1, 1, "w", lambda:take_picture())
 
 	# master, rownum, colnum, stickdir, command
-	slider4 = Sliders(camera_settings_frame, hardware, 2, 1, "w", test_camera)
-	 
+	sliders4 = Sliders(camera_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
+	
+	def save_cam_set(): # add more stuff
+		print(sliders4)
+
 	# master, rownum, colnum, colspan, command
-	savebtn4 = SaveBtn(camera_settings_frame, 5, 1, 16, test_camera) # change command
+	savebtn4 = SaveBtn(camera_settings_frame, 5, 1, 16, save_cam_set)
 
 	cam_set = [1, 'w'] #"1/w"
 
@@ -1165,7 +1182,7 @@ def load_atmos_sensor_frame():
 		testbtn5 = TestButton(atmos_sensor_frame, 1, 1, 1, "w", lambda:take_atmos_reading())
 
 	# master, rownum, colnum, stickdir, command
-	sliders5 = Sliders(atmos_sensor_frame, hardware, 2, 1, "w", test_fan)
+	sliders5 = Sliders(atmos_sensor_frame, hardware, 2, 1, "w", Sliders.show_values)
 
 	# checkbox made with class
 	class MyCheckbox: # master, checktext, rownum, columnnum, rowspan, stickdir
@@ -1191,8 +1208,11 @@ def load_atmos_sensor_frame():
 	humid_checkbox = MyCheckbox(atmos_sensor_frame, "Humidity", 3, 6, 2, "")
 	press_checkbox = MyCheckbox(atmos_sensor_frame, "Barometric pressure", 4, 6, 2, "")
 
+	def save_atmos_set(): # add more stuff
+		print(sliders5)
+
 	# master, rownum, colnum, colspan, command
-	savebtn5 = SaveBtn(atmos_sensor_frame, 5, 1, 15, test_atmos) # change command
+	savebtn5 = SaveBtn(atmos_sensor_frame, 5, 1, 15, save_atmos_set)
 
 	atmos_sen_set = [2, 'd'] #"2/d"
 
