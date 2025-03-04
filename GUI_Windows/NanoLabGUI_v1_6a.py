@@ -275,18 +275,20 @@ cur_day = todays_date.day
 cur_year = todays_date.year
 
 # lists # move to respective places
+global schedule
+schedule = 0
 w_pump_set = [] #"50mL", "5d/w"
 LED_set = [] #"red", "105"
 fan_set = [] #"90%", "30m/3d/w"
 cam_set = [] #"1/w"
 atmos_sen_set = [] #"2/d"
-all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
+all_set = f"{schedule} {w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
 # all_set_array = array.array(all_set)
 
-f = open("data/variablesfile.txt", "w")
-f.write(all_set + '\n')
-f.write("rehehe \n")
-f.write("rehehe2 \n")
+f = open("data/settings.csv", "w")
+# f.write(all_set + '\n')
+# f.write("rehehe \n")
+# f.write("rehehe2 \n")
 
 # initiallize app with basic settings
 root = Tk() # root is the main window name
@@ -670,8 +672,11 @@ def load_settings_frame():
 		dates = []
 		dates.append(end_cal.get_date())
 		dates.append(start_cal.get_date())
-		print(f"Experiment will run from {dates[1]} - {dates[0]}")
-		f.write(f"Experiment will run from {dates[1]} - {dates[0]} \n")
+		# print(f"Experiment will run from {dates[1]} - {dates[0]}")
+		schedule = dates[1] + "\n" + dates[0]
+		print(schedule)
+		f.write(schedule)
+		f.write("\n")
 		"""
 		# date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 		start_date = start_cal.get_date()
@@ -766,6 +771,8 @@ def load_w_pump_settings_frame():
 
 	def save_wp_set():
 		print(sliders1)
+		f.write(str(sliders1))
+		f.write("\n")
 
 	# master, rownum, colnum, colspan, command
 	savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, save_wp_set) # fix command
@@ -988,13 +995,15 @@ def load_led_settings_frame():
 		).grid(row=2, columnspan=1, column=12, sticky="wn", padx="5", pady="3")
 
 	# RGB color picker
-	rgb_code = ""
+	global rgb_code
 	def choose_color(value):
 		# variable to store hexadecimal code of color
 		color_code = colorchooser.askcolor(title ="Choose color", initialcolor="#7714b9")
 		value = color_code[0]
 		print(value)
-		return value
+		global rgb_code
+		rgb_code = value
+		return rgb_code
 	# rgb_code = choose_color(rgb_code)
 	# print(rgb_code)
 
@@ -1018,9 +1027,14 @@ def load_led_settings_frame():
 	led_slider.grid(rowspan=1, row=4, columnspan=8, column=10, sticky="n")
 
 	# save button using classes
-
 	def save_led_set(): # add more stuff
 		print(sliders2)
+		f.write(str(sliders2))
+		f.write("\n")
+		print(rgb_code)
+		print("test")
+		f.write(rgb_code)
+		f.write("\n")
 
 	# master, rownum, colnum, colspan, command
 	savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, save_led_set)
@@ -1438,7 +1452,7 @@ def load_set_preview_frame(): # preview of settings
 # run main app
 load_menu()
 load_settings_frame()
-f.close()
+# f.close()
 root.mainloop()
 
 # main window end
