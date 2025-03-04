@@ -15,6 +15,7 @@ import sys
 import time
 import random
 from tkcalendar import Calendar
+import datetime
 from datetime import date 
 from matplotlib.figure import Figure 
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
@@ -23,20 +24,48 @@ import array
 # load custom fonts
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
 
+"""
+# Arduino Stuff
+# open serial port
+arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
+# check which port was really used
+print(arduino.name)
+
+# close serial port from https://stackoverflow.com/questions/35235436/python-arduino-prototyping-api-v2-closing-serial-port
+def closeport(): #Closes port if currently open
+    ser = serial.Serial(usbport) 
+    if ser.isOpen() == True:
+        ser.close()
+
+# closeport() #make sure port is available
+"""
+
 # set starting variables
 dev_mode = True # if True will show log button and test buttons # Make a beta test review sheet to go with this or separate thing?
-beta = True
+beta = False
 dark_mode = False
+component_count = 5
+type_selected = False
+box_type = ""
 
-# set normal colours
-menu_bg_color = "#000000"
-menu_fg_color = "#ffffff"
-menu_act_bg_color = "#000000"
-menu_act_fg_color = "#808080"
-bg_color = "#ffffff"
-fg_color = "#000000"
-act_bg_color = "#ffffff"
-act_fg_color = "#808080"
+if dark_mode == False: # fix these
+	# set normal colors
+	menu_bg_color = "#000000"
+	menu_fg_color = "#ffffff"
+	menu_act_bg_color = "#000000"
+	bg_color = "#ffffff"
+	fg_color = "#000000"
+	act_bg_color = "#ffffff"
+	act_fg_color = "#808080"
+else:
+	# set dark mode colors
+	menu_bg_color = "#ffffff"
+	menu_fg_color = "#000000"
+	menu_act_bg_color = "#ffffff"
+	bg_color = "#000000"
+	fg_color = "#ffffff"
+	act_bg_color = "#808080"
+	act_fg_color = "#ffffff"
 
 
 #"""
@@ -69,24 +98,18 @@ setup2_frame = tk.Frame(setup_root, highlightbackground="grey", highlightthickne
 setup1_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 setup2_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 
-# define variables
-component_count = 5
-selected = False
-box_type = ""
-
 def type_hydro():
 	box_type = "HydroFuge"
 	print(box_type + " selected")
-	selected = True
-	hydro_bg_color = "green"
+	type_selected = True
 
 def type_uni():
 	box_type = "Universal"
 	print(box_type + " selected")
-	selected = True
+	type_selected = True
 
 """
-def load_main():
+def goto_main():
 	if selected == True:
 		setup_root.destroy
 """
@@ -103,7 +126,8 @@ def load_setup1():
 	welcome_label = Label(setup1_frame, text="Pick Your Version", font=("Ubuntu-Bold", 18), bg=bg_color)
 	welcome_label.grid(row=1, columnspan=8, column=0, sticky="")
 
-	# add image button of HydroFuge and a "coming soon" for Universal
+	# add image button of HydroFuge and "coming soon" for Universal
+
 	# HydroFuge
 	# Read the Image
 	image = Image.open("assets/Universal NanoLab.png")
@@ -147,7 +171,7 @@ def load_setup1():
 		command=setup_root.destroy # lambda:load_setup2()
 		).grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
 
-	print("first screen loaded")
+	# print("first screen loaded")
 
 """
 def load_setup2():
@@ -189,7 +213,7 @@ def load_setup2():
 		command=setup_root.destroy
 		).grid(row=5, column=6, sticky="", padx="5", pady="3")
 
-	print("second screen loaded")
+	# print("second screen loaded")
 """
 
 # run setup screen
@@ -263,17 +287,10 @@ menu.grid(row=0, column=0, sticky="nsew")
 menu.grid_rowconfigure(0, minsize=35)
 settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-
-# Initialize serial connection
-# arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
-
-# check which port was really used
-# print(arduino.name)
-
 # set websites
 nano_site = "https://sites.google.com/jeffcoschools.us/universal-nanolab/project-home-page"
 github = "https://github.com/ClairBearmakes/NanoLab-GUI"
-bform = "https://docs.google.com/forms/d/e/1FAIpQLScn_A1m8JzfphVgT83yOyETZGsvzdgrhsZ03veFijbZWohrrg/viewform"
+betaform = "https://docs.google.com/forms/d/e/1FAIpQLScn_A1m8JzfphVgT83yOyETZGsvzdgrhsZ03veFijbZWohrrg/viewform"
 
 # funtions for website buttons
 def opennanosite():
@@ -283,22 +300,23 @@ def opengithub():
 	webbrowser.open_new(github)
 
 def openbetaform():
-	webbrowser.open_new(bform)
+	webbrowser.open_new(betaform)
 
 def open_files():
     webbrowser.open_new("C:") # replace with txt file with list of sd cards files
 
+# test functions
 def take_picture():
 	print("*click*")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #take picture and save it
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # take picture and save it
 
 def take_atmos_reading():
 	print("read atmos")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #take atmos reading and save it
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # take atmos reading and save it
 
 def test_pump():
 	print("pump")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) #pump some water and shake leaves and respond
+	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # pump some water and shake leaves and respond
 
 # test led also test_LED()
 
@@ -330,7 +348,7 @@ def load_menu(): # button bar on top
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
-		activeforeground=menu_act_fg_color,
+		activeforeground=act_fg_color, 
 		command=lambda:load_settings_frame()
 		).grid(row=0, column=0, sticky="w", padx="5", pady="3") # row==up and down, column==left and right
 
@@ -345,7 +363,7 @@ def load_menu(): # button bar on top
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
-		activeforeground=menu_act_fg_color,
+		activeforeground=act_fg_color,
 		command=opennanosite
 		).grid(row=0, column=1, sticky="w", padx="5", pady="3")
 
@@ -360,7 +378,7 @@ def load_menu(): # button bar on top
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
-		activeforeground=menu_act_fg_color,
+		activeforeground=act_fg_color,
 		command=opengithub
 		).grid(row=0, column=2, sticky="w", padx="5", pady="3")
 
@@ -375,7 +393,7 @@ def load_menu(): # button bar on top
 		fg=menu_fg_color,
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
-		activeforeground=menu_act_fg_color,
+		activeforeground=act_fg_color,
 		command=open_files # open file explorer to microSD card on NanoLab
 		).grid(row=0, column=3, sticky="w", padx="5", pady="3")
 
@@ -391,7 +409,7 @@ def load_menu(): # button bar on top
 			fg=menu_fg_color,
 			cursor="hand2",
 			activebackground=menu_act_bg_color,
-			activeforeground=menu_act_fg_color,
+			activeforeground=act_fg_color,
 			command=lambda:load_data_results_frame() # data results frame
 			).grid(row=0, column=5, sticky="w", padx="5", pady="3")
 
@@ -407,7 +425,7 @@ def load_menu(): # button bar on top
 			fg=menu_fg_color,
 			cursor="hand2",
 			activebackground=menu_act_bg_color,
-			activeforeground=menu_act_fg_color,
+			activeforeground=act_fg_color,
 			command=lambda:load_log_frame() # open a log of what is happening right now on the Arduino
 			).grid(row=0, column=6, sticky="w", padx="5", pady="3")
 
@@ -437,12 +455,35 @@ def load_settings_frame():
 	settings_title = Label(settings_frame, bg="white", text = "Main Settings", font=("Ubuntu", 48))
 	settings_title.grid(row=0, columnspan=3, column=1, padx="8", pady="5")
 
+	# Add start and end calendars
+	def grad_date():
+		date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
+
+	schedule_label = Label(settings_frame, text = "Schedule", font=("Ubuntu", 18), bg=bg_color, fg=fg_color)
+	schedule_label.grid(row=1, columnspan=1, column=2, sticky="n", padx="8", pady="5")
+
+	start_label = Label(settings_frame, text = "Start Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	start_label.grid(row=1, columnspan=2, column=1, padx="8", pady="5")
+
+	start_cal = Calendar(settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day, mindate=datetime.date(2, 11, 25), font=("Arial", 10)) #date m/d/yy (no starting zeros)
+	start_cal.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
+
+	end_label = Label(settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
+	end_label.grid(row=1, columnspan=2, column=2, padx="8", pady="5")
+
+	end_cal = Calendar(settings_frame, selectmode = 'day',
+			year = cur_year, month = cur_month,
+			day = cur_day, font=("Arial", 10))
+	end_cal.grid(row=2, columnspan=2, column=2, padx="8", pady="5")
+
 	# create water pump settings button widget
 	tk.Button(
 		settings_frame,
 		text="Water Pump Settings",
 		font=("Ubuntu", 24),
-		height=("3"),
+		height=("1"),
 		width=("19"),
 		bg=bg_color,
 		fg=fg_color,
@@ -450,14 +491,14 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_w_pump_settings_frame(), # water pump settings frame
-		).grid(row=1, column=1, sticky="sw", padx="8", pady="5")
+		).grid(row=4, column=1, sticky="sw", padx="8", pady="5")
 
 	# create LED settings button widget
 	tk.Button(
 		settings_frame,
 		text="LED Settings",
 		font=("Ubuntu", 24),
-		height=("3"),
+		height=("1"),
 		width=("19"),
 		bg=bg_color,
 		fg=fg_color,
@@ -465,14 +506,14 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_led_settings_frame(), # LED settings frame
-		).grid(row=1, column=2, sticky="sw", padx="8", pady="5")
+		).grid(row=4, column=2, sticky="sw", padx="8", pady="5")
 
 	# create fan settings button widget
 	tk.Button(
 		settings_frame,
 		text="Fan Settings",
 		font=("Ubuntu", 24),
-		height=("3"),
+		height=("1"),
 		width=("19"),
 		bg=bg_color,
 		fg=fg_color,
@@ -480,30 +521,29 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_fan_settings_frame(), # fan settings frame
-		).grid(row=1, column=3, sticky="sw", padx="8", pady="5")
+		).grid(row=4, column=3, sticky="sw", padx="8", pady="5")
 
 	# create camera settings button widget
 	tk.Button(
 		settings_frame,
-		text="Camera Settings \n Coming Soon",
+		text="Camera Intervals", # change back to camera settings if we have actually control over cam
 		font=("Ubuntu", 24),
-		height=("3"),
+		height=("1"),
 		width=("19"),
 		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		state=DISABLED, # remove when camera is working
 		command=lambda:load_camera_settings_frame(), # camera settings frame
-		).grid(row=2, column=1, sticky="sw", padx="8", pady="5")
+		).grid(row=5, column=1, sticky="sw", padx="8", pady="5")
 
 	# create atmospheric sensor button widget
 	tk.Button(
 		settings_frame,
 		text="Atmospheric Sensor",
 		font=("Ubuntu", 24),
-		height=("3"),
+		height=("1"),
 		width=("19"),
 		bg=bg_color,
 		fg=fg_color,
@@ -511,7 +551,7 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_atmos_sensor_frame(), # atmos sensor frame
-		).grid(row=2, column=2, sticky="sw", padx="8", pady="5")
+		).grid(row=5, column=2, sticky="sw", padx="8", pady="5")
 
 	if component_count <= 5:
 		# create data results button widget
@@ -519,7 +559,7 @@ def load_settings_frame():
 			settings_frame,
 			text="Data Results",
 			font=("Ubuntu", 24),
-			height=("3"),
+			height=("1"),
 			width=("19"),
 			bg=bg_color,
 			fg=fg_color,
@@ -527,7 +567,7 @@ def load_settings_frame():
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
 			command=lambda:load_data_results_frame() # data results frame
-			).grid(row=2, column=3, sticky="sw", padx="8", pady="5")
+			).grid(row=5, column=3, sticky="sw", padx="8", pady="5")
 
 	# create send to arduino button widget
 	tk.Button(
@@ -542,27 +582,27 @@ def load_settings_frame():
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=lambda:load_set_preview_frame(), # settings preview frame
-		).grid(row=4, column=3, columnspan=2, sticky="sw", padx="8", pady="5")
+		).grid(row=6, column=3, columnspan=2, sticky="sw", padx="8", pady="5")
 	
-	# label for beta testing
-	beta_label = Label(settings_frame, bg=bg_color, text = "Rate your experience ", font=("Ubuntu", 12))
-	beta_label.grid(row=5, columnspan=1, column=0, sticky="ws", padx="8", pady="5")
-
 	if beta == True:
+		# label for beta testing
+		# beta_label = Label(settings_frame, bg=bg_color, text = "     Rate your experience ", font=("Ubuntu", 12))
+		# beta_label.grid(row=7, columnspan=2, column=0, sticky="w", padx="5", pady="3")
+
 		# create button widget for beta testing form
 		tk.Button(
 			settings_frame,
-			text="here",
-			font=("Ubuntu", 12),
-			height=("1"),
-			width=("4"),
+			text="Rate your experience",
+			font=("Ubuntu", 10),
+			height=("0"),
+			width=("19"),
 			bg=bg_color,
 			fg=fg_color,
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
 			command=openbetaform
-			).grid(row=5, column=1, sticky="ws", padx="5", pady="3")
+			).grid(row=7, columnspan=2, column=0, sticky="sw", padx="5", pady="3")
 
 	# print("settings loaded")
 
@@ -611,7 +651,7 @@ def load_w_pump_settings_frame():
 
 	start_cal = Calendar(w_pump_settings_frame, selectmode = 'day',
 			year = cur_year, month = cur_month,
-			day = cur_day, font=("Arial", 10))
+			day = cur_day, mindate=datetime.date(1, 6, 25), font=("Arial", 10)) #date m/d/yy (no starting zeros)
 	start_cal.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
 
 	end_label = Label(w_pump_settings_frame, text = "End Date:", font=("Ubuntu", 12), bg=bg_color, fg=fg_color)
@@ -653,6 +693,12 @@ def load_w_pump_settings_frame():
 	fre1_entry = tk.Entry(w_pump_settings_frame, textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=3)
 	fre1_entry.grid(row=5, columnspan=1, column=2, sticky="e")
 
+	def character_limit(fre1_in):
+		if len(fre1_in.get()) > 1:
+			fre1_in.set(fre1_in.get()[-1])
+
+	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
+
 	# creating a dropdown for frequency2
 	# Dropdown menu options 
 	fre2_options = [ 
@@ -677,7 +723,7 @@ def load_w_pump_settings_frame():
 	# set frame in window
 	w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("H2O pump settings loaded")
+	# print("H2O pump settings loaded")
 
 
 # LED settings stuff
@@ -900,7 +946,7 @@ def load_led_settings_frame():
 	# label for the slider
 	slider_label = tk.Label(
     	led_settings_frame,
-    	text='Dimming Slider',
+    	text='Brightness',
     	font=("Ubuntu", 12),
     	bg=bg_color,
 		fg=fg_color
@@ -973,6 +1019,12 @@ def load_led_settings_frame():
 	fre1_entry = tk.Entry(led_settings_frame, textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=3)
 	fre1_entry.grid(row=10, columnspan=1, column=2, padx="5", pady="5", sticky="w")
 
+	def character_limit(fre1_in):
+		if len(fre1_in.get()) > 1:
+			fre1_in.set(fre1_in.get()[-1])
+
+	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
+
 	# creating a dropdown for frequency2
 	# Dropdown menu options 
 	fre2_options = [ 
@@ -996,6 +1048,12 @@ def load_led_settings_frame():
 	time_entry = tk.Entry(led_settings_frame,textvariable = time_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=3)
 	time_entry.grid(row=11, columnspan=2, column=4, padx="7", pady="5", sticky="")
 
+	def character_limit(time_in):
+		if len(time_in.get()) > 1:
+			time_in.set(time_in.get()[-1])
+
+	time_in.trace("w", lambda *args: character_limit(time_in))
+
 	# creating a button that calls the fre_set function
 	sub_btn = tk.Button(led_settings_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=12, columnspan=1, column=1, padx="7", pady="5", sticky="w")
@@ -1003,7 +1061,7 @@ def load_led_settings_frame():
 	# set frame in window
 	led_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("LED settings loaded")
+	# print("LED settings loaded")
 
 def load_fan_settings_frame(): 
 	# clear_widgets(settings_frame)
@@ -1144,7 +1202,7 @@ def load_fan_settings_frame():
 	# set frame in window
 	fan_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	
-	print("fan settings loaded")
+	# print("fan settings loaded")
 
 def load_camera_settings_frame(): 
 	# clear_widgets(settings_frame)
@@ -1168,7 +1226,7 @@ def load_camera_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	cam_settings_title = Label(camera_settings_frame, bg="white", text = "Camera Settings", font=("Ubuntu", 30))
+	cam_settings_title = Label(camera_settings_frame, bg="white", text = "Camera Intervals", font=("Ubuntu", 30))
 	cam_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 	
 	if dev_mode == True:
@@ -1233,6 +1291,12 @@ def load_camera_settings_frame():
 	fre1_entry = tk.Entry(camera_settings_frame,textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=4)
 	fre1_entry.grid(row=5, columnspan=1, column=2, sticky="")
 
+	def character_limit(fre1_in):
+		if len(fre1_in.get()) > 1:
+			fre1_in.set(fre1_in.get()[-1])
+
+	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
+
 	# creating a dropdown for frequency2
 	# Dropdown menu options 
 	fre2_options = [ 
@@ -1257,7 +1321,7 @@ def load_camera_settings_frame():
 	# set frame in window
 	camera_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("camera settings loaded")
+	# print("camera settings loaded")
 
 def load_atmos_sensor_frame(): 
 	# clear_widgets(settings_frame)
@@ -1348,6 +1412,12 @@ def load_atmos_sensor_frame():
 	fre1_entry = tk.Entry(atmos_sensor_frame,textvariable = fre1_in, font=("Ubuntu", 12), bg=bg_color, fg=fg_color, width=8)
 	fre1_entry.grid(row=5, columnspan=1, column=3, padx="7", pady="5", sticky="w")
 
+	def character_limit(fre1_in):
+		if len(fre1_in.get()) > 1:
+			fre1_in.set(fre1_in.get()[-1])
+
+	fre1_in.trace("w", lambda *args: character_limit(fre1_in))
+
 	# creating a dropdown for frequency2
 	# Dropdown menu options 
 	fre2_options = [ 
@@ -1366,13 +1436,13 @@ def load_atmos_sensor_frame():
 	fre2_drop.grid(row=5, columnspan=2, column=3, padx="7", pady="5", sticky="")
 	 
 	# creating a button that will call the fre_set function  
-	sub_btn=tk.Button(atmos_sensor_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
+	sub_btn = tk.Button(atmos_sensor_frame,text = 'Save', font=("Ubuntu", 12), bg=bg_color, fg=fg_color, command = fre_set)
 	sub_btn.grid(row=5, columnspan=2, column=4, padx="7", pady="5", sticky="e")
 
 	# set frame in window
 	atmos_sensor_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("atmos sensor frame loaded")
+	# print("atmos sensor frame loaded")
 
 def load_data_results_frame(): 
 	# clear_widgets(settings_frame)
@@ -1394,7 +1464,7 @@ def load_data_results_frame():
 	data_r_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	# graph
-	def load_plot1(): 
+	def load_graph(): 
 
 	    # the figure that will contain the plot 
 	    fig = Figure(figsize = (6, 4), 
@@ -1414,7 +1484,7 @@ def load_data_results_frame():
 	    canvas.draw() 
 
 	    # placing the canvas on the Tkinter window 
-	    canvas.get_tk_widget().grid(row=3, columnspan=4, column=1) 
+	    canvas.get_tk_widget().grid(row=2, columnspan=4, column=1) 
 
 	    # creating the Matplotlib toolbar 
 	    toolbar = NavigationToolbar2Tk(canvas, data_results_frame)
@@ -1436,9 +1506,10 @@ def load_data_results_frame():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		command=load_plot1(), # update the graph
+		command=load_graph(), # update the graph
 		).grid(row=1, column=1, sticky="w", padx="5", pady="3")
 
+	"""
 	# Dropdown to choose kind of graph
 	def show_graph_new(): 
 		print(clicked.get())
@@ -1457,18 +1528,20 @@ def load_data_results_frame():
 
 	# Create Dropdown menu 
 	drop = OptionMenu(data_results_frame, clicked, *options)
-	drop.config(bg=bg_color, fg=fg_color) 
+	drop.config(bg=bg_color, fg=fg_color, font=("Ubuntu", 12)) 
 	drop.grid(row=1, column=3, sticky="e")
 
 	# Create button that updates graph
 	button = Button(data_results_frame, text = "Choose", font=("Ubuntu", 12), height=("0"), width=("7"), 
 	bg=bg_color, fg=fg_color, activebackground=act_bg_color, activeforeground=act_fg_color, command = show_graph_new)
 	button.grid(row=1, column=4, sticky="w")
-	
+	"""
+
+
 	# set frame in window
 	data_results_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("data results loaded")
+	# print("data results loaded")
 
 def load_log_frame(): # log of what is happening on Arduino right now
 	# clear_widgets()
@@ -1500,7 +1573,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	# set frame in window
 	log_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("log loaded")
+	# print("log loaded")
 
 def load_set_preview_frame(): # preview of settings
 	# clear_widgets()
@@ -1517,8 +1590,38 @@ def load_set_preview_frame(): # preview of settings
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	set_preview_title = Label(set_preview_frame, bg="white", text = "Preview Your Settings", font=("Ubuntu", 30))
+	set_preview_title = Label(set_preview_frame, bg=bg_color, text = "Preview Your Settings", font=("Ubuntu", 30))
 	set_preview_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
+
+	w_pump_preview_title = Label(set_preview_frame, bg=bg_color, text = "Water Pump", font=("Ubuntu", 14))
+	w_pump_preview_title.grid(row=1, columnspan=2, column=1, padx="8", pady="5")
+
+	LED_preview_title = Label(set_preview_frame, bg=bg_color, text = "LED", font=("Ubuntu", 14))
+	LED_preview_title.grid(row=1, columnspan=2, column=3, padx="8", pady="5")
+
+	fan_preview_title = Label(set_preview_frame, bg=bg_color, text = "Fan", font=("Ubuntu", 14))
+	fan_preview_title.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
+
+	camera_preview_title = Label(set_preview_frame, bg=bg_color, text = "Camera", font=("Ubuntu", 14))
+	camera_preview_title.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
+
+	atmos_preview_title = Label(set_preview_frame, bg=bg_color, text = "Atmospheric Sensor", font=("Ubuntu", 14))
+	atmos_preview_title.grid(row=3, columnspan=2, column=1, padx="8", pady="5")
+
+	# create cancel button widget
+	tk.Button(
+		set_preview_frame,
+		text="Cancel",
+		font=("Ubuntu", 14),
+		height=("2"),
+		width=("17"),
+		bg=bg_color,
+		fg=fg_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_fg_color,
+		command=lambda:load_settings_frame # command to go back to main screen
+		).grid(row=3, columnspan=1, column=3, sticky="w", padx="5", pady="3")
 
 	# create confirm button widget
 	tk.Button(
@@ -1533,12 +1636,12 @@ def load_set_preview_frame(): # preview of settings
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
 		command=send_settings # command to send settings to NanoLab
-		).grid(row=6, column=1, sticky="w", padx="5", pady="3")
+		).grid(row=3, columnspan=1, column=4, sticky="w", padx="5", pady="3")
 
 	# set frame in window
 	set_preview_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
-	print("settings preview loaded")
+	# print("settings preview loaded")
 
 # run main app
 load_menu()
