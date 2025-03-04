@@ -24,10 +24,10 @@ import array
 
 # set fonts
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
-normal_font= ("Ubuntu", 12)
-big_font= ("Ubuntu", 24)
-title_font= ("Ubuntu", 46)
-calender_font= ("Arial", 10)
+normal_font = ("Ubuntu", 12)
+big_font = ("Ubuntu", 24)
+title_font = ("Ubuntu", 46)
+calender_font = ("Arial", 10)
 
 """
 # Arduino Stuff
@@ -283,20 +283,10 @@ atmos_sen_set = [] #"2/d"
 all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
 # all_set_array = array.array(all_set)
 
-"""
-w_pump_set = array.array(50, 5, 'd/w')
-LED_set = array.array('red', 105)
-fan_set = array.array(90, 30, 3, 'd/w')
-cam_set = array.array(1, 'w')
-atmos_sen_set = array.array(2, 'd')
-all_set = array.array(w_pump_set, LED_set, fan_set, cam_set, atmos_sen_set)
-"""
-# print(all_set)
-# print(all_set_array)
-
-with open("data/variablesfile.txt", 'w') as f:
-	f.write(all_set + '\n')
-	#f.write(str(all_set1))
+f = open("data/variablesfile.txt", "w")
+f.write(all_set + '\n')
+f.write("rehehe \n")
+f.write("rehehe2 \n")
 
 # initiallize app with basic settings
 root = Tk() # root is the main window name
@@ -399,6 +389,9 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 	value_label = 0
 	value_label2 = 0
 	value_label3 = 0
+	durto = 360
+	freto = 24
+	delayto = 360
 
 	def __init__(self, master, hardware, rownum, colnum, stickdir, command):
 		self.master = master
@@ -415,31 +408,31 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 		self.current_value2 = tk.DoubleVar()
 		self.current_value3 = tk.DoubleVar()
 
-		self.slider = Scale(self.master, from_=0, to=360, length=700, resolution=10, orient=HORIZONTAL, 
+		self.durslider = Scale(self.master, from_=0, to=self.durto, length=700, resolution=10, orient=HORIZONTAL, 
 			variable=self.current_value, label=self.label_txt, font=normal_font, bg=bg_color, fg=fg_color)
-		self.slider.set(10)
-		self.slider.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+		self.durslider.set(10)
+		self.durslider.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
-		self.slider2 = Scale(self.master, from_=0, to=24, length=700, resolution=1, orient=HORIZONTAL, 
+		self.freslider = Scale(self.master, from_=0, to=self.freto, length=700, resolution=1, orient=HORIZONTAL, 
 			variable=self.current_value2, label=self.label_txt2, font=normal_font, bg=bg_color, fg=fg_color)
-		self.slider2.set(10)
-		self.slider2.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+		self.freslider.set(10)
+		self.freslider.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
-		self.slider3 = Scale(self.master, from_=0, to=360, length=700, resolution=10, orient=HORIZONTAL, 
+		self.delayslider = Scale(self.master, from_=0, to=self.delayto, length=700, resolution=10, orient=HORIZONTAL, 
 			variable=self.current_value3, label=self.label_txt3, font=normal_font, bg=bg_color, fg=fg_color)
-		self.slider3.set(10)
-		self.slider3.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+		self.delayslider.set(10)
+		self.delayslider.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
 		self.showbtn = tk.Button(self.master, text='Show slider values', font=normal_font, bg=bg_color, fg=fg_color, command=self.show_values)
 		self.showbtn.grid(row=self.rownum+3, columnspan=1, column=self.colnum, padx="7", pady="5", sticky="w")
 
 	# class methods
 	def show_values(self):
-		print(self.slider.get(), self.slider2.get(), self.slider3.get())
-		return(self.slider.get(), self.slider2.get(), self.slider3.get())
+		print(self.durslider.get(), self.freslider.get(), self.delayslider.get())
+		return(self.durslider.get(), self.freslider.get(), self.delayslider.get())
 
 	def __str__(self):
-		return f"{self.slider.get()} {self.slider2.get()} {self.slider3.get()}"
+		return f"{self.durslider.get()} {self.freslider.get()} {self.delayslider.get()}"
 
 	"""
 	def get_current_value1(self): # put on indiv. sliders
@@ -678,6 +671,7 @@ def load_settings_frame():
 		dates.append(end_cal.get_date())
 		dates.append(start_cal.get_date())
 		print(f"Experiment will run from {dates[1]} - {dates[0]}")
+		f.write(f"Experiment will run from {dates[1]} - {dates[0]} \n")
 		"""
 		# date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
 		start_date = start_cal.get_date()
@@ -1444,6 +1438,7 @@ def load_set_preview_frame(): # preview of settings
 # run main app
 load_menu()
 load_settings_frame()
+f.close()
 root.mainloop()
 
 # main window end
