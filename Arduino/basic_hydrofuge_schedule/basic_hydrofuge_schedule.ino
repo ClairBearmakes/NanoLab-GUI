@@ -11,13 +11,13 @@
 #include <SPI.h>
 #include <SD.h>
 
-int fan = 8;  //fan pin
+int fan = 32;  //fan pin
 
-
+int i = 0;
 
 int numPixels = 16;  //Led / neopixel settings
-int led = 9;
-int ledP = 14;
+int led = 14;
+int ledP = 33;
 int pixelFormat = NEO_GRB + NEO_KHZ800;
 
 Adafruit_NeoPixel *pixels;
@@ -28,18 +28,31 @@ SCMD myMotorDriver;  //This creates the main object of one motor driver and conn
 
 void setup() {
   Serial.begin(115200);
-  SD.begin();
-
-  pinMode(8, INPUT_PULLUP);  //Use to halt motor movement (ground)
-
+  
+  
+  SD.begin(5);
+  //while(!Serial);
+  
+  pinMode(27, INPUT_PULLUP);  //Use to halt motor movement (ground)
+  
+  Serial.println("Check 1");
+  
   pinMode(fan, OUTPUT);
 
+  Serial.println("Check 2"); // reaches here and then loops
+  
   //NeoPixels ********************************************//
   pixels = new Adafruit_NeoPixel(numPixels, led, pixelFormat);
   pixels->begin();
+  Serial.println("Check 3");
   pinMode(ledP, OUTPUT);
+  
+  Serial.println("Check 4");
+
   digitalWrite(ledP, HIGH);  //by default we want this set to high and then flash it to low to wipe pixels.
   //did this because the pixels wouldn't clear when told too and instead were displaying random garbled barf!
+  
+  
 
   //***** Configure the Motor Driver's Settings *****//
   //  .commInter face is I2C_MODE
@@ -50,7 +63,6 @@ void setup() {
 
   //  set chip select if SPI selected with the config jumpers
   myMotorDriver.settings.chipSelectPin = 10;
-
 
   //Time And date and Alarms ******************************//
   setTime(5, 59, 40, 1, 1, 11);  // set time to Saturday 8:29:00am Jan 1 2011
@@ -90,7 +102,18 @@ void loop() {
     switch (DoThis) {
 
       case 'I':
+        sets = SD.open("settings.txt", FILE_WRITE);
         Serial.print("loading instructions");
+        delay(500);
+        int aryC = Serial.read();
+        delay(500);
+        Sets.write
+        (while(aryC => i){}
+          
+          
+        )
+
+
 
         break;
 
