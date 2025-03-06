@@ -15,6 +15,8 @@ int fan = 32;  //fan pin
 
 int i = 0;
 
+File myFile;
+
 int numPixels = 16;  //Led / neopixel settings
 int led = 14;
 int ledP = 33;
@@ -29,30 +31,30 @@ SCMD myMotorDriver;  //This creates the main object of one motor driver and conn
 void setup() {
   Serial.begin(115200);
   
-  
-  SD.begin(5);
   //while(!Serial);
   
   pinMode(27, INPUT_PULLUP);  //Use to halt motor movement (ground)
   
-  Serial.println("Check 1");
+  
   
   pinMode(fan, OUTPUT);
 
-  Serial.println("Check 2"); // reaches here and then loops
+  
   
   //NeoPixels ********************************************//
   pixels = new Adafruit_NeoPixel(numPixels, led, pixelFormat);
   pixels->begin();
-  Serial.println("Check 3");
   pinMode(ledP, OUTPUT);
-  
-  Serial.println("Check 4");
-
   digitalWrite(ledP, HIGH);  //by default we want this set to high and then flash it to low to wipe pixels.
   //did this because the pixels wouldn't clear when told too and instead were displaying random garbled barf!
   
-  
+  //SD Card ******************************//
+  if(!SD.begin(5)){
+    Serial.println("No SD card");
+    while(1);
+  }
+    Serial.println("SD Connected");
+    myFile = SD.open("test.txt", FILE_WRITE);
 
   //***** Configure the Motor Driver's Settings *****//
   //  .commInter face is I2C_MODE
@@ -102,19 +104,8 @@ void loop() {
     switch (DoThis) {
 
       case 'I':
-        sets = SD.open("settings.txt", FILE_WRITE);
-        Serial.print("loading instructions");
-        delay(500);
-        int aryC = Serial.read();
-        delay(500);
-        Sets.write
-        (while(aryC => i){}
+          Serial.println("Beginning Settings download");
           
-          
-        )
-
-
-
         break;
 
       case 'L':
