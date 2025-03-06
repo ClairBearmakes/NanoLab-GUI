@@ -73,11 +73,12 @@ else:
 	act_fg_color = "#ffffff"
 
 # ttk.Style().theme_use('black') https://stackoverflow.com/questions/24367710/how-do-i-change-the-overall-theme-of-a-tkinter-application?rq=3
-def toggle_bool(value): # maybe use stackoverflow.com/questions/60595078/implementing-dark-mode-with-on-off-function-in-simple-python-tkinter-program
+def toggle_dark(value): # maybe use stackoverflow.com/questions/60595078/implementing-dark-mode-with-on-off-function-in-simple-python-tkinter-program
 	value = not value
 	print(value)
 	return value
-dark_mode = toggle_bool(dark_mode)
+	color_mode_switch()
+# dark_mode = toggle_bool(dark_mode)
 print(dark_mode)
 def color_mode_switch():
 	if dark_mode == False:
@@ -274,19 +275,24 @@ cur_month = todays_date.month
 cur_day = todays_date.day
 cur_year = todays_date.year
 
-# lists # move to respective places
+# lists
 w_pump_set = [] #"50mL", "5d/w"
 LED_set = [] #"red", "105"
 fan_set = [] #"90%", "30m/3d/w"
 cam_set = [] #"1/w"
 atmos_sen_set = [] #"2/d"
 all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
-# all_set_array = array.array(all_set)
+schedule_changed = False
+wp_changed = False
+led_changed = False
+fan_changed = False
+cam_changed = False
+atmos_changed = False
 
-f = open("data/variablesfile.txt", "w")
-f.write(all_set + '\n')
-f.write("rehehe \n")
-f.write("rehehe2 \n")
+f = open("data/settings.csv", "w")
+# f.write(all_set + '\n')
+# f.write("rehehe \n")
+# f.write("rehehe2 \n")
 
 # initiallize app with basic settings
 root = Tk() # root is the main window name
@@ -434,39 +440,6 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 	def __str__(self):
 		return f"{self.durslider.get()} {self.freslider.get()} {self.delayslider.get()}"
 
-	"""
-	def get_current_value1(self): # put on indiv. sliders
-		# return '{:.2f}'.format(self.slider.get())
-		# return '{:.2f}'.format(self.slider2.get())
-		# return '{:.2f}'.format(self.slider3.get())
-		print(self.slider.get(current_value))
-		# slider_changed()
-
-	def get_current_value2(self):
-		# return '{:.2f}'.format(self.slider.get())
-		# return '{:.2f}'.format(self.slider2.get())
-		# return '{:.2f}'.format(self.slider3.get())
-		print(self.slider2.get(current_value2))
-		# slider_changed()
-
-	def get_current_value3(self):
-		# return '{:.2f}'.format(self.slider.get())
-		# return '{:.2f}'.format(self.slider2.get())
-		# return '{:.2f}'.format(self.slider3.get())
-		print(self.slider3.get(current_value3))
-		# slider_changed()
-
-	def slider_changed():
-		# value_label.configure(text=get_current_value())
-		# ser.write(get_current_value()) # relace with writing to txt file
-		slide1_val = get_current_value1()
-		slide2_val = get_current_value2()
-		slide3_val = get_current_value3()
-		print(slide1_val)
-		print(slide2_val)
-		print(slide3_val)
-	"""
-
 class SaveBtn: # master, rownum, colnum, colspan, command
 	# class variables (attributes)
 
@@ -480,6 +453,69 @@ class SaveBtn: # master, rownum, colnum, colspan, command
 		self.save_btn = tk.Button(self.master, text='Save', font=normal_font, bg=bg_color, fg=fg_color, command=self.command)
 		self.save_btn.grid(row=rownum, columnspan=colspan, column=colnum, padx="7", pady="5", sticky="")
 
+class SetPreview: # command
+	# class variables (attributes)
+	master = set_preview_frame
+	rownum = 1
+	colnum = 1
+	colspan = 2
+
+	def __init__(self):
+		# self.command = command
+
+		self.w_pump_preview_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Water Pump", font=("Ubuntu", 14))
+		self.wp_long_label = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
+		self.wp_fre_label = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
+		self.wp_delay_label = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
+
+		self.led_preview_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "LED", font=("Ubuntu", 14))
+		self.fan_preview_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Fan", font=("Ubuntu", 14))
+		self.cam_preview_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Camera", font=("Ubuntu", 14))
+		self.atmos_preview_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Atmospheric Sensor", font=("Ubuntu", 14))
+
+		# create cancel button widget
+		self.cancel_btn = tk.Button(
+			self.master,
+			text="Cancel",
+			font=("Ubuntu", 14),
+			height=("2"),
+			width=("17"),
+			bg=bg_color,
+			fg=fg_color,
+			cursor="hand2",
+			activebackground=act_bg_color,
+			activeforeground=act_fg_color,
+			command=lambda:load_settings_frame) # command to go back to main screen
+
+		# create confirm button widget
+		self.confirm_btn = tk.Button(
+			self.master,
+			text="Confirm settings",
+			font=("Ubuntu", 14),
+			height=("2"),
+			width=("17"),
+			bg=bg_color,
+			fg=fg_color,
+			cursor="hand2",
+			activebackground=act_bg_color,
+			activeforeground=act_fg_color,
+			command=send_settings) # command to send settings to NanoLab
+			
+		self.w_pump_preview_title.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, padx="8", pady="5")
+		self.wp_long_label.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky="w", padx="8", pady="5")
+		self.wp_fre_label.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky="w", padx="8", pady="5")
+		self.wp_delay_label.grid(row=self.rownum+3, columnspan=self.colspan, column=self.colnum, sticky="w", padx="8", pady="5")
+
+		self.led_preview_title.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum+3, padx="8", pady="5")
+
+		self.fan_preview_title.grid(row=self.rownum+4, columnspan=self.colspan, column=self.colnum, padx="8", pady="5")
+
+		self.cam_preview_title.grid(row=self.rownum+4, columnspan=self.colspan, column=self.colnum+3, padx="8", pady="5")
+
+		self.atmos_preview_title.grid(row=self.rownum+7, columnspan=self.colspan, column=self.colnum, padx="8", pady="5")
+
+		self.cancel_btn.grid(row=self.rownum+7, columnspan=1, column=self.colnum+3, sticky="w", padx="5", pady="3")
+		self.confirm_btn.grid(row=self.rownum+7, columnspan=1, column=self.colnum+4, sticky="e", padx="5", pady="3")
 
 # set functions
 # functions for website buttons
@@ -527,6 +563,11 @@ def clear_widgets(root):
 
 def raise_main_set():
 	settings_frame.tkraise()
+
+def toggle_bool(value):
+	value = not value
+	print(value)
+	return value
 
 
 # defining button bar on top
@@ -670,18 +711,12 @@ def load_settings_frame():
 		dates = []
 		dates.append(end_cal.get_date())
 		dates.append(start_cal.get_date())
-		print(f"Experiment will run from {dates[1]} - {dates[0]}")
-		f.write(f"Experiment will run from {dates[1]} - {dates[0]} \n")
-		"""
-		# date.config(text = "" + start_cal.get_date() + "-" + end_cal.get_date())
-		start_date = start_cal.get_date()
-		end_date = end_cal.get_date()
-		return start_date
-		return end_date
-		print(start_date)
-		print(end_date)
-		print(f"Experiment will run from {start_date} - {end_date}")
-		"""
+		# print(f"Experiment will run from {dates[1]} - {dates[0]}")
+		schedule = dates[1] + "\n" + dates[0]
+		print(schedule)
+		f.write(schedule)
+		f.write("\n")
+		schedule_changed = True
 
 	schedule_label = Label(settings_frame, text="Schedule", font=("Ubuntu", 18), bg=bg_color, fg=fg_color)
 	schedule_label.grid(row=1, columnspan=1, column=2, sticky="n", padx="8", pady="5")
@@ -766,6 +801,9 @@ def load_w_pump_settings_frame():
 
 	def save_wp_set():
 		print(sliders1)
+		f.write(str(sliders1))
+		f.write("\n")
+		wp_changed = True
 
 	# master, rownum, colnum, colspan, command
 	savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, save_wp_set) # fix command
@@ -988,15 +1026,17 @@ def load_led_settings_frame():
 		).grid(row=2, columnspan=1, column=12, sticky="wn", padx="5", pady="3")
 
 	# RGB color picker
-	rgb_code = ""
+	# global rgb_code
+	rgb_code = 0
 	def choose_color(value):
 		# variable to store hexadecimal code of color
 		color_code = colorchooser.askcolor(title ="Choose color", initialcolor="#7714b9")
 		value = color_code[0]
 		print(value)
+		global rgb_code
+		rgb_code = value
 		return value
 	# rgb_code = choose_color(rgb_code)
-	# print(rgb_code)
 
 	# button to open color picker
 	color_btn = tk.Button(led_settings_frame,text = 'Select precise color', font=normal_font, bg=bg_color, fg=fg_color, command = lambda:choose_color(rgb_code))
@@ -1018,9 +1058,15 @@ def load_led_settings_frame():
 	led_slider.grid(rowspan=1, row=4, columnspan=8, column=10, sticky="n")
 
 	# save button using classes
-
 	def save_led_set(): # add more stuff
 		print(sliders2)
+		f.write(str(sliders2))
+		f.write("\n")
+		print(rgb_code)
+		print("test")
+		f.write(str(rgb_code))
+		f.write("\n")
+		led_changed = True
 
 	# master, rownum, colnum, colspan, command
 	savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, save_led_set)
@@ -1136,6 +1182,7 @@ def load_camera_settings_frame():
 	
 	def save_cam_set(): # add more stuff
 		print(sliders4)
+		cam_changed = True
 
 	# master, rownum, colnum, colspan, command
 	savebtn4 = SaveBtn(camera_settings_frame, 5, 1, 16, save_cam_set)
@@ -1204,6 +1251,7 @@ def load_atmos_sensor_frame():
 
 	def save_atmos_set(): # add more stuff
 		print(sliders5)
+		atmos_changed = True
 
 	# master, rownum, colnum, colspan, command
 	savebtn5 = SaveBtn(atmos_sensor_frame, 5, 1, 15, save_atmos_set)
@@ -1381,55 +1429,7 @@ def load_set_preview_frame(): # preview of settings
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	set_preview_title = Label(set_preview_frame, text = "Preview Your Settings", font=title_font, bg=bg_color, fg=fg_color)
-	set_preview_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
-
-	w_pump_preview_title = Label(set_preview_frame, bg=bg_color, fg=fg_color, text = "Water Pump", font=("Ubuntu", 14))
-	w_pump_preview_title.grid(row=1, columnspan=2, column=1, padx="8", pady="5")
-
-	LED_preview_title = Label(set_preview_frame, bg=bg_color, fg=fg_color, text = "LED", font=("Ubuntu", 14))
-	LED_preview_title.grid(row=1, columnspan=2, column=3, padx="8", pady="5")
-
-	fan_preview_title = Label(set_preview_frame, bg=bg_color, fg=fg_color, text = "Fan", font=("Ubuntu", 14))
-	fan_preview_title.grid(row=2, columnspan=2, column=1, padx="8", pady="5")
-
-	camera_preview_title = Label(set_preview_frame, bg=bg_color, fg=fg_color, text = "Camera", font=("Ubuntu", 14))
-	camera_preview_title.grid(row=2, columnspan=2, column=3, padx="8", pady="5")
-
-	atmos_preview_title = Label(set_preview_frame, bg=bg_color, fg=fg_color, text = "Atmospheric Sensor", font=("Ubuntu", 14))
-	atmos_preview_title.grid(row=3, columnspan=2, column=1, padx="8", pady="5")
-
-	# create cancel button widget
-	tk.Button(
-		set_preview_frame,
-		text="Cancel",
-		font=("Ubuntu", 14),
-		height=("2"),
-		width=("17"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=lambda:load_settings_frame # command to go back to main screen
-		).grid(row=3, columnspan=1, column=3, sticky="w", padx="5", pady="3")
-
-	# create confirm button widget
-	tk.Button(
-		set_preview_frame,
-		text="Confirm settings",
-		font=("Ubuntu", 14),
-		height=("2"),
-		width=("17"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=send_settings # command to send settings to NanoLab
-		).grid(row=3, columnspan=1, column=4, sticky="w", padx="5", pady="3")
-
-	print(all_set)
+	all_set_preview = SetPreview()
 
 	# set frame in window
 	set_preview_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
@@ -1438,7 +1438,7 @@ def load_set_preview_frame(): # preview of settings
 # run main app
 load_menu()
 load_settings_frame()
-f.close()
+# f.close()
 root.mainloop()
 
 # main window end
