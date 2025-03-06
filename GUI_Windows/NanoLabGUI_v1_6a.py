@@ -20,7 +20,7 @@ import datetime
 from datetime import date 
 from matplotlib.figure import Figure 
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-import array 
+import numpy as np
 
 # set fonts
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
@@ -289,9 +289,9 @@ fan_changed = False
 cam_changed = False
 atmos_changed = False
 
-f = open("data/settings.csv", "w")
+f = open("C:/Users/rcpow/Documents/GitHub/NanoLab-GUI/NanoLab-GUI/Arduino/basic_hydrofuge_schedule/array_for_arduino.h", "w")
 # f.write(all_set + '\n')
-# f.write("rehehe \n")
+f.write("test \n")
 # f.write("rehehe2 \n")
 
 # initiallize app with basic settings
@@ -459,19 +459,75 @@ class SetPreview: # command
 	rownum = 1
 	colnum = 1
 	colspan = 2
+	# schedule
+	# led_color = rgb_code
+	# led_bright = brightness
+	# fan_strength = fan_str
+	# gas_check = gas_check
+	# temp_check = temp_check
+	# humid_check = humid_check
+	# bar_press_check = bar_press_check
 
 	def __init__(self):
 		# self.command = command
 
-		self.w_pump_preview_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Water Pump", font=("Ubuntu", 14))
-		self.wp_long_label = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
-		self.wp_fre_label = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
-		self.wp_delay_label = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
 
-		self.led_preview_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "LED", font=("Ubuntu", 14))
-		self.fan_preview_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Fan", font=("Ubuntu", 14))
-		self.cam_preview_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Camera", font=("Ubuntu", 14))
-		self.atmos_preview_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Atmospheric Sensor", font=("Ubuntu", 14))
+		self.start_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Start Date", font=("Ubuntu", 14))
+		self.start_date_label = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "3/6/2025", font=normal_font)
+		self.end_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "End Date", font=("Ubuntu", 14))
+		self.end_date_label = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "3/7/2025", font=normal_font)
+
+		self.wp_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
+		self.wp_preview_title = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = "Water Pump", font=("Ubuntu", 14))
+		self.wp_long_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
+		self.wp_fre_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
+		self.wp_delay_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
+		self.wp_filler_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=bg_color, text = "How much delay: ", font=(normal_font))
+		self.wp_filler_label2 = tk.Label(self.wp_preview_frame, bg=bg_color, fg=bg_color, text = "How much delay: ", font=(normal_font))
+
+		self.led_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
+		self.led_preview_title = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = "LED", font=("Ubuntu", 14))
+		self.led_long_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
+		self.led_fre_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
+		self.led_delay_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
+		self.led_color_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"Color: #834e02", font=(normal_font))
+		# create led color box widget
+		self.led_color_box = tk.Button(
+			self.led_preview_frame,
+			text="B",
+			font=("Ubuntu", 10),
+			height=("0"),
+			width=("3"),
+			bg="#834e02",
+			fg="#834e02",
+			cursor="hand2",
+			activebackground=act_bg_color,
+			activeforeground=act_bg_color)	
+		self.led_bright_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"Brightness: 50%", font=(normal_font))	
+
+		self.fan_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
+		self.fan_preview_title = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = "Fan", font=("Ubuntu", 14))
+		self.fan_long_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
+		self.fan_fre_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
+		self.fan_delay_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
+		self.fan_strength_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"Fan Strength: 30%", font=(normal_font))
+
+		self.cam_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
+		self.cam_preview_title = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = "Camera", font=("Ubuntu", 14))
+		self.cam_long_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
+		self.cam_fre_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
+		self.cam_delay_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
+
+		self.atmos_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
+		self.atmos_preview_title = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "Atmospheric Sensor", font=("Ubuntu", 14))
+		self.atmos_long_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
+		self.atmos_fre_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
+		self.atmos_delay_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
+		self.atmos_check1_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Gas (VOCs) = True", font=(normal_font))
+		self.atmos_check2_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Temperature = False", font=(normal_font))
+		self.atmos_check3_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Humidity = True", font=(normal_font))
+		self.atmos_check4_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Barometric Pressure = True", font=(normal_font))
+
 
 		# create cancel button widget
 		self.cancel_btn = tk.Button(
@@ -500,22 +556,55 @@ class SetPreview: # command
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
 			command=send_settings) # command to send settings to NanoLab
-			
-		self.w_pump_preview_title.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, padx="8", pady="5")
-		self.wp_long_label.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky="w", padx="8", pady="5")
-		self.wp_fre_label.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky="w", padx="8", pady="5")
-		self.wp_delay_label.grid(row=self.rownum+3, columnspan=self.colspan, column=self.colnum, sticky="w", padx="8", pady="5")
+		
+		# place everything
+		self.start_date_title.grid(columnspan=6, row=1, column=1, sticky="nesw", padx="8", pady="5")
+		self.start_date_label.grid(columnspan=6, row=2, column=1, sticky="nesw", padx="8", pady="5")
+		self.end_date_title.grid(columnspan=6, row=1, column=6, sticky="nesw", padx="8", pady="5")
+		self.end_date_label.grid(columnspan=6, row=2, column=6, sticky="nesw", padx="8", pady="5")
 
+		self.wp_preview_frame.grid(rowspan=6, columnspan=self.colspan+1, row=3, column=1, sticky="nesw", padx="8", pady="5")
+		self.wp_preview_title.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, padx="8", pady="5")
+		self.wp_long_label.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.wp_fre_label.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.wp_delay_label.grid(row=self.rownum+3, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.wp_filler_label.grid(row=self.rownum+4, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.wp_filler_label2.grid(row=self.rownum+5, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+
+		self.led_preview_frame.grid(rowspan=6, columnspan=self.colspan+1, row=3, column=4, sticky="nesw", padx="8", pady="5")
 		self.led_preview_title.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum+3, padx="8", pady="5")
+		self.led_long_label.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
+		self.led_fre_label.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
+		self.led_delay_label.grid(row=self.rownum+3, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
+		self.led_color_label.grid(row=self.rownum+4, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
+		self.led_color_box.grid(row=self.rownum+4, columnspan=1, column=self.colnum+5, sticky="w", padx="5", pady="3")
+		self.led_bright_label.grid(row=self.rownum+5, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
 
-		self.fan_preview_title.grid(row=self.rownum+4, columnspan=self.colspan, column=self.colnum, padx="8", pady="5")
+		self.fan_preview_frame.grid(rowspan=6, columnspan=self.colspan+1, row=10, column=1, sticky="nesw", padx="8", pady="5")
+		self.fan_preview_title.grid(row=self.rownum+6, columnspan=self.colspan, column=self.colnum, padx="8", pady="5")
+		self.fan_long_label.grid(row=self.rownum+7, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.fan_fre_label.grid(row=self.rownum+8, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.fan_delay_label.grid(row=self.rownum+9, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.fan_strength_label.grid(row=self.rownum+10, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		
+		self.cam_preview_frame.grid(rowspan=6, columnspan=self.colspan+1, row=10, column=4, sticky="nesw", padx="8", pady="5")
+		self.cam_preview_title.grid(row=self.rownum+6, columnspan=self.colspan, column=self.colnum+3, padx="8", pady="5")
+		self.cam_long_label.grid(row=self.rownum+7, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
+		self.cam_fre_label.grid(row=self.rownum+8, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
+		self.cam_delay_label.grid(row=self.rownum+9, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
 
-		self.cam_preview_title.grid(row=self.rownum+4, columnspan=self.colspan, column=self.colnum+3, padx="8", pady="5")
-
-		self.atmos_preview_title.grid(row=self.rownum+7, columnspan=self.colspan, column=self.colnum, padx="8", pady="5")
-
-		self.cancel_btn.grid(row=self.rownum+7, columnspan=1, column=self.colnum+3, sticky="w", padx="5", pady="3")
-		self.confirm_btn.grid(row=self.rownum+7, columnspan=1, column=self.colnum+4, sticky="e", padx="5", pady="3")
+		self.atmos_preview_frame.grid(rowspan=13, columnspan=self.colspan+1, row=3, column=10, sticky="nesw", padx="8", pady="5")
+		self.atmos_preview_title.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, padx="8", pady="5")
+		self.atmos_long_label.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.atmos_fre_label.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.atmos_delay_label.grid(row=self.rownum+3, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.atmos_check1_label.grid(row=self.rownum+4, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.atmos_check2_label.grid(row=self.rownum+5, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.atmos_check3_label.grid(row=self.rownum+6, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		self.atmos_check4_label.grid(row=self.rownum+7, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		
+		self.cancel_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=self.colnum, sticky="w", padx="5", pady="3")
+		self.confirm_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=self.colnum+9, sticky="e", padx="5", pady="3")
 
 # set functions
 # functions for website buttons
@@ -551,9 +640,10 @@ def test_fan():
 # LED test = test_LED()
 
 def send_settings():
-	print(repr(all_set))
+	# print(repr(all_set))
 	# arduino.write(bytes(str(repr(all_set)), 'utf-8'))
 	# something to check Arduino got it
+	f.write("send test\n")
 	print("experiment started")
 
 def clear_widgets(root):
@@ -1428,6 +1518,9 @@ def load_set_preview_frame(): # preview of settings
 	logo_widget = tk.Label(set_preview_frame, image=logo_img, bg=bg_color)
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
+
+	set_preview_title = Label(set_preview_frame, text = "Settings Preview", font=title_font, bg=bg_color, fg=fg_color)
+	set_preview_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	all_set_preview = SetPreview()
 
