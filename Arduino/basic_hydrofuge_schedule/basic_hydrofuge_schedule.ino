@@ -11,11 +11,10 @@
 #include <SPI.h>
 #include <SD.h>
 
+
 int fan = 32;  //fan pin
 
 int i = 0;
-
-File myFile;
 
 int numPixels = 16;  //Led / neopixel settings
 int led = 14;
@@ -28,33 +27,64 @@ AlarmId id;
 
 SCMD myMotorDriver;  //This creates the main object of one motor driver and connected peripherals.
 
+File dataFile;
+
+const int numReadings = 10;   // Size of the array
+char dataArray[numReadings];  // Array to hold the file contents (adjust size as needed)
+float sensorReadings[numReadings];
+
 void setup() {
   Serial.begin(115200);
-  
+
   //while(!Serial);
-  
+
   pinMode(27, INPUT_PULLUP);  //Use to halt motor movement (ground)
-  
-  
-  
+
+
+
   pinMode(fan, OUTPUT);
 
-  
-  
+
+
   //NeoPixels ********************************************//
   pixels = new Adafruit_NeoPixel(numPixels, led, pixelFormat);
   pixels->begin();
   pinMode(ledP, OUTPUT);
   digitalWrite(ledP, HIGH);  //by default we want this set to high and then flash it to low to wipe pixels.
   //did this because the pixels wouldn't clear when told too and instead were displaying random garbled barf!
-  
+
   //SD Card ******************************//
-  if(!SD.begin(5)){
+  if (!SD.begin(5)) {
     Serial.println("No SD card");
-    while(1);
+    while (1)
+      ;
   }
-    Serial.println("SD Connected");
-    myFile = SD.open("test.txt", FILE_WRITE);
+  Serial.println("SD Connected");
+
+  const int numReadings = 10;   // Size of the array
+  char dataArray[numReadings];  // Array to hold the file contents (adjust size as needed)
+
+
+
+  File dataFile = SD.open("D:\data.txt" FILE_WRITE);
+
+  if (dataFile) {
+    int index = 0;
+
+    while (dataFile.available() && index < sizeof(dataArray) - 1) {
+      dataArray[index] = dataFile.read();  // Read character by character
+      index++;
+    }
+
+    dataArray[index] = '\0';  // Null-terminate the array
+    dataFile.close();
+
+    Serial.println("File contents:");
+    Serial.println(dataArray);
+  } else {
+    Serial.println("Error opening data.txt");
+  }
+
 
   //***** Configure the Motor Driver's Settings *****//
   //  .commInter face is I2C_MODE
@@ -69,12 +99,14 @@ void setup() {
   //Time And date and Alarms ******************************//
   setTime(5, 59, 40, 1, 1, 11);  // set time to Saturday 8:29:00am Jan 1 2011
   // create the alarms, to trigger at specific times
-  Alarm.alarmRepeat(4, 0, 0, pumpOn);
-  Alarm.alarmRepeat(12, 0, 0, pumpOn);
-  Alarm.alarmRepeat(18, 0, 0, pumpOn);
-  Alarm.alarmRepeat(5, 0, 0, fanOn);
-  Alarm.alarmRepeat(6, 0, 0, ledOn);
-  Alarm.alarmRepeat(18, 30, 0, ledFanOff);
+
+
+  Alarm.alarmRepeat(dataArray[0], 0, 0, pumpOn);
+  Alarm.alarmRepeat(dataArray[1], 0, 0, pumpOn);
+  Alarm.alarmRepeat(dataArray[2], 0, 0, pumpOn);
+  Alarm.alarmRepeat(dataArray[3], 0, 0, fanOn);
+  Alarm.alarmRepeat(dataArray[4], 0, 0, ledOn);
+  Alarm.alarmRepeat(dataArray[5], 0, 0, ledFanOff);
 
 
   Serial.print("Checking for Motor Controller");
@@ -104,8 +136,24 @@ void loop() {
     switch (DoThis) {
 
       case 'I':
-          Serial.println("Beginning Settings download");
-          
+        Serial.println("Beginning Settings download");
+
+        if (Serial.available() > 0) {
+
+          float reading = Serial.parseFloat();  // Read incoming data
+          // Store the reading in the array
+
+          sensorReadings[i] = reading;
+
+          i++;
+
+          if (i >= numReadings) {
+
+            saveToSD();
+
+            i == 0;  // Reset i after saving
+          }
+        }
         break;
 
       case 'L':
@@ -159,4 +207,35 @@ void printDigits(int digits) {
   if (digits < 10)
     Serial.print('0');
   Serial.print(digits);
+}
+
+void saveToSD() {
+
+  File dataFile = SD.open("data.txt", FILE_WRITE);
+  if(!dataFile){
+    Serial.println("unable to open file");
+  }
+  else{
+    Serial.print("File opened");
+  }
+
+  if (dataFile) {
+
+    for (int i = 0; i < numReadings; i++) {
+
+      dataFile.print(sensorReadings[i]);
+
+      dataFile.print(",");  // CSV format
+    }
+
+    dataFile.println();  // New line after each batch of readings
+
+    dataFile.close();
+
+    Serial.println("Data saved to SD card.");
+
+  } else {
+
+    Serial.println("Error opening file on SD card.");
+  }
 }
