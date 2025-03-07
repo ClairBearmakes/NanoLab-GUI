@@ -5,7 +5,8 @@ array = np.array([1, 2, "f", 4, 5, 6, 7, 8, 9])
 
 # Convert array to a C-style string
 c_array = ", ".join(map(str, array))
-c_array_string = f"int myArray[] = {{ {c_array} }};\n"
+# c_array_string = f"int myArray[] = {{ {c_array} }};\n" # default
+c_array_string = f"int array = {{ {c_array} }};\n"
 c_array_string += f"const int myArraySize = {len(array)};\n"
 
 # Save to a file
