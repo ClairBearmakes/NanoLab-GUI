@@ -331,6 +331,11 @@ error_404_frame = tk.Frame(root, highlightbackground="red", highlightthickness=1
 menu.grid(row=0, column=0, sticky="nsew")
 menu.grid_rowconfigure(0, minsize=35)
 settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+led_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+fan_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+camera_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+atmos_sensor_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 # error_404_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 
 # set websites
@@ -429,8 +434,8 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 		self.delayslider.set(10)
 		self.delayslider.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
-		self.showbtn = tk.Button(self.master, text='Show slider values', font=normal_font, bg=bg_color, fg=fg_color, command=self.show_values)
-		self.showbtn.grid(row=self.rownum+3, columnspan=1, column=self.colnum, padx="7", pady="5", sticky="w")
+		# self.showbtn = tk.Button(self.master, text='Show slider values', font=normal_font, bg=bg_color, fg=fg_color, command=self.show_values)
+		# self.showbtn.grid(row=self.rownum+3, columnspan=1, column=self.colnum, padx="7", pady="5", sticky="w")
 
 	# class methods
 	def show_values(self):
@@ -455,6 +460,17 @@ class SaveBtn: # master, rownum, colnum, colspan, command
 
 
 # set functions
+# general settings
+def toggle_bool(value):
+	value = not value
+	print(value)
+	return value
+
+def clear_widgets(root):
+	# select all frame widgets and delete them
+	for frame in root.winfo_children():
+		frame.destroy()
+
 # functions for website buttons
 def opennanosite():
     webbrowser.open_new(nano_site)
@@ -487,7 +503,7 @@ def test_fan():
 
 # LED test = test_LED()
 
-
+# send settings setup
 array = np.array([1, 2, "f", 4, 5, 6, 7, 8, 9])
 
 # Convert array to a C-style string
@@ -504,19 +520,24 @@ def send_settings():
 	f.write(c_array_string)
 	print("experiment started")
 
-def clear_widgets(root):
-	# select all frame widgets and delete them
-	for frame in root.winfo_children():
-		frame.destroy()
-
+# funcs for raising frames
 def raise_main_set():
 	settings_frame.tkraise()
 
-def toggle_bool(value):
-	value = not value
-	print(value)
-	return value
+def raise_atmos_set():
+	atmos_sensor_frame.tkraise()
 
+def raise_wp_set():
+	w_pump_settings_frame.tkraise()
+
+def raise_led_set():
+	led_settings_frame.tkraise()
+
+def raise_fan_set():
+	fan_settings_frame.tkraise()
+
+def raise_camera_set():
+	camera_settings_frame.tkraise()
 
 # defining button bar on top
 def load_menu(): 
@@ -702,11 +723,11 @@ def load_settings_frame():
 			).grid(row=3, columnspan=1, column=2, sticky="", padx="5", pady="3")
 
 	# text, font, height, width, row, column, columnspan, sticky, command
-	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, 1, "sw", lambda:load_w_pump_settings_frame())
-	led_set_btn = MyButton("LED Settings", big_font, 1, 19, 4, 2, 1, "sw", lambda:load_led_settings_frame())
-	fan_set_btn = MyButton("Fan Settings", big_font, 1, 19, 4, 3, 1, "sw", lambda:load_fan_settings_frame())
-	cam_set_btn = MyButton("Camera Intervals", big_font, 1, 19, 5, 1, 1, "sw", lambda:load_camera_settings_frame())
-	atmos_set_btn = MyButton("Atmospheric Sensor", big_font, 1, 19, 5, 2, 1, "sw", lambda:load_atmos_sensor_frame())
+	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, 1, "sw", lambda:raise_wp_set())
+	led_set_btn = MyButton("LED Settings", big_font, 1, 19, 4, 2, 1, "sw", lambda:raise_led_set())
+	fan_set_btn = MyButton("Fan Settings", big_font, 1, 19, 4, 3, 1, "sw", lambda:raise_fan_set())
+	cam_set_btn = MyButton("Camera Intervals", big_font, 1, 19, 5, 1, 1, "sw", lambda:raise_cam_set())
+	atmos_set_btn = MyButton("Atmospheric Sensor", big_font, 1, 19, 5, 2, 1, "sw", lambda:raise_atmos_set())
 	if comp_count <= 5:
 		data_res_btn = MyButton("Data Results", big_font, 1, 19, 5, 3, 1, "sw", lambda:load_data_results_frame())
 	set_preview_btn = MyButton("Send settings to your NanoLab", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", lambda:load_set_preview_frame())
@@ -761,7 +782,7 @@ def load_w_pump_settings_frame():
 	w_pump_set = [50, 5, 'd/w'] #"50mL", "5d/w"
 
 	# set frame in window
-	w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+	# w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	# print("H2O pump settings loaded")
 
 
@@ -1027,7 +1048,7 @@ def load_led_settings_frame():
 	LED_set = ['red', 105] #"red", "105"
 
 	# set frame in window
-	led_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+	# led_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	# print("LED settings loaded")
 
 def load_fan_settings_frame(): 
@@ -1101,7 +1122,7 @@ def load_fan_settings_frame():
 	fan_set = [90, 30, 3, 'd/w'] #"90%", "30m/3d/w"
 
 	# set frame in window
-	fan_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+	# fan_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	# print("fan settings loaded")
 
 def load_camera_settings_frame(): 
@@ -1146,7 +1167,7 @@ def load_camera_settings_frame():
 	cam_set = [1, 'w'] #"1/w"
 
 	# set frame in window
-	camera_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+	# camera_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	# print("camera settings loaded")
 
 def load_atmos_sensor_frame(): 
@@ -1181,66 +1202,87 @@ def load_atmos_sensor_frame():
 	# master, rownum, colnum, stickdir, command
 	sliders5 = Sliders(atmos_sensor_frame, hardware, 2, 1, "w", Sliders.show_values)
 
+	if atmos_changed == False:
+		global gas_val
+		global temp_val
+		global humid_val
+		global bar_press_val
+		gas_val = False
+		temp_val = False
+		humid_val = False
+		bar_press_val = False
+	else:
+		print("nah uh")
+
 	# checkbox made with class
-	class MyCheckbox: # master, checktext, rownum, columnnum, rowspan, stickdir
-		def __init__(self, master, checktext, rownum, columnnum, rowspan, stickdir):
+	class MyCheckboxs: # master, rownum, columnnum, rowspan, stickdir
+		def __init__(self, master, rownum, columnnum, rowspan, stickdir):
 			self.master = master
-			self.checkbox_value = tk.BooleanVar()
-			self.checktext = checktext
+			self.checktext1 = "Gas (VOCs)"
+			self.checktext2 = "Temperature"
+			self.checktext3 = "Humidity"
+			self.checktext4 = "Barometric Pressure"
+			self.gas_bool = tk.BooleanVar()
+			self.temp_bool = tk.BooleanVar()
+			self.humid_bool = tk.BooleanVar()
+			self.bar_press_bool = tk.BooleanVar()
 			self.rownum = rownum
 			self.columnnum = columnnum
 			self.rowspan = rowspan
 			self.stickdir = stickdir
 
-			self.checkbox = tk.Checkbutton(master, text=self.checktext, variable=self.checkbox_value, command=self.on_change)
-			self.checkbox.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor=bg_color, relief="raised", padx=10, pady=5)
-			self.checkbox.grid(row=self.rownum, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky=stickdir)
+			self.checkbox1 = tk.Checkbutton(master, text=self.checktext1, variable=self.gas_bool, command=self.on_change)
+			self.checkbox1.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor=bg_color, relief="raised", padx=10, pady=5)
+
+			self.checkbox2 = tk.Checkbutton(master, text=self.checktext2, variable=self.temp_bool, command=self.on_change)
+			self.checkbox2.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor=bg_color, relief="raised", padx=10, pady=5)
+
+			self.checkbox3 = tk.Checkbutton(master, text=self.checktext3, variable=self.humid_bool, command=self.on_change)
+			self.checkbox3.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor=bg_color, relief="raised", padx=10, pady=5)
+
+			self.checkbox4 = tk.Checkbutton(master, text=self.checktext4, variable=self.bar_press_bool, command=self.on_change)
+			self.checkbox4.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor=bg_color, relief="raised", padx=10, pady=5)
+			
+			self.checkbox1.grid(row=self.rownum, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky=stickdir)
+			self.checkbox2.grid(row=self.rownum+1, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky=stickdir)
+			self.checkbox3.grid(row=self.rownum+2, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky=stickdir)
+			self.checkbox4.grid(row=self.rownum+3, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky=stickdir)
 
 		def on_change(self):
-			print(f"Record {self.checktext} = {self.checkbox_value.get()}")
+			#if checktext1:
+			print(f"{self.checktext1} = {self.gas_bool.get()}")
 			self.send_checks()
 
 		def send_checks(self):
-			if self.checktext == "Gas (VOCs)":
-				global gas_bool
-				gas_bool = True
-			elif self.checktext == "Temperature":
-				global temp_bool
-				temp_bool = True
-			elif self.checktext == "Humidity":
-				global humid_bool
-				humid_bool = True
-			elif self.checktext == "Barometric pressure":
-				global bar_press_bool
-				bar_press_bool = True
-			else:
-				gas_bool = False
-				temp_bool = False
-				humid_bool = False
-				bar_press_bool = False
-				print(nul)
+			global gas_val
+			global temp_val
+			global humid_val
+			global bar_press_val
+
+			gas_val = self.gas_bool.get()
+			temp_val = self.temp_bool.get()
+			humid_val = self.humid_bool.get()
+			bar_press_val = self.bar_press_bool.get()
 
 	# master, checktext, rownum, columnnum, rowspan, stickdir
-	gas_checkbox = MyCheckbox(atmos_sensor_frame, "Gas (VOCs)", 2, 6, 1, "n")
-	temp_checkbox = MyCheckbox(atmos_sensor_frame, "Temperature", 2, 6, 2, "")
-	humid_checkbox = MyCheckbox(atmos_sensor_frame, "Humidity", 3, 6, 2, "")
-	press_checkbox = MyCheckbox(atmos_sensor_frame, "Barometric pressure", 4, 6, 2, "")
+	checkboxs1 = MyCheckboxs(atmos_sensor_frame, 2, 6, 1, "n")
 
 	def save_atmos_set(): # add more stuff
 		print(sliders5)
-		print(gas_bool)
-		print(temp_bool)
-		print(humid_bool)
-		print(bar_press_bool)
+		print(gas_val)
+		print(temp_val)
+		print(humid_val)
+		print(bar_press_val)
+		global atmos_changed
 		atmos_changed = True
 
 	# master, rownum, colnum, colspan, command
-	savebtn5 = SaveBtn(atmos_sensor_frame, 5, 1, 15, save_atmos_set)
+	savebtn5 = SaveBtn(atmos_sensor_frame, 6, 1, 15, save_atmos_set)
 
 	atmos_sen_set = [2, 'd'] #"2/d"
 
 	# set frame in window
-	atmos_sensor_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
+	# atmos_sensor_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	# print("atmos sensor frame loaded")
 
 def load_data_results_frame(): 
@@ -1413,10 +1455,10 @@ class SetPreview: # command
 		self.rgb_code = rgb_code
 		self.led_brightness = led_brightness
 		self.fan_str = fan_str
-		self.gas_bool = gas_bool
-		self.temp_bool = temp_bool
-		self.humid_bool = humid_bool
-		self.bar_press_bool = bar_press_bool
+		self.gas_val = gas_val
+		self.temp_val = temp_val
+		self.humid_val = humid_val
+		self.bar_press_val = bar_press_val
 
 
 		self.start_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Start Date", font=("Ubuntu", 14))
@@ -1470,10 +1512,10 @@ class SetPreview: # command
 		self.atmos_long_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
 		self.atmos_fre_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
 		self.atmos_delay_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
-		self.atmos_check1_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Gas (VOCs) = {gas_bool}", font=(normal_font))
-		self.atmos_check2_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Temperature = {temp_bool}", font=(normal_font))
-		self.atmos_check3_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Humidity = {humid_bool}", font=(normal_font))
-		self.atmos_check4_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Barometric Pressure = {bar_press_bool}", font=(normal_font))
+		self.atmos_check1_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Gas (VOCs) = {gas_val}", font=(normal_font))
+		self.atmos_check2_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Temperature = {temp_val}", font=(normal_font))
+		self.atmos_check3_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Humidity = {humid_val}", font=(normal_font))
+		self.atmos_check4_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Barometric Pressure = {bar_press_val}", font=(normal_font))
 
 
 		# create cancel button widget
@@ -1579,6 +1621,11 @@ def load_set_preview_frame(): # preview of settings
 
 # run main app
 load_menu()
+load_w_pump_settings_frame()
+load_led_settings_frame()
+load_fan_settings_frame()
+load_camera_settings_frame()
+load_atmos_sensor_frame()
 load_settings_frame()
 # f.close()
 root.mainloop()
