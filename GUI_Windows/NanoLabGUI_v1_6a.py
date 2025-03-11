@@ -394,7 +394,7 @@ class TestButton: # master, rownum, columnnum, colspan, stickdir, command
 	# def on_change(self):
 		# print(f"Record {self.checktext} = {self.checkbox_value.get()}") 
 
-# slider
+# sliders
 class Sliders: # master, hardware, rownum, colnum, stickdir, command
 	# class variables (attributes)
 	value_label = 0
@@ -447,6 +447,7 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 
 class SaveBtn: # master, rownum, colnum, colspan, command
 	# class variables (attributes)
+	bg_color = bg_color
 
 	def __init__(self, master, rownum, colnum, colspan, command):
 		self.master = master
@@ -455,8 +456,27 @@ class SaveBtn: # master, rownum, colnum, colspan, command
 		self.colspan = colspan
 		self.command = command
 
-		self.save_btn = tk.Button(self.master, text='Save', font=normal_font, bg=bg_color, fg=fg_color, command=self.command)
+		self.save_btn = tk.Button(self.master, text='Save', font=("Ubuntu", 15), width=5, height=1,
+			bg=self.bg_color, fg=fg_color, highlightcolor=fg_color, command=self.command)
 		self.save_btn.grid(row=rownum, columnspan=colspan, column=colnum, padx="7", pady="5", sticky="")
+
+# home button to appear after saving
+class HomeBtn(): # master, rownum, colnum, colspan
+	def __init__(self, master, rownum, colnum, colspan):
+		self.master = master
+		self.rownum = rownum
+		self.colnum = colnum
+		self.colspan = colspan
+		self.command = raise_main_set
+
+		# Read the Image
+		self.home_img = Image.open("assets/night-mode.png")
+		# Resize the image using resize() method
+		self.resized_image = self.home_img.resize((50, 50))
+		self.img = ImageTk.PhotoImage(self.resized_image)
+		self.img_widget = tk.Button(self.master, image=self.img, bg="#ffffff", command=self.command)
+		self.img_widget.image = self.img
+		self.img_widget.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, sticky="", padx="3", pady="1")
 
 
 # set functions
@@ -536,7 +556,7 @@ def raise_led_set():
 def raise_fan_set():
 	fan_settings_frame.tkraise()
 
-def raise_camera_set():
+def raise_cam_set():
 	camera_settings_frame.tkraise()
 
 # defining button bar on top
@@ -686,6 +706,8 @@ def load_settings_frame():
 		print(schedule)
 		f.write(schedule)
 		f.write("\n")
+		select_schd.config(bg="green")
+		select_schd.grid(row=3, columnspan=3, column=1, sticky="", padx="1", pady="10")
 		schedule_changed = True
 		return dates
 
@@ -708,7 +730,7 @@ def load_settings_frame():
 			day=cur_day+1, mindate=datetime.date(year=cur_year, month=cur_month, day=cur_day), font=calender_font)
 	end_cal.grid(row=2, columnspan=2, column=2, padx="8", pady="5", sticky="")
 
-	tk.Button(
+	select_schd = tk.Button(
 			settings_frame,
 			text="Select Schedule",
 			font=normal_font,
@@ -719,8 +741,8 @@ def load_settings_frame():
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
-			command=lambda:sel_date() # print select dates
-			).grid(row=3, columnspan=1, column=2, sticky="", padx="5", pady="3")
+			command=lambda:sel_date()) # print selected dates
+	select_schd.grid(row=3, columnspan=3, column=1, sticky="", padx="1", pady="10")
 
 	# text, font, height, width, row, column, columnspan, sticky, command
 	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, 1, "sw", lambda:raise_wp_set())
@@ -774,6 +796,9 @@ def load_w_pump_settings_frame():
 		print(sliders1)
 		f.write(str(sliders1))
 		f.write("\n")
+		SaveBtn.bg_color = "green"
+		savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, save_wp_set)
+		homebtn1 = HomeBtn(w_pump_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
 		wp_changed = True
 
 	# master, rownum, colnum, colspan, command
@@ -973,7 +998,7 @@ def load_led_settings_frame():
 		font=normal_font,
 		height=("0"),
 		width=("7"),
-		bg=led_bg,
+		bg=bg_color,
 		fg=fg_color,
 		cursor="hand2",
 		activebackground=act_bg_color,
@@ -1040,6 +1065,9 @@ def load_led_settings_frame():
 		f.write(str(rgb_code))
 		f.write("\n")
 		print(led_brightness)
+		SaveBtn.bg_color = "green"
+		savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, save_led_set)
+		homebtn2 = HomeBtn(led_settings_frame, 5, 11, 1) # master, rownum, colnum, colspan
 		led_changed = True
 
 	# master, rownum, colnum, colspan, command
@@ -1115,6 +1143,10 @@ def load_fan_settings_frame():
 		fan_str = fan_strength_slider.get()
 		print(sliders3)
 		print(fan_str)
+		SaveBtn.bg_color = "green"
+		savebtn3 = SaveBtn(fan_settings_frame, 5, 1, 16, save_fan_set)
+		homebtn3 = HomeBtn(fan_settings_frame, 5, 10, 1) # master, rownum, colnum, colspan
+		fan_changed = True
 
 	# master, rownum, colnum, colspan, command
 	savebtn3 = SaveBtn(fan_settings_frame, 5, 1, 16, save_fan_set)
@@ -1159,6 +1191,9 @@ def load_camera_settings_frame():
 	
 	def save_cam_set(): # add more stuff
 		print(sliders4)
+		SaveBtn.bg_color = "green"
+		savebtn4 = SaveBtn(camera_settings_frame, 5, 1, 16, save_cam_set)
+		homebtn4 = HomeBtn(camera_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
 		cam_changed = True
 
 	# master, rownum, colnum, colspan, command
@@ -1273,6 +1308,9 @@ def load_atmos_sensor_frame():
 		print(temp_val)
 		print(humid_val)
 		print(bar_press_val)
+		SaveBtn.bg_color = "green"
+		savebtn5 = SaveBtn(atmos_sensor_frame, 6, 1, 15, save_atmos_set)
+		homebtn5 = HomeBtn(atmos_sensor_frame, 6, 2, 2) # master, rownum, colnum, colspan
 		global atmos_changed
 		atmos_changed = True
 
