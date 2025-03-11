@@ -403,6 +403,9 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 	durto = 360
 	freto = 24
 	delayto = 360
+	dur_val = 0
+	fre_val = 0
+	delay_val = 0
 
 	def __init__(self, master, hardware, rownum, colnum, stickdir, command):
 		self.master = master
@@ -415,32 +418,36 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 		self.colspan = 3
 		self.stickdir = stickdir
 		self.command = command
-		self.current_value = tk.DoubleVar()
-		self.current_value2 = tk.DoubleVar()
-		self.current_value3 = tk.DoubleVar()
+		self.dur_value = tk.DoubleVar()
+		self.fre_value = tk.DoubleVar()
+		self.delay_value = tk.DoubleVar()
 
 		self.durslider = Scale(self.master, from_=0, to=self.durto, length=700, resolution=10, orient=HORIZONTAL, 
-			variable=self.current_value, label=self.label_txt, font=normal_font, bg=bg_color, fg=fg_color)
+			variable=self.dur_value, label=self.label_txt, font=normal_font, bg=bg_color, fg=fg_color)
 		self.durslider.set(10)
 		self.durslider.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
 		self.freslider = Scale(self.master, from_=0, to=self.freto, length=700, resolution=1, orient=HORIZONTAL, 
-			variable=self.current_value2, label=self.label_txt2, font=normal_font, bg=bg_color, fg=fg_color)
+			variable=self.fre_value, label=self.label_txt2, font=normal_font, bg=bg_color, fg=fg_color)
 		self.freslider.set(10)
 		self.freslider.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
 		self.delayslider = Scale(self.master, from_=0, to=self.delayto, length=700, resolution=10, orient=HORIZONTAL, 
-			variable=self.current_value3, label=self.label_txt3, font=normal_font, bg=bg_color, fg=fg_color)
+			variable=self.delay_value, label=self.label_txt3, font=normal_font, bg=bg_color, fg=fg_color)
 		self.delayslider.set(10)
 		self.delayslider.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
 		# self.showbtn = tk.Button(self.master, text='Show slider values', font=normal_font, bg=bg_color, fg=fg_color, command=self.show_values)
 		# self.showbtn.grid(row=self.rownum+3, columnspan=1, column=self.colnum, padx="7", pady="5", sticky="w")
 
-	# class methods
 	def show_values(self):
-		print(self.durslider.get(), self.freslider.get(), self.delayslider.get())
-		return(self.durslider.get(), self.freslider.get(), self.delayslider.get())
+		# print(self.durslider.get(), self.freslider.get(), self.delayslider.get())
+		# return(self.durslider.get(), self.freslider.get(), self.delayslider.get())
+		global dur_val, fre_val, delay_val
+		dur_val = self.durslider.get()
+		fre_val = self.freslider.get()
+		delay_val = self.delayslider.get()
+		return(dur_val, fre_val, delay_val)
 
 	def __str__(self):
 		return f"{self.durslider.get()} {self.freslider.get()} {self.delayslider.get()}"
@@ -470,11 +477,14 @@ class HomeBtn(): # master, rownum, colnum, colspan
 		self.command = raise_main_set
 
 		# Read the Image
-		self.home_img = Image.open("assets/night-mode.png")
+		if dark_mode == True:
+			self.home_img = Image.open("assets/home-icon-dark.png")
+		else:
+			self.home_img = Image.open("assets/home-icon-light.png")
 		# Resize the image using resize() method
 		self.resized_image = self.home_img.resize((50, 50))
 		self.img = ImageTk.PhotoImage(self.resized_image)
-		self.img_widget = tk.Button(self.master, image=self.img, bg="#ffffff", command=self.command)
+		self.img_widget = tk.Button(self.master, image=self.img, bg=bg_color, command=self.command)
 		self.img_widget.image = self.img
 		self.img_widget.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, sticky="", padx="3", pady="1")
 
@@ -708,6 +718,7 @@ def load_settings_frame():
 		f.write("\n")
 		select_schd.config(bg="green")
 		select_schd.grid(row=3, columnspan=3, column=1, sticky="", padx="1", pady="10")
+		global schedule_changed
 		schedule_changed = True
 		return dates
 
@@ -793,12 +804,20 @@ def load_w_pump_settings_frame():
 	sliders1 = Sliders(w_pump_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 
 	def save_wp_set():
-		print(sliders1)
+		# print(sliders1)
+		print(sliders1.show_values())
+		global dur_val, fre_val, delay_val
+		global wp_dur, wp_fre, wp_delay
+		wp_dur = dur_val
+		wp_fre = fre_val
+		wp_delay = delay_val
+		print(wp_dur, wp_fre, wp_delay)
 		f.write(str(sliders1))
 		f.write("\n")
 		SaveBtn.bg_color = "green"
 		savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, save_wp_set)
 		homebtn1 = HomeBtn(w_pump_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
+		global wp_changed
 		wp_changed = True
 
 	# master, rownum, colnum, colspan, command
@@ -809,65 +828,6 @@ def load_w_pump_settings_frame():
 	# set frame in window
 	# w_pump_settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	# print("H2O pump settings loaded")
-
-
-# LED settings stuff
-# slider current value
-current_value = tk.DoubleVar()
-value_label = 0
-
-def get_current_value():
-	return '{:.2f}'.format(current_value.get())
-
-def slider_changed():
-    # value_label.configure(text=get_current_value())
-    # ser.write(get_current_value()) # relace with send brightness to Arduino
-	# arduino.write(bytes(get_current_value(), 'utf-8'))  # Convert to bytes
-	print('brightness', get_current_value())
-
-# set colors for default color buttons
-led_bg = "#ECECEC"
-red_fg = "red"
-orange_fg = "#834e02"
-yellow_fg = "#787934"
-green_fg = "green"
-blue_fg = "blue"
-purple_fg = "purple"
-
-def test_LED():
-	arduino.write(bytes('I', 'utf-8'))
-
-def redLED():
-	arduino.write(bytes('RR', str(get_current_value()), 'utf-8'))
-	time.sleep(0.05)
-
-def orangeLED():
-	arduino.write(bytes('OO', str(get_current_value()), 'utf-8'))
-	time.sleep(0.05)
-
-def yellowLED():
-	arduino.write(bytes('YY', str(get_current_value()), 'utf-8'))
-	time.sleep(0.05)
-
-def greenLED():
-	arduino.write(bytes('GG', str(get_current_value()), 'utf-8'))
-	time.sleep(0.05)
-
-def blueLED():
-	arduino.write(bytes('BB', str(get_current_value()), 'utf-8'))
-	time.sleep(0.05)
-
-def purpleLED():
-	arduino.write(bytes('PP', str(get_current_value()), 'utf-8'))
-	time.sleep(0.05)
-
-def PARTYLED():
-	# arduino.write(bytes("ROYGBPROYGBPROYGBPROYGBP", 'utf-8'))
-	time.sleep(0.05)
-	load_error()
-
-def clearLED():
-	arduino.write(bytes('CC', 'utf-8'))
 
 def load_led_settings_frame():
 	# clear_widgets(settings_frame)
@@ -881,6 +841,81 @@ def load_led_settings_frame():
 
 	# set list of settings
 	LED_set = [] #"red", "105"
+
+	# slider current value
+	current_value = tk.DoubleVar()
+	value_label = 0
+
+	def get_current_value():
+		return '{:.2f}'.format(current_value.get())
+
+	def slider_changed():
+	    # value_label.configure(text=get_current_value())
+	    # ser.write(get_current_value()) # relace with send brightness to Arduino
+		# arduino.write(bytes(get_current_value(), 'utf-8'))  # Convert to bytes
+		print('brightness', get_current_value())
+
+	# set colors for default color buttons
+	led_bg = "#ECECEC"
+	red_fg = "#DC143C"
+	orange_fg = "#834e02"
+	yellow_fg = "#787934"
+	green_fg = "green"
+	blue_fg = "blue"
+	purple_fg = "purple"
+
+	def test_LED():
+		arduino.write(bytes('I', 'utf-8'))
+
+	def redLED():
+		global rgb_code, rgb_color
+		rgb_code = "220, 20, 60"
+		rgb_color = "#DC143C"
+		led_color_box.config(bg=rgb_color, fg=rgb_color)
+		led_color_box.grid(rowspan=3, row=2, columnspan=1, column=13, padx="8", pady="5", sticky="w")
+
+	def orangeLED():
+		global rgb_code, rgb_color
+		rgb_code = "242, 140, 40"
+		rgb_color = "#F28C28"
+		led_color_box.config(bg=rgb_color, fg=rgb_color)
+		led_color_box.grid(rowspan=3, row=2, columnspan=1, column=13, padx="8", pady="5", sticky="w")
+
+	def yellowLED():
+		global rgb_code, rgb_color
+		rgb_code = "253, 218, 13"
+		rgb_color = "#FDDA0D"
+		led_color_box.config(bg=rgb_color, fg=rgb_color)
+		led_color_box.grid(rowspan=3, row=2, columnspan=1, column=13, padx="8", pady="5", sticky="w")
+
+	def greenLED():
+		global rgb_code, rgb_color
+		rgb_code = "34, 139, 34"
+		rgb_color = "#228B22"
+		led_color_box.config(bg=rgb_color, fg=rgb_color)
+		led_color_box.grid(rowspan=3, row=2, columnspan=1, column=13, padx="8", pady="5", sticky="w")
+
+	def blueLED():
+		global rgb_code, rgb_color
+		rgb_code = "0, 150, 255"
+		rgb_color = "#0096FF"
+		led_color_box.config(bg=rgb_color, fg=rgb_color)
+		led_color_box.grid(rowspan=3, row=2, columnspan=1, column=13, padx="8", pady="5", sticky="w")
+
+	def purpleLED():
+		global rgb_code, rgb_color
+		rgb_code = "191, 64, 191"
+		rgb_color = "#BF40BF"
+		led_color_box.config(bg=rgb_color, fg=rgb_color)
+		led_color_box.grid(rowspan=3, row=2, columnspan=1, column=13, padx="8", pady="5", sticky="w")
+
+	def PARTYLED():
+		# arduino.write(bytes("ROYGBPROYGBPROYGBPROYGBP", 'utf-8'))
+		time.sleep(0.05)
+		load_error()
+
+	def clearLED():
+		arduino.write(bytes('CC', 'utf-8'))
 
 	# Read the Image
 	image = Image.open("assets/NanoLabs_logo.png")
@@ -990,7 +1025,7 @@ def load_led_settings_frame():
 		activeforeground=act_fg_color,
 		command=purpleLED
 		).grid(row=2, column=15, sticky="n", padx="5", pady="3")
-
+	"""
 	# create clear color button widget
 	tk.Button(
 		led_settings_frame,
@@ -1005,7 +1040,7 @@ def load_led_settings_frame():
 		activeforeground=act_fg_color,
 		command=clearLED
 		).grid(row=2, column=16, sticky="n", padx="5", pady="3")
-
+	"""
 	# create PARTY color button widget
 	tk.Button(
 		led_settings_frame,
@@ -1022,22 +1057,38 @@ def load_led_settings_frame():
 		).grid(row=2, columnspan=1, column=12, sticky="wn", padx="5", pady="3")
 
 	# RGB color picker
-	global rgb_code
-	rgb_code = 0
+	global rgb_code, rgb_color
+	rgb_code = "191, 64, 191"
+	rgb_color = "#7714b9"
 	def choose_color(value):
 		# variable to store hexadecimal code of color
-		global rgb_code
+		global rgb_code, rgb_color
 		color_code = colorchooser.askcolor(title ="Choose color", initialcolor="#7714b9")
-		value = color_code[1]
-		print(value)
-		# print(color_code)
-		rgb_code = value
-		return value
-	# rgb_code = choose_color(rgb_code)
+		rgb_color = color_code[1]
+		rgb_code = color_code[0]
+		print(rgb_code, rgb_color)
+		led_color_box.config(bg=rgb_color, fg=rgb_color)
+		led_color_box.grid(rowspan=3, row=2, columnspan=1, column=13, padx="8", pady="5", sticky="w")
 
 	# button to open color picker
 	color_btn = tk.Button(led_settings_frame,text = 'Select precise color', font=normal_font, bg=bg_color, fg=fg_color, command = lambda:choose_color(rgb_code))
-	color_btn.grid(row=2, columnspan=3, column=12, padx="8", pady="5", sticky="s")
+	color_btn.grid(rowspan=2, row=2, columnspan=2, column=12, padx="10", pady="10", sticky="")
+
+	# box of selected color
+	led_color_label = tk.Label(led_settings_frame, bg=bg_color, fg=fg_color, text = f"Color: ", font=(normal_font))
+	led_color_label.grid(rowspan=3, row=2, columnspan=1, column=12, padx="8", pady="5", sticky="e")
+	led_color_box = tk.Button(
+		led_settings_frame,
+		text="B",
+		font=("Ubuntu", 10),
+		height=("0"),
+		width=("3"),
+		bg=rgb_color,
+		fg=rgb_color,
+		cursor="hand2",
+		activebackground=act_bg_color,
+		activeforeground=act_bg_color)
+	led_color_box.grid(rowspan=3, row=2, columnspan=1, column=13, padx="8", pady="5", sticky="w")
 
 	# label for brightness slider
 	slider_label = tk.Label(
@@ -1046,19 +1097,25 @@ def load_led_settings_frame():
     	font=normal_font,
     	bg=bg_color,
 		fg=fg_color
-	).grid(rowspan=2, row=2, columnspan=8, column=10, sticky="s", padx="0", pady="0")
+	).grid(rowspan=2, row=3, columnspan=8, column=10, sticky="", padx="0", pady="0")
 
 	# brightness slider  # highlightbackground="#ffffff"
 	led_slider = Scale(led_settings_frame, from_=0, to=250, length=570, resolution=10, orient=HORIZONTAL,
 		variable=current_value, bg=bg_color, fg=fg_color)
 	led_slider.set(200)
-	led_slider.grid(rowspan=1, row=4, columnspan=8, column=10, sticky="n")
+	led_slider.grid(rowspan=1, row=4, columnspan=8, column=10, sticky="s")
 
 	# save button using classes
-	def save_led_set(): # add more stuff
+	def save_led_set():
+		print(sliders2.show_values())
+		global dur_val, fre_val, delay_val
+		global led_dur, led_fre, led_delay
+		led_dur = dur_val
+		led_fre = fre_val
+		led_delay = delay_val
+		print(led_dur, led_fre, led_delay)
 		global led_brightness
 		led_brightness = led_slider.get()
-		print(sliders2)
 		f.write(str(sliders2))
 		f.write("\n")
 		print(rgb_code)
@@ -1068,6 +1125,7 @@ def load_led_settings_frame():
 		SaveBtn.bg_color = "green"
 		savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, save_led_set)
 		homebtn2 = HomeBtn(led_settings_frame, 5, 11, 1) # master, rownum, colnum, colspan
+		global led_changed
 		led_changed = True
 
 	# master, rownum, colnum, colspan, command
@@ -1138,14 +1196,21 @@ def load_fan_settings_frame():
 	# master, rownum, colnum, stickdir, command
 	sliders3 = Sliders(fan_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 
-	def save_fan_set(): # add more stuff
+	def save_fan_set():
+		print(sliders3.show_values())
+		global dur_val, fre_val, delay_val
+		global fan_dur, fan_fre, fan_delay
+		fan_dur = dur_val
+		fan_fre = fre_val
+		fan_delay = delay_val
+		print(fan_dur, fan_fre, fan_delay)
 		global fan_str
 		fan_str = fan_strength_slider.get()
-		print(sliders3)
 		print(fan_str)
 		SaveBtn.bg_color = "green"
 		savebtn3 = SaveBtn(fan_settings_frame, 5, 1, 16, save_fan_set)
 		homebtn3 = HomeBtn(fan_settings_frame, 5, 10, 1) # master, rownum, colnum, colspan
+		global fan_changed
 		fan_changed = True
 
 	# master, rownum, colnum, colspan, command
@@ -1189,11 +1254,18 @@ def load_camera_settings_frame():
 	# master, rownum, colnum, stickdir, command
 	sliders4 = Sliders(camera_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 	
-	def save_cam_set(): # add more stuff
-		print(sliders4)
+	def save_cam_set():
+		print(sliders4.show_values())
+		global dur_val, fre_val, delay_val
+		global cam_dur, cam_fre, cam_delay
+		cam_dur = dur_val
+		cam_fre = fre_val
+		cam_delay = delay_val
+		print(cam_dur, cam_fre, cam_delay)
 		SaveBtn.bg_color = "green"
 		savebtn4 = SaveBtn(camera_settings_frame, 5, 1, 16, save_cam_set)
 		homebtn4 = HomeBtn(camera_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
+		global cam_changed
 		cam_changed = True
 
 	# master, rownum, colnum, colspan, command
@@ -1302,15 +1374,21 @@ def load_atmos_sensor_frame():
 	# master, checktext, rownum, columnnum, rowspan, stickdir
 	checkboxs1 = MyCheckboxs(atmos_sensor_frame, 2, 6, 1, "n")
 
-	def save_atmos_set(): # add more stuff
-		print(sliders5)
+	def save_atmos_set():
+		print(sliders5.show_values())
+		global dur_val, fre_val, delay_val
+		global atmos_dur, atmos_fre, atmos_delay
+		atmos_dur = dur_val
+		atmos_fre = fre_val
+		atmos_delay = delay_val
+		print(atmos_dur, atmos_fre, atmos_delay)
 		print(gas_val)
 		print(temp_val)
 		print(humid_val)
 		print(bar_press_val)
 		SaveBtn.bg_color = "green"
 		savebtn5 = SaveBtn(atmos_sensor_frame, 6, 1, 15, save_atmos_set)
-		homebtn5 = HomeBtn(atmos_sensor_frame, 6, 2, 2) # master, rownum, colnum, colspan
+		homebtn5 = HomeBtn(atmos_sensor_frame, 6, 4, 2) # master, rownum, colnum, colspan
 		global atmos_changed
 		atmos_changed = True
 
@@ -1481,24 +1559,77 @@ class SetPreview: # command
 	rownum = 1
 	colnum = 1
 	colspan = 2
-	# fan_strength = fan_str
-	# gas_check = gas_check
-	# temp_check = temp_check
-	# humid_check = humid_check
-	# bar_press_check = bar_press_check
 
 	def __init__(self):
-		# self.command = command
-		self.dates = dates
-		self.rgb_code = rgb_code
-		self.led_brightness = led_brightness
-		self.fan_str = fan_str
-		self.gas_val = gas_val
-		self.temp_val = temp_val
-		self.humid_val = humid_val
-		self.bar_press_val = bar_press_val
+		if all([schedule_changed, wp_changed, led_changed, fan_changed, cam_changed, atmos_changed]) == True:
+			print("all settings changed")
+			all_changed = True
+		else:
+			print("Not all settings changed")
+			all_changed = False
 
+		if all_changed == True:
+			# pull all values
+			self.dates = dates
+			self.wp_dur = wp_dur
+			self.wp_fre = wp_fre
+			self.wp_delay = wp_delay
 
+			self.led_dur = led_dur
+			self.led_fre = led_fre
+			self.led_delay = led_delay
+			self.rgb_code = rgb_code
+			self.rgb_color = rgb_color
+			self.led_brightness = led_brightness
+
+			self.fan_dur = fan_dur
+			self.fan_fre = fan_fre
+			self.fan_delay = fan_delay
+			self.fan_str = fan_str
+
+			self.cam_dur = cam_dur
+			self.cam_fre = cam_fre
+			self.cam_delay = cam_delay
+
+			self.atmos_dur = atmos_dur
+			self.atmos_fre = atmos_fre
+			self.atmos_delay = atmos_delay
+			self.gas_val = gas_val
+			self.temp_val = temp_val
+			self.humid_val = humid_val
+			self.bar_press_val = bar_press_val
+		else: ## change all these to be values, not pulled variables ##
+			# set all values
+			self.dates = dates
+			self.wp_dur = wp_dur
+			self.wp_fre = wp_fre
+			self.wp_delay = wp_delay
+
+			self.led_dur = led_dur
+			self.led_fre = led_fre
+			self.led_delay = led_delay
+			self.rgb_code = rgb_code
+			self.rgb_color = rgb_color
+			self.led_brightness = led_brightness
+
+			self.fan_dur = fan_dur
+			self.fan_fre = fan_fre
+			self.fan_delay = fan_delay
+			self.fan_str = fan_str
+
+			self.cam_dur = cam_dur
+			self.cam_fre = cam_fre
+			self.cam_delay = cam_delay
+
+			self.atmos_dur = atmos_dur
+			self.atmos_fre = atmos_fre
+			self.atmos_delay = atmos_delay
+			self.gas_val = gas_val
+			self.temp_val = temp_val
+			self.humid_val = humid_val
+			self.bar_press_val = bar_press_val
+
+		# define graphical elements
 		self.start_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Start Date", font=("Ubuntu", 14))
 		self.start_date_label = tk.Label(self.master, bg=bg_color, fg=fg_color, text = self.dates[1], font=normal_font)
 		self.end_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "End Date", font=("Ubuntu", 14))
@@ -1506,17 +1637,17 @@ class SetPreview: # command
 
 		self.wp_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
 		self.wp_preview_title = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = "Water Pump", font=("Ubuntu", 14))
-		self.wp_long_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
-		self.wp_fre_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
-		self.wp_delay_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
+		self.wp_long_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {wp_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
+		self.wp_fre_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {wp_fre} (in 24h period)", font=(normal_font))
+		self.wp_delay_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {wp_delay} (minutes)", font=(normal_font))
 		self.wp_filler_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=bg_color, text = "How much delay: ", font=(normal_font))
 		self.wp_filler_label2 = tk.Label(self.wp_preview_frame, bg=bg_color, fg=bg_color, text = "How much delay: ", font=(normal_font))
 
 		self.led_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
 		self.led_preview_title = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = "LED", font=("Ubuntu", 14))
-		self.led_long_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
-		self.led_fre_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
-		self.led_delay_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
+		self.led_long_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {led_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
+		self.led_fre_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {led_fre} (in 24h period)", font=(normal_font))
+		self.led_delay_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {led_delay} (minutes)", font=(normal_font))
 		self.led_color_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"Color: {self.rgb_code}", font=(normal_font))
 		# create led color box widget
 		self.led_color_box = tk.Button(
@@ -1525,8 +1656,8 @@ class SetPreview: # command
 			font=("Ubuntu", 10),
 			height=("0"),
 			width=("3"),
-			bg=self.rgb_code,
-			fg=self.rgb_code,
+			bg=self.rgb_color,
+			fg=self.rgb_color,
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_bg_color)	
@@ -1534,22 +1665,22 @@ class SetPreview: # command
 
 		self.fan_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
 		self.fan_preview_title = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = "Fan", font=("Ubuntu", 14))
-		self.fan_long_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
-		self.fan_fre_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
-		self.fan_delay_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
+		self.fan_long_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {fan_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
+		self.fan_fre_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {fan_fre} (in 24h period)", font=(normal_font))
+		self.fan_delay_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {fan_delay} (minutes)", font=(normal_font))
 		self.fan_strength_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"Fan Strength: {fan_str}%", font=(normal_font))
 
 		self.cam_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
 		self.cam_preview_title = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = "Camera", font=("Ubuntu", 14))
-		self.cam_long_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
-		self.cam_fre_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
-		self.cam_delay_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
+		self.cam_long_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {cam_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
+		self.cam_fre_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {cam_fre} (in 24h period)", font=(normal_font))
+		self.cam_delay_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {cam_delay} (minutes)", font=(normal_font))
 
 		self.atmos_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
 		self.atmos_preview_title = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "Atmospheric Sensor", font=("Ubuntu", 14))
-		self.atmos_long_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "How long: ", font=(normal_font)) #normal_font(12 vs 14)
-		self.atmos_fre_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "How often: ", font=(normal_font))
-		self.atmos_delay_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "How much delay: ", font=(normal_font))
+		self.atmos_long_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {atmos_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
+		self.atmos_fre_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {atmos_fre} (in 24h period)", font=(normal_font))
+		self.atmos_delay_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {atmos_delay} (minutes)", font=(normal_font))
 		self.atmos_check1_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Gas (VOCs) = {gas_val}", font=(normal_font))
 		self.atmos_check2_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Temperature = {temp_val}", font=(normal_font))
 		self.atmos_check3_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Humidity = {humid_val}", font=(normal_font))
@@ -1568,7 +1699,7 @@ class SetPreview: # command
 			cursor="hand2",
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
-			command=lambda:load_settings_frame) # command to go back to main screen
+			command=lambda:raise_main_set()) # command to go back to main screen
 
 		# create confirm button widget
 		self.confirm_btn = tk.Button(
@@ -1604,7 +1735,7 @@ class SetPreview: # command
 		self.led_fre_label.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
 		self.led_delay_label.grid(row=self.rownum+3, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
 		self.led_color_label.grid(row=self.rownum+4, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
-		self.led_color_box.grid(row=self.rownum+4, columnspan=1, column=self.colnum+5, sticky="w", padx="5", pady="3")
+		self.led_color_box.grid(row=self.rownum+4, columnspan=1, column=self.colnum+4, sticky="", padx="5", pady="3")
 		self.led_bright_label.grid(row=self.rownum+5, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
 
 		self.fan_preview_frame.grid(rowspan=6, columnspan=self.colspan+1, row=10, column=1, sticky="nesw", padx="8", pady="5")
