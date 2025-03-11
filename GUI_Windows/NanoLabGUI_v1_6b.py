@@ -1,6 +1,6 @@
 
 # Code writen by Asher Powell at Warren Tech North
-# Version 1.6a
+# Version 1.6b
 
 # import dependencies
 import tkinter as tk
@@ -48,7 +48,7 @@ def closeport(): # closes port if currently open
 # set starting variables
 dev_mode = True # if True will show log button and test buttons
 beta = True # enable beta testing form button
-dark_mode = True # changes color theme
+dark_mode = False # changes color theme
 comp_count = 5 # number of components
 type_selected = False
 box_type = ""
@@ -348,24 +348,27 @@ betaform = "https://docs.google.com/forms/d/e/1FAIpQLScn_A1m8JzfphVgT83yOyETZGsv
 class MyButton: # text, font, height, width, row, column, columnspan, sticky, command
 	# class variables (attributes)
 	master = settings_frame # change with MyButton.master = whatever_frame
+	bg_color = bg_color
 
-	def __init__(self, btntext, font, btnheight, btnwidth, rownum, columnnum, colspan, stickdir, command):	
+	def __init__(self, btntext, font, btnheight, btnwidth, rownum, columnnum, colspan, stickdir, state, command):	
 		self.btntext = btntext
 		self.font = font
 		self.btnheight = btnheight
 		self.btnwidth = btnwidth
 		self.command = command
-		self.btn = tk.Button(self.master, 
-		text=self.btntext, font=font,
-		height = btnheight,  width = btnwidth,
-		bg = bg_color, fg = fg_color,
-		activebackground = act_bg_color, activeforeground = act_fg_color,
-		cursor = "hand2", command=self.command)
-		self.btn.config(padx=0, pady=0)
 		self.rownum = rownum
 		self.columnnum = columnnum
 		self.colspan = colspan
 		self.stickdir = stickdir
+		self.state = state
+
+		self.btn = tk.Button(self.master, 
+		text=self.btntext, font=font,
+		height = btnheight,  width = btnwidth,
+		bg = self.bg_color, fg = fg_color,
+		activebackground = act_bg_color, activeforeground = act_fg_color,
+		cursor = "hand2", state=self.state, command=self.command)
+		self.btn.config(padx=0, pady=0)
 		self.btn.grid(row=self.rownum, column=self.columnnum, columnspan=self.colspan, padx="8", pady="5", sticky=stickdir)
 
 	# def on_change(self):
@@ -501,6 +504,25 @@ def clear_widgets(root):
 	for frame in root.winfo_children():
 		frame.destroy()
 
+def all_set_changed():
+	if all([schedule_changed, wp_changed, led_changed, fan_changed, cam_changed, atmos_changed]) == True:
+		print("all settings changed")
+		global all_changed
+		all_changed = True
+	else:
+		print("Not all settings changed")
+		#global all_changed
+		all_changed = False
+	send_set_btn()
+
+def send_set_btn():
+	MyButton.bg_color=bg_color	
+	if all_changed == True:
+		set_preview_btn = MyButton("Send settings to your NanoLab", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", "normal", lambda:load_set_preview_frame())
+	else:
+		set_preview_btn = MyButton("Send settings to your NanoLab", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", "disabled", lambda:load_set_preview_frame())
+
+
 # functions for website buttons
 def opennanosite():
     webbrowser.open_new(nano_site)
@@ -542,15 +564,7 @@ c_array = ", ".join(map(str, array))
 c_array_string = f"int array = {{ {c_array} }};\n"
 c_array_string += f"const int myArraySize = {len(array)};\n"
 
-def send_settings():
-	# print(repr(all_set))
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8'))
-	# something to check Arduino got it
-	f.write("send test\n")
-	f.write(c_array_string)
-	print("experiment started")
-
-# funcs for raising frames
+# functions for raising frames
 def raise_main_set():
 	settings_frame.tkraise()
 
@@ -668,18 +682,19 @@ def load_menu():
 			command=lambda:load_log_frame() # open a log of what is happening right now on the Arduino
 			).grid(row=0, column=6, sticky="w", padx="5", pady="3")
 
-	# Read the Image
-	image = Image.open("assets/night-mode.png")
+
+	image = Image.open("assets/night-mode-dark.png")
 	# Resize the image using resize() method
 	resize_image = image.resize((30, 30))
 	logo_img = ImageTk.PhotoImage(resize_image)
-	logo_widget = tk.Button(menu, image=logo_img, bg="#ffffff", command=lambda:toggle_bool(dark_mode))
+	logo_widget = tk.Button(menu, image=logo_img, bg=menu_bg_color, command=lambda:toggle_bool(dark_mode))
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, columnspan=1, column=8, sticky="e", padx="3", pady="1")
 
 	# print("loaded menu")
 
 def load_settings_frame():
+	all_set_changed()
 	clear_widgets(settings_frame)
 	# clear_widgets(w_pump_settings_frame)
 	# clear_widgets(led_settings_frame)
@@ -716,10 +731,11 @@ def load_settings_frame():
 		print(schedule)
 		f.write(schedule)
 		f.write("\n")
-		select_schd.config(bg="green")
-		select_schd.grid(row=3, columnspan=3, column=1, sticky="", padx="1", pady="10")
+		MyButton.bg_color="green"
+		select_sch_btn = MyButton("Select Schedule", ("Ubuntu", 15), 1, 19, 6, 2, 1, "", "normal", lambda:sel_date())
 		global schedule_changed
 		schedule_changed = True
+		all_set_changed()
 		return dates
 
 	schedule_label = Label(settings_frame, text="Schedule", font=("Ubuntu", 18), bg=bg_color, fg=fg_color)
@@ -741,32 +757,19 @@ def load_settings_frame():
 			day=cur_day+1, mindate=datetime.date(year=cur_year, month=cur_month, day=cur_day), font=calender_font)
 	end_cal.grid(row=2, columnspan=2, column=2, padx="8", pady="5", sticky="")
 
-	select_schd = tk.Button(
-			settings_frame,
-			text="Select Schedule",
-			font=normal_font,
-			height=("0"),
-			width=("15"),
-			bg=bg_color,
-			fg=fg_color,
-			cursor="hand2",
-			activebackground=act_bg_color,
-			activeforeground=act_fg_color,
-			command=lambda:sel_date()) # print selected dates
-	select_schd.grid(row=3, columnspan=3, column=1, sticky="", padx="1", pady="10")
-
 	# text, font, height, width, row, column, columnspan, sticky, command
-	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, 1, "sw", lambda:raise_wp_set())
-	led_set_btn = MyButton("LED Settings", big_font, 1, 19, 4, 2, 1, "sw", lambda:raise_led_set())
-	fan_set_btn = MyButton("Fan Settings", big_font, 1, 19, 4, 3, 1, "sw", lambda:raise_fan_set())
-	cam_set_btn = MyButton("Camera Intervals", big_font, 1, 19, 5, 1, 1, "sw", lambda:raise_cam_set())
-	atmos_set_btn = MyButton("Atmospheric Sensor", big_font, 1, 19, 5, 2, 1, "sw", lambda:raise_atmos_set())
+	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, 1, "sw", "normal", lambda:raise_wp_set())
+	led_set_btn = MyButton("LED Settings", big_font, 1, 19, 4, 2, 1, "sw", "normal", lambda:raise_led_set())
+	fan_set_btn = MyButton("Fan Settings", big_font, 1, 19, 4, 3, 1, "sw", "normal", lambda:raise_fan_set())
+	cam_set_btn = MyButton("Camera Intervals", big_font, 1, 19, 5, 1, 1, "sw", "normal", lambda:raise_cam_set())
+	atmos_set_btn = MyButton("Atmospheric Sensor", big_font, 1, 19, 5, 2, 1, "sw", "normal", lambda:raise_atmos_set())
 	if comp_count <= 5:
-		data_res_btn = MyButton("Data Results", big_font, 1, 19, 5, 3, 1, "sw", lambda:load_data_results_frame())
-	set_preview_btn = MyButton("Send settings to your NanoLab", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", lambda:load_set_preview_frame())
+		data_res_btn = MyButton("Data Results", big_font, 1, 19, 5, 3, 1, "sw", "normal", lambda:load_data_results_frame())
 	if beta == True:
-		beta_btn = MyButton("Rate your experience", ("Ubuntu", 10), 0, 19, 7, 0, 2, "sw", lambda:openbetaform())
-
+		beta_btn = MyButton("Rate your experience", ("Ubuntu", 10), 0, 19, 7, 0, 2, "sw", "normal", lambda:openbetaform())
+	select_sch_btn = MyButton("Select Schedule", ("Ubuntu", 15), 1, 19, 6, 2, 1, "", "normal", lambda:sel_date())
+	global all_changed
+	send_set_btn()
 
 	# settings_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	# print("settings loaded")
@@ -819,6 +822,7 @@ def load_w_pump_settings_frame():
 		homebtn1 = HomeBtn(w_pump_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
 		global wp_changed
 		wp_changed = True
+		all_set_changed()
 
 	# master, rownum, colnum, colspan, command
 	savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, save_wp_set) # fix command
@@ -1127,6 +1131,7 @@ def load_led_settings_frame():
 		homebtn2 = HomeBtn(led_settings_frame, 5, 11, 1) # master, rownum, colnum, colspan
 		global led_changed
 		led_changed = True
+		all_set_changed()
 
 	# master, rownum, colnum, colspan, command
 	savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, save_led_set)
@@ -1212,6 +1217,7 @@ def load_fan_settings_frame():
 		homebtn3 = HomeBtn(fan_settings_frame, 5, 10, 1) # master, rownum, colnum, colspan
 		global fan_changed
 		fan_changed = True
+		all_set_changed()
 
 	# master, rownum, colnum, colspan, command
 	savebtn3 = SaveBtn(fan_settings_frame, 5, 1, 16, save_fan_set)
@@ -1267,6 +1273,7 @@ def load_camera_settings_frame():
 		homebtn4 = HomeBtn(camera_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
 		global cam_changed
 		cam_changed = True
+		all_set_changed()
 
 	# master, rownum, colnum, colspan, command
 	savebtn4 = SaveBtn(camera_settings_frame, 5, 1, 16, save_cam_set)
@@ -1391,6 +1398,7 @@ def load_atmos_sensor_frame():
 		homebtn5 = HomeBtn(atmos_sensor_frame, 6, 4, 2) # master, rownum, colnum, colspan
 		global atmos_changed
 		atmos_changed = True
+		all_set_changed()
 
 	# master, rownum, colnum, colspan, command
 	savebtn5 = SaveBtn(atmos_sensor_frame, 6, 1, 15, save_atmos_set)
@@ -1561,12 +1569,15 @@ class SetPreview: # command
 	colspan = 2
 
 	def __init__(self):
+		all_set_changed()
 		if all([schedule_changed, wp_changed, led_changed, fan_changed, cam_changed, atmos_changed]) == True:
 			print("all settings changed")
 			all_changed = True
 		else:
 			print("Not all settings changed")
 			all_changed = False
+
+		self.bg_color = bg_color
 
 		if all_changed == True:
 			# pull all values
@@ -1687,6 +1698,17 @@ class SetPreview: # command
 		self.atmos_check4_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Barometric Pressure = {bar_press_val}", font=(normal_font))
 
 
+		def send_settings():
+			# print(repr(all_set))
+			# arduino.write(bytes(str(repr(all_set)), 'utf-8'))
+			# something to check Arduino got it
+			f.write("send test\n")
+			f.write(c_array_string)
+			self.confirm_btn.config(bg="green")
+			self.confirm_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=7, sticky="e", padx="5", pady="3")
+			print("experiment started")
+
+
 		# create cancel button widget
 		self.cancel_btn = tk.Button(
 			self.master,
@@ -1708,7 +1730,7 @@ class SetPreview: # command
 			font=("Ubuntu", 14),
 			height=("2"),
 			width=("17"),
-			bg=bg_color,
+			bg=self.bg_color,
 			fg=fg_color,
 			cursor="hand2",
 			activebackground=act_bg_color,
@@ -1765,6 +1787,7 @@ class SetPreview: # command
 		self.confirm_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=7, sticky="e", padx="5", pady="3")
 
 def load_set_preview_frame(): # preview of settings
+	all_set_changed()
 	# clear_widgets()
 	set_preview_frame.tkraise()
 	# prevent widgets from modifying the frame
