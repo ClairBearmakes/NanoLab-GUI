@@ -1351,7 +1351,6 @@ def load_atmos_sensor_frame():
 	# checkbox made with class
 	class MyCheckboxs: # master, rownum, columnnum, rowspan, stickdir
 		def __init__(self, master, rownum, columnnum, rowspan, stickdir):
-			self.master = master
 			self.checktext1 = "Gas (VOCs)"
 			self.checktext2 = "Temperature"
 			self.checktext3 = "Humidity"
@@ -1360,6 +1359,8 @@ def load_atmos_sensor_frame():
 			self.temp_bool = tk.BooleanVar()
 			self.humid_bool = tk.BooleanVar()
 			self.bar_press_bool = tk.BooleanVar()
+
+			self.master = master
 			self.rownum = rownum
 			self.columnnum = columnnum
 			self.rowspan = rowspan
@@ -1659,6 +1660,7 @@ class SetPreview: # command
 			self.temp_val = temp_val
 			self.humid_val = humid_val
 			self.bar_press_val = bar_press_val
+		self.all_set = f"{dates}\n{wp_dur}\n{wp_fre}\n{wp_delay}\n{led_dur}\n{led_fre}\n{led_delay}\n{rgb_code}\n{led_brightness}\n{fan_dur}\n{fan_fre}\n{fan_delay}\n{fan_str}\n{cam_dur}\n{cam_fre}\n{cam_delay}\n{atmos_dur}\n{atmos_fre}\n{atmos_delay}\n{gas_val}\n{temp_val}\n{humid_val}\n{bar_press_val}\n"
 
 		# define graphical elements
 		self.start_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Start Date", font=("Ubuntu", 14))
@@ -1718,17 +1720,6 @@ class SetPreview: # command
 		self.atmos_check4_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Barometric Pressure = {bar_press_val}", font=(normal_font))
 
 
-		def send_settings():
-			# print(repr(all_set))
-			# arduino.write(bytes(str(repr(all_set)), 'utf-8'))
-			# something to check Arduino got it
-			f.write_text("send test\n")
-			f.write_text(c_array_string)
-			self.confirm_btn.config(bg="green")
-			self.confirm_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=7, sticky="e", padx="5", pady="3")
-			print("experiment started")
-
-
 		# create cancel button widget
 		self.cancel_btn = tk.Button(
 			self.master,
@@ -1742,6 +1733,17 @@ class SetPreview: # command
 			activebackground=act_bg_color,
 			activeforeground=act_fg_color,
 			command=lambda:raise_main_set()) # command to go back to main screen
+
+		def send_settings():
+			# print(repr(all_set))
+			# arduino.write(bytes(str(repr(all_set)), 'utf-8'))
+			# something to check Arduino got it
+			f.write_text("send test\n")
+			f.write_text(c_array_string)
+			self.confirm_btn.config(bg="green")
+			self.confirm_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=7, sticky="e", padx="5", pady="3")
+			f.write_text(self.all_set)
+			print("experiment started")
 
 		# create confirm button widget
 		self.confirm_btn = tk.Button(
