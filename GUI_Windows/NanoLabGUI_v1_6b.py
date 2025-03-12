@@ -538,9 +538,9 @@ def all_set_changed():
 def send_set_btn():
 	MyButton.bg_color=bg_color	
 	if all_changed == True:
-		set_preview_btn = MyButton("Send settings to your NanoLab", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", "normal", lambda:load_set_preview_frame())
+		set_preview_btn = MyButton("Preview Settings", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", "normal", lambda:load_set_preview_frame())
 	else:
-		set_preview_btn = MyButton("Send settings to your NanoLab", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", "disabled", lambda:load_set_preview_frame())
+		set_preview_btn = MyButton("Preview Settings", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", "disabled", lambda:load_set_preview_frame())
 
 
 # functions for website buttons
@@ -1349,8 +1349,8 @@ def load_atmos_sensor_frame():
 		print("nah uh")
 
 	# checkbox made with class
-	class MyCheckboxs: # master, rownum, columnnum, rowspan, stickdir
-		def __init__(self, master, rownum, columnnum, rowspan, stickdir):
+	class MyCheckboxs: # master, rownum, columnnum, rowspan
+		def __init__(self, master, rownum, columnnum, rowspan):
 			self.checktext1 = "Gas (VOCs)"
 			self.checktext2 = "Temperature"
 			self.checktext3 = "Humidity"
@@ -1364,7 +1364,6 @@ def load_atmos_sensor_frame():
 			self.rownum = rownum
 			self.columnnum = columnnum
 			self.rowspan = rowspan
-			self.stickdir = stickdir
 
 			self.checkbox1 = tk.Checkbutton(master, text=self.checktext1, variable=self.gas_bool, command=self.on_change)
 			self.checkbox1.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor=bg_color, relief="raised", padx=10, pady=5)
@@ -1378,10 +1377,10 @@ def load_atmos_sensor_frame():
 			self.checkbox4 = tk.Checkbutton(master, text=self.checktext4, variable=self.bar_press_bool, command=self.on_change)
 			self.checkbox4.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor=bg_color, relief="raised", padx=10, pady=5)
 			
-			self.checkbox1.grid(row=self.rownum, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky=stickdir)
-			self.checkbox2.grid(row=self.rownum+1, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky=stickdir)
-			self.checkbox3.grid(row=self.rownum+2, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky=stickdir)
-			self.checkbox4.grid(row=self.rownum+3, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky=stickdir)
+			self.checkbox1.grid(row=self.rownum, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky="s")
+			self.checkbox2.grid(row=self.rownum+1, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky="n")
+			self.checkbox3.grid(row=self.rownum+1, column=self.columnnum, rowspan=self.rowspan+1, padx="7", pady="5", sticky="")
+			self.checkbox4.grid(row=self.rownum+2, column=self.columnnum, rowspan=self.rowspan, padx="7", pady="5", sticky="s")
 
 		def on_change(self):
 			#if checktext1:
@@ -1399,8 +1398,11 @@ def load_atmos_sensor_frame():
 			humid_val = self.humid_bool.get()
 			bar_press_val = self.bar_press_bool.get()
 
-	# master, checktext, rownum, columnnum, rowspan, stickdir
-	checkboxs1 = MyCheckboxs(atmos_sensor_frame, 2, 6, 1, "n")
+	# master, checktext, rownum, columnnum, rowspan
+	checkboxs1 = MyCheckboxs(atmos_sensor_frame, 2, 6, 1)
+
+	reading_checks_label = tk.Label(atmos_sensor_frame, text = "What do you want to record?", font=("Ubuntu", 14), bg=bg_color, fg=fg_color, padx="8", pady="8")
+	reading_checks_label.grid(rowspan=2, row=1, column=6, sticky="", padx="8", pady="8")
 
 	def save_atmos_set():
 		print(sliders5.show_values())
@@ -1630,6 +1632,7 @@ class SetPreview: # command
 			self.temp_val = temp_val
 			self.humid_val = humid_val
 			self.bar_press_val = bar_press_val
+
 		else: ## change all these to be values, not pulled variables ##
 			# set all values
 			self.dates = dates
@@ -1660,7 +1663,8 @@ class SetPreview: # command
 			self.temp_val = temp_val
 			self.humid_val = humid_val
 			self.bar_press_val = bar_press_val
-		self.all_set = f"{dates}\n{wp_dur}\n{wp_fre}\n{wp_delay}\n{led_dur}\n{led_fre}\n{led_delay}\n{rgb_code}\n{led_brightness}\n{fan_dur}\n{fan_fre}\n{fan_delay}\n{fan_str}\n{cam_dur}\n{cam_fre}\n{cam_delay}\n{atmos_dur}\n{atmos_fre}\n{atmos_delay}\n{gas_val}\n{temp_val}\n{humid_val}\n{bar_press_val}\n"
+
+		self.all_sets = f"{dates}\n{wp_dur}\n{wp_fre}\n{wp_delay}\n{led_dur}\n{led_fre}\n{led_delay}\n{rgb_code}\n{led_brightness}\n{fan_dur}\n{fan_fre}\n{fan_delay}\n{fan_str}\n{cam_dur}\n{cam_fre}\n{cam_delay}\n{atmos_dur}\n{atmos_fre}\n{atmos_delay}\n{int(gas_val)}\n{int(temp_val)}\n{int(humid_val)}\n{int(bar_press_val)}\n"
 
 		# define graphical elements
 		self.start_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Start Date", font=("Ubuntu", 14))
@@ -1742,16 +1746,17 @@ class SetPreview: # command
 			f.write_text(c_array_string)
 			self.confirm_btn.config(bg="green")
 			self.confirm_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=7, sticky="e", padx="5", pady="3")
-			f.write_text(self.all_set)
+			f.write_text(self.all_sets)
+			arduino.write(repr(self.all_sets))
 			print("experiment started")
 
 		# create confirm button widget
 		self.confirm_btn = tk.Button(
 			self.master,
-			text="Confirm settings",
+			text="Send settings to your NanoLab", 
 			font=("Ubuntu", 14),
 			height=("2"),
-			width=("17"),
+			width=("25"),
 			bg=self.bg_color,
 			fg=fg_color,
 			cursor="hand2",
