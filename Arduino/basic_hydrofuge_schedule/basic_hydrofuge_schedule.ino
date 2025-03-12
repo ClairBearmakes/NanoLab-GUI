@@ -35,7 +35,7 @@ float sensorReadings[numReadings];
 
 void setup() {
   Serial.begin(115200);
-
+  SD.begin(5);
   //while(!Serial);
 
   pinMode(27, INPUT_PULLUP);  //Use to halt motor movement (ground)
@@ -46,14 +46,14 @@ void setup() {
 
 
 
-  //NeoPixels ********************************************//
+//NeoPixels ********************************************//
   pixels = new Adafruit_NeoPixel(numPixels, led, pixelFormat);
   pixels->begin();
   pinMode(ledP, OUTPUT);
   digitalWrite(ledP, HIGH);  //by default we want this set to high and then flash it to low to wipe pixels.
   //did this because the pixels wouldn't clear when told too and instead were displaying random garbled barf!
 
-  //SD Card ******************************//
+//SD Card ******************************//
   if (!SD.begin(5)) {
     Serial.println("No SD card");
     while (1)
@@ -65,10 +65,11 @@ void setup() {
   char dataArray[numReadings];  // Array to hold the file contents (adjust size as needed)
 
 
-
-  File dataFile = SD.open("D:\data.txt" FILE_WRITE);
-
-  if (dataFile) {
+// Settings Load Function ******************//
+   File dataFile = SD.open("data.txt" FILE_WRITE);
+  
+    
+    if (dataFile) {
     int index = 0;
 
     while (dataFile.available() && index < sizeof(dataArray) - 1) {
@@ -79,7 +80,7 @@ void setup() {
     dataArray[index] = '\0';  // Null-terminate the array
     dataFile.close();
 
-    Serial.println("File contents:");
+    
     Serial.println(dataArray);
   } else {
     Serial.println("Error opening data.txt");
@@ -129,21 +130,24 @@ void setup() {
 #define PUMP_MOTOR 0
 #define RIGHT_MOTOR 1
 
-void loop() {
+void loop() {                     //This is general functions for manual control of the NanoLab
   if (Serial.available() > 0) {  //Serial functions, it waits for the serial port to be avilible
     int DoThis = Serial.read();  // then switches case based on set the character sent
 
     switch (DoThis) {
 
       case 'I':
-        Serial.println("Beginning Settings download");
-
+        
         if (Serial.available() > 0) {
-
-          float reading = Serial.parseFloat();  // Read incoming data
+          
+          Serial.println("Beginning Settings download");
+          
+          float reading = Serial.read();  // Read incoming data
           // Store the reading in the array
 
           sensorReadings[i] = reading;
+
+          Serial.println(sensorReadings[1]);
 
           i++;
 
@@ -156,6 +160,14 @@ void loop() {
         }
         break;
 
+      case 'A': 
+          for(i == numReadings; i++;){
+          Serial.println(sensorReadings[i]);
+          }
+          i = 0;
+          break;
+
+          
       case 'L':
         pixels->fill(pixels->Color(214, 83, 211), 0, 15);
         delay(10000);
