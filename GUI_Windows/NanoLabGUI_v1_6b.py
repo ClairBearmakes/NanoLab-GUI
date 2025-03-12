@@ -21,6 +21,7 @@ from datetime import date
 from matplotlib.figure import Figure 
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import numpy as np
+from pathlib import Path
 
 # set fonts
 pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
@@ -256,9 +257,9 @@ def load_setup2():
 load_setup1()
 setup_root.mainloop()
 
+# =======================
 # setup end
 # =======================
-#"""
 
 
 # =======================
@@ -267,10 +268,9 @@ setup_root.mainloop()
 
 # creating the date object of today's date 
 todays_date = date.today() 
-  
 # printing todays date 
-print("Current date: ", todays_date) 
-
+print("Current date: ", todays_date)
+# date vars 
 cur_month = todays_date.month
 cur_day = todays_date.day
 cur_year = todays_date.year
@@ -282,6 +282,7 @@ fan_set = [] #"90%", "30m/3d/w"
 cam_set = [] #"1/w"
 atmos_sen_set = [] #"2/d"
 all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
+
 schedule_changed = False
 wp_changed = False
 led_changed = False
@@ -289,10 +290,29 @@ fan_changed = False
 cam_changed = False
 atmos_changed = False
 
-f = open("C:/Users/rcpow/Documents/GitHub/NanoLab-GUI/NanoLab-GUI/Arduino/basic_hydrofuge_schedule/array_for_arduino.h", "w")
-# f.write(all_set + '\n')
-f.write("test \n")
-# f.write("rehehe2 \n")
+# file stuff
+#f = open("C:/Users/Cato/Documents/GitHub/NanoLab-GUI/Arduino/basic_hydrofuge_schedule/array_for_arduino.h", "w")
+curdir = Path.cwd()
+# print(curdir)
+homedir = Path.home()
+# print(homedir)
+parentdir = Path(__file__).parent
+# print(parentdir)
+strtdir = Path(parentdir).parent
+# print(strtdir) # C:.../NanoLab-GUI
+file_path = Path((strtdir) / "Arduino/basic_hydrofuge_schedule")
+# print(file_path)
+f = Path(file_path / "array_for_arduino.h")
+print(f)
+if f.is_file():
+	print(f.suffix)
+else:
+	print("not a file")
+f.open(mode="w")
+f.write_text("lol")
+f.write_text(f"test \nlol \n{atmos_changed}")
+# f.write_bytes(b"0")
+# f.writelines(f"blah blah {atmos_changed}")
 
 # initiallize app with basic settings
 root = Tk() # root is the main window name
@@ -729,8 +749,8 @@ def load_settings_frame():
 		# print(f"Experiment will run from {dates[1]} - {dates[0]}")
 		schedule = dates[1] + "\n" + dates[0]
 		print(schedule)
-		f.write(schedule)
-		f.write("\n")
+		f.write_text(schedule)
+		f.write_text("\n")
 		MyButton.bg_color="green"
 		select_sch_btn = MyButton("Select Schedule", ("Ubuntu", 15), 1, 19, 6, 2, 1, "", "normal", lambda:sel_date())
 		global schedule_changed
@@ -815,8 +835,8 @@ def load_w_pump_settings_frame():
 		wp_fre = fre_val
 		wp_delay = delay_val
 		print(wp_dur, wp_fre, wp_delay)
-		f.write(str(sliders1))
-		f.write("\n")
+		f.write_text(str(sliders1))
+		f.write_text("\n")
 		SaveBtn.bg_color = "green"
 		savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, save_wp_set)
 		homebtn1 = HomeBtn(w_pump_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
@@ -1120,11 +1140,11 @@ def load_led_settings_frame():
 		print(led_dur, led_fre, led_delay)
 		global led_brightness
 		led_brightness = led_slider.get()
-		f.write(str(sliders2))
-		f.write("\n")
+		f.write_text(str(sliders2))
+		f.write_text("\n")
 		print(rgb_code)
-		f.write(str(rgb_code))
-		f.write("\n")
+		f.write_text(str(rgb_code))
+		f.write_text("\n")
 		print(led_brightness)
 		SaveBtn.bg_color = "green"
 		savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, save_led_set)
@@ -1702,8 +1722,8 @@ class SetPreview: # command
 			# print(repr(all_set))
 			# arduino.write(bytes(str(repr(all_set)), 'utf-8'))
 			# something to check Arduino got it
-			f.write("send test\n")
-			f.write(c_array_string)
+			f.write_text("send test\n")
+			f.write_text(c_array_string)
 			self.confirm_btn.config(bg="green")
 			self.confirm_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=7, sticky="e", padx="5", pady="3")
 			print("experiment started")

@@ -1,3 +1,2 @@
-test 
-3/11/25
-3/12/25
+int array = { 1, 2, f, 4, 5, 6, 7, 8, 9 };
+const int myArraySize = 9;
