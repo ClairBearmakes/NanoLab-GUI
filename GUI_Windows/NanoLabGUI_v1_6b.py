@@ -420,12 +420,9 @@ class TestButton: # master, rownum, columnnum, colspan, stickdir, command
 # sliders
 class Sliders: # master, hardware, rownum, colnum, stickdir, command
 	# class variables (attributes)
-	value_label = 0
-	value_label2 = 0
-	value_label3 = 0
-	durto = 360
-	freto = 24
-	delayto = 360
+	durto = 360 # change with Sliders.durto = int defining run time minute limit
+	freto = 24 # change with Sliders.freto = int limit defining times it runs in 24h period
+	delayto = 360 # change with Sliders.delayto = int defining delay minute limit
 	dur_val = 0
 	fre_val = 0
 	delay_val = 0
@@ -1280,6 +1277,14 @@ def load_camera_settings_frame():
 	# master, rownum, colnum, stickdir, command
 	sliders4 = Sliders(camera_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 	
+	image = Image.open("assets/sus.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((2, 5))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Button(camera_settings_frame, image=logo_img, bg=bg_color)
+	logo_widget.image = logo_img
+	logo_widget.grid(row=3, columnspan=1, column=1, sticky="e", padx="3", pady="1")
+
 	def save_cam_set():
 		print(sliders4.show_values())
 		global dur_val, fre_val, delay_val
