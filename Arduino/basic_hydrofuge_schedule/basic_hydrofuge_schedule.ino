@@ -66,7 +66,7 @@ void setup() {
 
 
 // Settings Load Function ******************//
-   File dataFile = SD.open("data.txt" FILE_WRITE);
+   File dataFile = SD.open("data.txt" FILE_WRITE); // i dont know why but this wont open the file? i dont have a solution atm
   
     
     if (dataFile) {
@@ -161,7 +161,7 @@ void loop() {                     //This is general functions for manual control
         break;
 
       case 'A': 
-          for(i == numReadings; i++;){
+          for(i == numReadings; i++;){  //this will crash a windows computer if left to run for too long
           Serial.println(sensorReadings[i]);
           }
           i = 0;
