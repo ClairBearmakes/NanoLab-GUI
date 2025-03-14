@@ -564,19 +564,19 @@ def open_files():
 # test functions
 def test_camera():
 	print("*click*")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # take picture and save it
+	arduino.write(bytes('C', 'utf-8')) # take picture and save it
 
 def test_atmos():
 	print("read atmos")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # take atmos reading and save it
+	arduino.write(bytes('A', 'utf-8')) # take atmos reading and save it
 
 def test_pump():
 	print("pump")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # pump some water and shake leaves
+	arduino.write(bytes('P', 'utf-8')) # pump some water and shake leaves
 
 def test_fan():
 	print("fan running")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # turn on the fan for a little bit
+	arduino.write(bytes('F', 'utf-8')) # turn on the fan for a little bit
 
 # LED test = test_LED()
 
@@ -897,7 +897,8 @@ def load_led_settings_frame():
 	purple_fg = "purple"
 
 	def test_LED():
-		arduino.write(bytes('I', 'utf-8'))
+		print("LED on")
+		arduino.write(bytes('L', 'utf-8'))
 
 	def redLED():
 		global rgb_code, rgb_color
@@ -1289,7 +1290,7 @@ def load_camera_settings_frame():
 	
 	if dev_mode == True:
 		# master, rownum, columnnum, colspan, stickdir, command
-		testbtn4 = TestButton(camera_settings_frame, 1, 1, 1, "w", lambda:take_picture())
+		testbtn4 = TestButton(camera_settings_frame, 1, 1, 1, "w", lambda:test_camera())
 
 	Sliders.long_true = False
 	# master, rownum, colnum, stickdir, command
@@ -1354,7 +1355,7 @@ def load_atmos_sensor_frame():
 
 	if dev_mode == True:
 		# master, rownum, columnnum, colspan, stickdir, command
-		testbtn5 = TestButton(atmos_sensor_frame, 1, 1, 1, "w", lambda:take_atmos_reading())
+		testbtn5 = TestButton(atmos_sensor_frame, 1, 1, 1, "w", lambda:test_atmos())
 
 	Sliders.long_true = False
 	# master, rownum, colnum, stickdir, command
