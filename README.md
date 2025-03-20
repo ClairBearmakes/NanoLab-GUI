@@ -1,3 +1,5 @@
+# NanoLab GUI
+
 Windows Download:
 [NanoLab_GUI_v1_setup.exe](https://github.com/ClairBearmakes/NanoLab-GUI/blob/main/NanoLab_GUI_v1_setup.exe)
 
