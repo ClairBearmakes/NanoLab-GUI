@@ -79,7 +79,7 @@ def toggle_dark(value): # maybe use stackoverflow.com/questions/60595078/impleme
 	color_mode_switch()
 # dark_mode = toggle_bool(dark_mode)
 print(dark_mode)
-def color_mode_switch():
+def set_theme():
 	if dark_mode == False:
 		# set normal colors
 		menu_bg_color = "#000000"
@@ -100,7 +100,7 @@ def color_mode_switch():
 		act_bg_color = "#808080"
 		act_fg_color = "#ffffff"
 		return(menu_bg_color, menu_fg_color, menu_act_bg_color, bg_color, fg_color, act_bg_color, act_fg_color)
-color_mode_switch()
+set_theme()
 
 #"""
 # =======================
@@ -149,9 +149,23 @@ def goto_main():
 """
 
 def load_setup1():
+	set_theme()
+
 	setup1_frame.tkraise()
 	# prevent widgets from modifying the frame
 	setup1_frame.grid_propagate(False)
+
+	# dark mode button
+	if dark_mode == True:
+		image = Image.open("assets/night-mode-dark.png")
+	else:
+		image = Image.open("assets/night-mode-light.png")
+	# Resize the image using resize() method
+	resize_image = image.resize((30, 30))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, command=lambda:toggle_dark(dark_mode))
+	logo_widget.image = logo_img
+	logo_widget.grid(row=0, columnspan=1, column=6, sticky="e", padx="3", pady="1")
 
 	# Set Label
 	welcome_label = Label(setup1_frame, text="Welcome to your NanoLab!", font=("Ubuntu-Bold", 20), bg=bg_color, fg=fg_color)
@@ -281,6 +295,7 @@ cam_set = [] #"1/w"
 atmos_sen_set = [] #"2/d"
 all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
 
+# changed bools
 schedule_changed = False
 wp_changed = False
 led_changed = False
@@ -712,14 +727,16 @@ def load_menu():
 	# Resize the image using resize() method
 	resize_image = image.resize((30, 30))
 	logo_img = ImageTk.PhotoImage(resize_image)
-	logo_widget = tk.Button(menu, image=logo_img, bg=menu_bg_color, command=lambda:toggle_bool(dark_mode))
+	logo_widget = tk.Button(menu, image=logo_img, bg=menu_bg_color, command=lambda:toggle_dark(dark_mode))
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, columnspan=1, column=8, sticky="e", padx="3", pady="1")
 
 	# print("loaded menu")
 
 def load_settings_frame():
+	set_theme()
 	all_set_changed()
+
 	clear_widgets(settings_frame)
 	# clear_widgets(w_pump_settings_frame)
 	# clear_widgets(led_settings_frame)
