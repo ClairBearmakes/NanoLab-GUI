@@ -1,15 +1,23 @@
-python
-tkinter as tk
-from tkinter import *
-from PIL import Image, ImageTk
-from numpy import random
-pyglet
-webbrowser
-serial
-sys
-time
-random
-from tkcalendar import Calendar
-from datetime import date 
-from matplotlib.figure import Figure 
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk) 
+babel==2.16.0
+contourpy==1.3.0
+cycler==0.12.1
+fonttools==4.55.6
+future==1.0.0
+iso8601==2.1.0
+kiwisolver==1.4.7
+matplotlib==3.9.4
+numpy==2.0.2
+packaging==24.2
+pillow==11.1.0
+pyglet==2.1.2
+pyparsing==3.2.1
+PyQt5==5.15.11
+PyQt5-Qt5==5.15.2
+PyQt5_sip==12.16.1
+python-dateutil==2.9.0.post0
+PyYAML==6.0.2
+serial==0.0.97
+setuptools==75.1.0
+six==1.17.0
+tkcalendar==1.6.1
+wheel==0.44.0

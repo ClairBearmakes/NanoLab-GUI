@@ -12,6 +12,7 @@ import pyglet
 import webbrowser
 import serial
 import sys
+import os
 import time
 from tkcalendar import Calendar
 import datetime
@@ -21,8 +22,18 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 import numpy as np
 from pathlib import Path
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS2
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 # set fonts
-pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
+pyglet.font.add_file(resource_path("fonts\\Ubuntu-Bold.ttf"))
 normal_font = ("Ubuntu", 12)
 big_font = ("Ubuntu", 24)
 title_font = ("Ubuntu", 46)
@@ -112,7 +123,7 @@ setup_root.title("Universal NanoLab Setup")
 setup_root.configure(bg=bg_color)
 
 # set logo
-setup_root.iconbitmap("assets/Universal logo.ico")
+setup_root.iconbitmap(resource_path("assets\\Universal logo.ico"))
 # small_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #16
 # large_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #32
 # setup_root.iconphoto(False, large_icon, small_icon)
@@ -135,6 +146,8 @@ setup2_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 def type_hydro():
 	box_type = "HydroFuge"
 	print(box_type + " selected")
+	#hydro_logo_widget.config(bg="green")
+	#hydro_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
 	type_selected = True
 
 def type_uni():
@@ -157,9 +170,9 @@ def load_setup1():
 
 	# dark mode button
 	if dark_mode == True:
-		image = Image.open("assets/night-mode-dark.png")
+		image = Image.open(resource_path("assets\\night-mode-dark.png"))
 	else:
-		image = Image.open("assets/night-mode-light.png")
+		image = Image.open(resource_path("assets\\night-mode-light.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((30, 30))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -174,12 +187,10 @@ def load_setup1():
 	welcome_label = Label(setup1_frame, text="Pick Your Version", font=("Ubuntu-Bold", 18), bg=bg_color, fg=fg_color)
 	welcome_label.grid(row=1, columnspan=8, column=0, sticky="")
 
-
 	# add image button of HydroFuge and "coming soon" for Universal
-
 	# HydroFuge
 	# Read the Image
-	image = Image.open("assets/Universal NanoLab.png")
+	image = Image.open(resource_path("assets\\Universal NanoLab.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -193,7 +204,7 @@ def load_setup1():
 
 	# Universal
 	# Read the Image
-	image = Image.open("assets/Coming Soon.png")
+	image = Image.open(resource_path("assets\\Coming Soon.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -306,33 +317,28 @@ atmos_changed = False
 # file stuff
 #f = open("C:/Users/Cato/Documents/GitHub/NanoLab-GUI/Arduino/basic_hydrofuge_schedule/array_for_arduino.h", "w")
 curdir = Path.cwd()
-# print(curdir)
 homedir = Path.home()
-# print(homedir)
 parentdir = Path(__file__).parent
-# print(parentdir)
 strtdir = Path(parentdir).parent
 # print(strtdir) # C:.../NanoLab-GUI
-file_path = Path((strtdir) / "Arduino/basic_hydrofuge_schedule")
-# print(file_path)
-f = Path(file_path / "array_for_arduino.h")
+file_path = Path((strtdir) / "Arduino\\basic_hydrofuge_schedule")
+#f = Path(file_path / "array_for_arduino.h")
+f = open('Arduino\\basic_hydrofuge_schedule\\array_for_arduino.h', 'w')
 print(f)
-if f.is_file():
-	print(f.suffix)
-else:
-	print("not a file")
-f.open(mode="w")
-f.write_text("lol")
-f.write_text(f"test \nlol \n{atmos_changed}")
+#if f.is_file():
+	#print(f.suffix)
+#else:
+	#print("not a file")
+#f.open(mode="w")
+# f.write_text(f"test \nlol \n{atmos_changed}")
 # f.write_bytes(b"0")
-# f.writelines(f"blah blah {atmos_changed}")
 
 # initiallize app with basic settings
 root = Tk() # root is the main window name
 root.title("Universal NanoLab Settings")
 root.configure(bg="white")
 # set logo
-root.iconbitmap("assets/Universal logo.ico")
+root.iconbitmap(resource_path("assets\\Universal logo.ico"))
 # small_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #16
 # large_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #32
 # root.iconphoto(True, large_icon, small_icon)
@@ -518,9 +524,9 @@ class HomeBtn(): # master, rownum, colnum, colspan
 
 		# Read the Image
 		if dark_mode == True:
-			self.home_img = Image.open("assets/home-icon-dark.png")
+			self.home_img = Image.open(resource_path("assets\\home-icon-dark.png"))
 		else:
-			self.home_img = Image.open("assets/home-icon-light.png")
+			self.home_img = Image.open(resource_path("assets\\home-icon-light.png"))
 		# Resize the image using resize() method
 		self.resized_image = self.home_img.resize((50, 50))
 		self.img = ImageTk.PhotoImage(self.resized_image)
@@ -723,7 +729,7 @@ def load_menu():
 			).grid(row=0, column=6, sticky="w", padx="5", pady="3")
 
 
-	image = Image.open("assets/night-mode-dark.png")
+	image = Image.open(resource_path("assets\\night-mode-dark.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((30, 30))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -737,7 +743,7 @@ def load_settings_frame():
 	set_theme()
 	all_set_changed()
 
-	clear_widgets(settings_frame)
+	# clear_widgets(settings_frame)
 	# clear_widgets(w_pump_settings_frame)
 	# clear_widgets(led_settings_frame)
 	# clear_widgets(fan_settings_frame)
@@ -749,7 +755,7 @@ def load_settings_frame():
 	settings_frame.grid_propagate(False)
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -771,8 +777,8 @@ def load_settings_frame():
 		# print(f"Experiment will run from {dates[1]} - {dates[0]}")
 		schedule = dates[1] + "\n" + dates[0]
 		print(schedule)
-		f.write_text(schedule)
-		f.write_text("\n")
+		# f.write(schedule)
+		# f.write("\n")
 		MyButton.bg_color="green"
 		select_sch_btn = MyButton("Select Schedule", ("Ubuntu", 15), 1, 19, 6, 2, 1, "", "normal", lambda:sel_date())
 		global schedule_changed
@@ -830,7 +836,7 @@ def load_w_pump_settings_frame():
 	w_pump_set = [] #"50mL", "5d/w"
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -860,8 +866,8 @@ def load_w_pump_settings_frame():
 		wp_fre = fre_val
 		wp_delay = delay_val
 		print(wp_dur, wp_fre, wp_delay)
-		f.write_text(str(sliders1))
-		f.write_text("\n")
+		# f.write(str(sliders1))
+		# f.write("\n")
 		SaveBtn.bg_color = "green"
 		savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, save_wp_set)
 		homebtn1 = HomeBtn(w_pump_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
@@ -968,7 +974,7 @@ def load_led_settings_frame():
 		arduino.write(bytes('CC', 'utf-8'))
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1169,11 +1175,11 @@ def load_led_settings_frame():
 		print(led_dur, led_fre, led_delay)
 		global led_brightness
 		led_brightness = led_slider.get()
-		f.write_text(str(sliders2))
-		f.write_text("\n")
+		# f.write(str(sliders2))
+		# f.write("\n")
 		print(rgb_code)
-		f.write_text(str(rgb_code))
-		f.write_text("\n")
+		# f.write(str(rgb_code))
+		# f.write("\n")
 		print(led_brightness)
 		SaveBtn.bg_color = "green"
 		savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, save_led_set)
@@ -1205,7 +1211,7 @@ def load_fan_settings_frame():
 	fan_set = [] #"90%", "30m/3d/w"
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1294,7 +1300,7 @@ def load_camera_settings_frame():
 	cam_set = [] #"1/w"
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1313,7 +1319,7 @@ def load_camera_settings_frame():
 	# master, rownum, colnum, stickdir, command
 	sliders4 = Sliders(camera_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 	
-	image = Image.open("assets/sus.png")
+	image = Image.open(resource_path("assets\\sus.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((2, 5))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1359,7 +1365,7 @@ def load_atmos_sensor_frame():
 	atmos_sen_set = [] #"2/d"
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1398,9 +1404,13 @@ def load_atmos_sensor_frame():
 			self.checktext3 = "Humidity"
 			self.checktext4 = "Barometric Pressure"
 			self.gas_bool = tk.BooleanVar()
+			#self.gas_bool.set(False)
 			self.temp_bool = tk.BooleanVar()
+			#self.temp_bool.set(False)
 			self.humid_bool = tk.BooleanVar()
+			#self.humid_bool.set(False)
 			self.bar_press_bool = tk.BooleanVar()
+			#self.bar_press_bool.set(False)
 
 			self.master = master
 			self.rownum = rownum
@@ -1426,10 +1436,11 @@ def load_atmos_sensor_frame():
 
 		def on_change(self):
 			#if checktext1:
-			print(f"{self.checktext1} = {self.gas_bool.get()}")
+			#print(f"{self.checktext1} = {self.gas_bool.get()}")
 			self.send_checks()
 
 		def send_checks(self):
+			self.on_change()
 			global gas_val
 			global temp_val
 			global humid_val
@@ -1439,6 +1450,10 @@ def load_atmos_sensor_frame():
 			temp_val = self.temp_bool.get()
 			humid_val = self.humid_bool.get()
 			bar_press_val = self.bar_press_bool.get()
+			print(self.gas_val)
+			print(self.temp_val)
+			print(self.humid_val)
+			print(self.bar_press_val)
 
 	# master, checktext, rownum, columnnum, rowspan
 	checkboxs1 = MyCheckboxs(atmos_sensor_frame, 2, 6, 1)
@@ -1482,7 +1497,7 @@ def load_data_results_frame():
 	data_results_frame.grid_propagate(False)
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1566,7 +1581,6 @@ def load_data_results_frame():
 	button.grid(row=1, column=4, sticky="w")
 	"""
 
-
 	# set frame in window
 	data_results_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	# print("data results loaded")
@@ -1580,7 +1594,7 @@ def load_error():
 	e404_title.pack(fill="both", expand=True, side="top")
 
 	# Read the Image
-	image = Image.open("assets/error_404.png")
+	image = Image.open(resource_path("assets\\error_404.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((200, 200))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1602,7 +1616,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	log_frame.grid_propagate(False)
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1614,7 +1628,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	log_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
 	# Read the Image
-	image = Image.open("assets/log.jpg")
+	image = Image.open(resource_path("assets\\log.jpg"))
 	# Resize the image using resize() method
 	resize_image = image.resize((1000, 700))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1675,7 +1689,7 @@ class SetPreview: # command
 			self.humid_val = humid_val
 			self.bar_press_val = bar_press_val
 
-		else: ## change all these to be values, not pulled variables ##
+		elif all_changed == False: ## change all these to be values, not pulled variables ##
 			# set all values
 			self.predates = []
 			self.pre_start_date = f"{cur_year}-{cur_month}-{cur_day}"
@@ -1687,14 +1701,14 @@ class SetPreview: # command
 			self.wp_fre = 2
 			self.wp_delay = 720
 
-			self.led_dur = 360
+			self.led_dur = 360 #
 			self.led_fre = 2
 			self.led_delay = 360
 			self.rgb_code = "191, 64, 191"
 			self.rgb_color = "#7714b9"
 			self.led_brightness = 200
 
-			self.fan_dur = 60
+			self.fan_dur = 60 #
 			self.fan_fre = 6
 			self.fan_delay = 60
 			self.fan_str = 50
@@ -1704,17 +1718,14 @@ class SetPreview: # command
 			self.cam_delay = 720
 
 			#self.atmos_dur = atmos_dur
-			self.atmos_fre = 4
+			self.atmos_fre = 4 #
 			self.atmos_delay = 180
 			self.gas_val = False
 			self.temp_val = True
 			self.humid_val = True
 			self.bar_press_val = False
 
-		self.all_sets = f"""{self.dates}\n{self.wp_dur}\n{self.wp_fre}\n{self.wp_delay}\n
-		{self.led_dur}\n{self.led_fre}\n{self.led_delay}\n{self.rgb_code}\n{self.led_brightness}\n
-		{self.fan_dur}\n{self.fan_fre}\n{self.fan_delay}\n{self.fan_str}\n{self.cam_fre}\n{self.cam_delay}\n
-		{self.atmos_fre}\n{self.atmos_delay}\n{int(self.gas_val)}\n{int(self.temp_val)}\n{int(self.humid_val)}\n{int(self.bar_press_val)}\n"""
+		self.all_sets = f"""{self.dates[1]}\n{self.dates[0]}\n{self.wp_dur}\n{self.wp_fre}\n{self.wp_delay}\n{self.led_dur}\n{self.led_fre}\n{self.led_delay}\n{self.rgb_code}\n{self.led_brightness}\n{self.fan_dur}\n{self.fan_fre}\n{self.fan_delay}\n{self.fan_str}\n{self.cam_fre}\n{self.cam_delay}\n{self.atmos_fre}\n{self.atmos_delay}\n{int(self.gas_val)}\n{int(self.temp_val)}\n{int(self.humid_val)}\n{int(self.bar_press_val)}\n"""
 
 		# define graphical elements
 		self.start_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Start Date", font=("Ubuntu", 14))
@@ -1792,11 +1803,9 @@ class SetPreview: # command
 			# print(repr(all_set))
 			# arduino.write(bytes(str(repr(all_set)), 'utf-8'))
 			# something to check Arduino got it
-			f.write_text("send test\n")
-			f.write_text(c_array_string)
 			self.confirm_btn.config(bg="green")
 			self.confirm_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=7, sticky="e", padx="5", pady="3")
-			f.write_text(self.all_sets)
+			f.write(self.all_sets)
 			arduino.write(repr(self.all_sets))
 			print("experiment started")
 
@@ -1871,7 +1880,7 @@ def load_set_preview_frame(): # preview of settings
 	set_preview_frame.grid_propagate(False)
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
