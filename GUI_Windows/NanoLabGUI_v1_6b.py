@@ -246,6 +246,9 @@ def load_setup1():
 		command=setup_root.destroy) # lambda:load_setup2()
 	saveBtn.grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
 
+	version_label = Label(setup1_frame, text=f"Version: {vernum}", font=("Ubuntu", 8), bg=bg_color, fg=fg_color)
+	version_label.grid(row=4, columnspan=2, column=0, sticky="s")
+
 	# print("first screen loaded")
 
 """
@@ -312,14 +315,6 @@ print("Current date: ", todays_date)
 cur_month = todays_date.month
 cur_day = todays_date.day
 cur_year = todays_date.year
-
-# lists
-w_pump_set = [] #"50mL", "5d/w"
-LED_set = [] #"red", "105"
-fan_set = [] #"90%", "30m/3d/w"
-cam_set = [] #"1/w"
-atmos_sen_set = [] #"2/d"
-all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
 
 # changed bools
 schedule_changed = False
@@ -562,10 +557,6 @@ def clear_widgets(root):
 	# select all frame widgets and delete them
 	for frame in root.winfo_children():
 		frame.destroy()
-
-def sus():
-	print("sus")
-	logf.write("sus\n")
 
 def all_set_changed():
 	if all([schedule_changed, wp_changed, led_changed, fan_changed, cam_changed, atmos_changed]) == True:
@@ -834,9 +825,11 @@ def load_settings_frame():
 	atmos_set_btn = MyButton("Atmospheric Sensor", big_font, 1, 19, 5, 2, 1, "sw", "normal", lambda:raise_atmos_set())
 	if comp_count <= 5:
 		data_res_btn = MyButton("Data Results", big_font, 1, 19, 5, 3, 1, "sw", "normal", lambda:load_data_results_frame())
+	select_sch_btn = MyButton("Select Schedule", ("Ubuntu", 15), 1, 19, 6, 2, 1, "", "normal", lambda:sel_date())
 	if beta == True:
 		beta_btn = MyButton("Rate your experience", ("Ubuntu", 10), 0, 19, 7, 0, 2, "sw", "normal", lambda:openbetaform())
-	select_sch_btn = MyButton("Select Schedule", ("Ubuntu", 15), 1, 19, 6, 2, 1, "", "normal", lambda:sel_date())
+	version_label = Label(settings_frame, text=f"Version: {vernum}", font=("Ubuntu", 10), bg=bg_color, fg=fg_color)
+	version_label.grid(row=8, columnspan=1, column=0, sticky="n")
 	global all_changed
 	send_set_btn()
 
@@ -1343,14 +1336,6 @@ def load_camera_settings_frame():
 	Sliders.long_true = False
 	# master, rownum, colnum, stickdir, command
 	sliders4 = Sliders(camera_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
-	
-	image = Image.open(resource_path("assets\\sus.png"))
-	# Resize the image using resize() method
-	resize_image = image.resize((2, 5))
-	logo_img = ImageTk.PhotoImage(resize_image)
-	logo_widget = tk.Button(camera_settings_frame, image=logo_img, bg=bg_color, command=lambda:sus())
-	logo_widget.image = logo_img
-	logo_widget.grid(row=3, columnspan=1, column=1, sticky="e", padx="3", pady="1")
 
 	def save_cam_set():
 		print(sliders4.show_values())

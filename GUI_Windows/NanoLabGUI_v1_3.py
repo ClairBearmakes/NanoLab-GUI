@@ -1,3 +1,8 @@
+
+# Code writen by Asher Powell at Warren Tech North
+# Version 1.3
+vernum = "1.3"
+
 import tkinter as tk
 from tkinter import *
 from PIL import ImageTk

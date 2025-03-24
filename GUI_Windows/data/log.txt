@@ -1,3 +1,4 @@
 test
 HydroFuge selected
 Settings file opened
+error 404 (page doesn't exist)
