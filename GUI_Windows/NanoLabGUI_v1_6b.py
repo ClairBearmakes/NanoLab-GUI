@@ -1655,7 +1655,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	log_title = Label(log_frame, text = "Log", font=title_font, bg=bg_color, fg=fg_color)
 	log_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
-	# log file display
+	# log file display ## https://stackoverflow.com/questions/43480156/how-to-display-a-files-text-in-python-tkinter-text-widget
 	# text box ## https://www.geeksforgeeks.org/python-tkinter-text-widget
 	log = tk.Text(log_frame, bg=bg_color, fg=fg_color, bd=1, font=("Ubuntu", 12), 
 		width=20, height=20, state="disabled") # yscrollcommand
