@@ -325,7 +325,6 @@ cam_changed = False
 atmos_changed = False
 
 # file stuff
-#f = open("C:/Users/Cato/Documents/GitHub/NanoLab-GUI/Arduino/basic_hydrofuge_schedule/array_for_arduino.h", "w")
 curdir = Path.cwd()
 homedir = Path.home()
 parentdir = Path(__file__).parent
@@ -333,7 +332,8 @@ strtdir = Path(parentdir).parent
 # print(strtdir) # C:.../NanoLab-GUI
 file_path = Path((strtdir) / "Arduino\\basic_hydrofuge_schedule")
 #f = Path(file_path / "array_for_arduino.h")
-f = open('Arduino\\basic_hydrofuge_schedule\\array_for_arduino.h', 'w')
+# f = open('Arduino\\basic_hydrofuge_schedule\\array_for_arduino.h', 'w')
+f = open('data\\settings.txt', 'w')
 print(f)
 logf.write("GUI: Settings file opened\n")
 #if f.is_file():
@@ -821,7 +821,7 @@ def load_settings_frame():
 	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, 1, "sw", "normal", lambda:raise_wp_set())
 	led_set_btn = MyButton("LED Settings", big_font, 1, 19, 4, 2, 1, "sw", "normal", lambda:raise_led_set())
 	fan_set_btn = MyButton("Fan Settings", big_font, 1, 19, 4, 3, 1, "sw", "normal", lambda:raise_fan_set())
-	cam_set_btn = MyButton("Camera Intervals", big_font, 1, 19, 5, 1, 1, "sw", "normal", lambda:raise_cam_set())
+	cam_set_btn = MyButton("Timelapse Intervals", big_font, 1, 19, 5, 1, 1, "sw", "normal", lambda:raise_cam_set())
 	atmos_set_btn = MyButton("Atmospheric Sensor", big_font, 1, 19, 5, 2, 1, "sw", "normal", lambda:raise_atmos_set())
 	if comp_count <= 5:
 		data_res_btn = MyButton("Data Results", big_font, 1, 19, 5, 3, 1, "sw", "normal", lambda:load_data_results_frame())
@@ -1326,7 +1326,7 @@ def load_camera_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	cam_settings_title = Label(camera_settings_frame, text = "Camera Intervals", font=title_font, bg=bg_color, fg=fg_color)
+	cam_settings_title = Label(camera_settings_frame, text = "Timelapse Intervals", font=title_font, bg=bg_color, fg=fg_color)
 	cam_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 	
 	if dev_mode == True:

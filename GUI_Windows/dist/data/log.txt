@@ -1,5 +1,6 @@
 GUI: HydroFuge selected
 GUI: Settings file opened
+GUI: dark_mode = True
 GUI: Experiment will run from 3/24/25 - 3/25/25
 GUI: Water pump settings set
 GUI: LED settings set
