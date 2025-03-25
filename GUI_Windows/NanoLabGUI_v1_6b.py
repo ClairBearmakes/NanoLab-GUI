@@ -1,6 +1,7 @@
 
 # Code writen by Asher Powell at Warren Tech North
 # Version 1.6b
+vernum = "1.6b"
 
 # import dependencies
 import tkinter as tk
@@ -8,13 +9,12 @@ import tkinter as tk
 from tkinter import *
 from tkinter import colorchooser
 from PIL import Image, ImageTk
-from numpy import random
 import pyglet
 import webbrowser
 import serial
 import sys
+import os
 import time
-import random
 from tkcalendar import Calendar
 import datetime
 from datetime import date 
@@ -23,8 +23,18 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 import numpy as np
 from pathlib import Path
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS2
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 # set fonts
-pyglet.font.add_file("fonts/Ubuntu-Bold.ttf")
+pyglet.font.add_file(resource_path("fonts\\Ubuntu-Bold.ttf"))
 normal_font = ("Ubuntu", 12)
 big_font = ("Ubuntu", 24)
 title_font = ("Ubuntu", 46)
@@ -73,15 +83,20 @@ else:
 	act_bg_color = "#808080"
 	act_fg_color = "#ffffff"
 
+# open log file
+logf = open('data\\log.txt', 'w')
+# logf.write("test\n")
+
 # ttk.Style().theme_use('black') https://stackoverflow.com/questions/24367710/how-do-i-change-the-overall-theme-of-a-tkinter-application?rq=3
 def toggle_dark(value): # maybe use stackoverflow.com/questions/60595078/implementing-dark-mode-with-on-off-function-in-simple-python-tkinter-program
 	value = not value
 	print(value)
+	logf.write(f"GUI: dark_mode = {value}\n")
 	return value
 	color_mode_switch()
 # dark_mode = toggle_bool(dark_mode)
 print(dark_mode)
-def color_mode_switch():
+def set_theme():
 	if dark_mode == False:
 		# set normal colors
 		menu_bg_color = "#000000"
@@ -102,11 +117,12 @@ def color_mode_switch():
 		act_bg_color = "#808080"
 		act_fg_color = "#ffffff"
 		return(menu_bg_color, menu_fg_color, menu_act_bg_color, bg_color, fg_color, act_bg_color, act_fg_color)
-color_mode_switch()
+set_theme()
 
-#"""
+
 # =======================
 # setup window stuff
+# =======================
 
 # create object
 setup_root = tk.Tk()
@@ -114,7 +130,7 @@ setup_root.title("Universal NanoLab Setup")
 setup_root.configure(bg=bg_color)
 
 # set logo
-setup_root.iconbitmap("assets/Universal logo.ico")
+setup_root.iconbitmap(resource_path("assets\\Universal logo.ico"))
 # small_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #16
 # large_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #32
 # setup_root.iconphoto(False, large_icon, small_icon)
@@ -134,16 +150,6 @@ setup2_frame = tk.Frame(setup_root, highlightbackground="grey", highlightthickne
 setup1_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 setup2_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 
-def type_hydro():
-	box_type = "HydroFuge"
-	print(box_type + " selected")
-	type_selected = True
-
-def type_uni():
-	box_type = "Universal"
-	print(box_type + " selected")
-	type_selected = True
-
 """
 def goto_main():
 	if selected == True:
@@ -151,9 +157,43 @@ def goto_main():
 """
 
 def load_setup1():
+	set_theme()
+
 	setup1_frame.tkraise()
 	# prevent widgets from modifying the frame
 	setup1_frame.grid_propagate(False)
+
+	def type_hydro():
+		box_type = "HydroFuge"
+		print(box_type + " selected")
+		logf.write(f"GUI: {box_type} selected\n")
+		hydro_logo_widget.config(bg="green")
+		hydro_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
+		saveBtn.config(state="normal")
+		saveBtn.grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
+		type_selected = True
+
+	def type_uni():
+		box_type = "Universal"
+		print(box_type + " selected")
+		logf.write(f"GUI: {box_type} selected\n")
+		uni_logo_widget.config(bg="green")
+		uni_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
+		saveBtn.config(state="normal")
+		saveBtn.grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
+		type_selected = True
+
+	# dark mode button
+	if dark_mode == True:
+		image = Image.open(resource_path("assets\\night-mode-dark.png"))
+	else:
+		image = Image.open(resource_path("assets\\night-mode-light.png"))
+	# Resize the image using resize() method
+	resize_image = image.resize((30, 30))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, command=lambda:toggle_dark(dark_mode))
+	logo_widget.image = logo_img
+	logo_widget.grid(row=0, columnspan=1, column=6, sticky="e", padx="3", pady="1")
 
 	# Set Label
 	welcome_label = Label(setup1_frame, text="Welcome to your NanoLab!", font=("Ubuntu-Bold", 20), bg=bg_color, fg=fg_color)
@@ -162,12 +202,10 @@ def load_setup1():
 	welcome_label = Label(setup1_frame, text="Pick Your Version", font=("Ubuntu-Bold", 18), bg=bg_color, fg=fg_color)
 	welcome_label.grid(row=1, columnspan=8, column=0, sticky="")
 
-
 	# add image button of HydroFuge and "coming soon" for Universal
-
 	# HydroFuge
 	# Read the Image
-	image = Image.open("assets/Universal NanoLab.png")
+	image = Image.open(resource_path("assets\\Universal NanoLab.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -181,7 +219,7 @@ def load_setup1():
 
 	# Universal
 	# Read the Image
-	image = Image.open("assets/Coming Soon.png")
+	image = Image.open(resource_path("assets\\Coming Soon.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -194,8 +232,7 @@ def load_setup1():
 	hydrofuge_label.grid(row=3, columnspan=3, column=4, sticky="", padx="5", pady="3")
 
 	# Finish setup or go to next frame
-	tk.Button(
-		setup1_frame,
+	saveBtn = tk.Button(setup1_frame,
 		text="Done", # Next
 		font=normal_font,
 		height=("1"),
@@ -205,8 +242,12 @@ def load_setup1():
 		cursor="hand2",
 		activebackground=act_bg_color,
 		activeforeground=act_fg_color,
-		command=setup_root.destroy # lambda:load_setup2()
-		).grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
+		state='disabled',
+		command=setup_root.destroy) # lambda:load_setup2()
+	saveBtn.grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
+
+	version_label = Label(setup1_frame, text=f"v.{vernum}", font=("Ubuntu", 8), bg=bg_color, fg=fg_color)
+	version_label.grid(row=4, columnspan=2, column=0, sticky="sw")
 
 	# print("first screen loaded")
 
@@ -275,14 +316,7 @@ cur_month = todays_date.month
 cur_day = todays_date.day
 cur_year = todays_date.year
 
-# lists
-w_pump_set = [] #"50mL", "5d/w"
-LED_set = [] #"red", "105"
-fan_set = [] #"90%", "30m/3d/w"
-cam_set = [] #"1/w"
-atmos_sen_set = [] #"2/d"
-all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
-
+# changed bools
 schedule_changed = False
 wp_changed = False
 led_changed = False
@@ -291,35 +325,31 @@ cam_changed = False
 atmos_changed = False
 
 # file stuff
-#f = open("C:/Users/Cato/Documents/GitHub/NanoLab-GUI/Arduino/basic_hydrofuge_schedule/array_for_arduino.h", "w")
 curdir = Path.cwd()
-# print(curdir)
 homedir = Path.home()
-# print(homedir)
 parentdir = Path(__file__).parent
-# print(parentdir)
 strtdir = Path(parentdir).parent
 # print(strtdir) # C:.../NanoLab-GUI
-file_path = Path((strtdir) / "Arduino/basic_hydrofuge_schedule")
-# print(file_path)
-f = Path(file_path / "array_for_arduino.h")
+file_path = Path((strtdir) / "Arduino\\basic_hydrofuge_schedule")
+#f = Path(file_path / "array_for_arduino.h")
+# f = open('Arduino\\basic_hydrofuge_schedule\\array_for_arduino.h', 'w')
+f = open('data\\settings.txt', 'w')
 print(f)
-if f.is_file():
-	print(f.suffix)
-else:
-	print("not a file")
-f.open(mode="w")
-f.write_text("lol")
-f.write_text(f"test \nlol \n{atmos_changed}")
+logf.write("GUI: Settings file opened\n")
+#if f.is_file():
+	#print(f.suffix)
+#else:
+	#print("not a file")
+#f.open(mode="w")
+# f.write_text(f"test \nlol \n{atmos_changed}")
 # f.write_bytes(b"0")
-# f.writelines(f"blah blah {atmos_changed}")
 
 # initiallize app with basic settings
 root = Tk() # root is the main window name
 root.title("Universal NanoLab Settings")
 root.configure(bg="white")
 # set logo
-root.iconbitmap("assets/Universal logo.ico")
+root.iconbitmap(resource_path("assets\\Universal logo.ico"))
 # small_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #16
 # large_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #32
 # root.iconphoto(True, large_icon, small_icon)
@@ -422,10 +452,14 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 	# class variables (attributes)
 	durto = 360 # change with Sliders.durto = int defining run time minute limit
 	freto = 24 # change with Sliders.freto = int limit defining times it runs in 24h period
-	delayto = 360 # change with Sliders.delayto = int defining delay minute limit
+	delayto = 720 # change with Sliders.delayto = int defining delay minute limit
 	dur_val = 0
+	durres = 10
 	fre_val = 0
 	delay_val = 0
+	long_true = True
+	often_true = True
+	delay_true = True
 
 	def __init__(self, master, hardware, rownum, colnum, stickdir, command):
 		self.master = master
@@ -442,20 +476,23 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 		self.fre_value = tk.DoubleVar()
 		self.delay_value = tk.DoubleVar()
 
-		self.durslider = Scale(self.master, from_=0, to=self.durto, length=700, resolution=10, orient=HORIZONTAL, 
+		self.durslider = Scale(self.master, from_=0, to=self.durto, length=700, resolution=self.durres, orient=HORIZONTAL, 
 			variable=self.dur_value, label=self.label_txt, font=normal_font, bg=bg_color, fg=fg_color)
 		self.durslider.set(10)
-		self.durslider.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+		if self.long_true == True:
+			self.durslider.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
 		self.freslider = Scale(self.master, from_=0, to=self.freto, length=700, resolution=1, orient=HORIZONTAL, 
 			variable=self.fre_value, label=self.label_txt2, font=normal_font, bg=bg_color, fg=fg_color)
 		self.freslider.set(10)
-		self.freslider.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+		if self.often_true == True:
+			self.freslider.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
 		self.delayslider = Scale(self.master, from_=0, to=self.delayto, length=700, resolution=10, orient=HORIZONTAL, 
 			variable=self.delay_value, label=self.label_txt3, font=normal_font, bg=bg_color, fg=fg_color)
 		self.delayslider.set(10)
-		self.delayslider.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
+		if self.delay_true == True:
+			self.delayslider.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
 		# self.showbtn = tk.Button(self.master, text='Show slider values', font=normal_font, bg=bg_color, fg=fg_color, command=self.show_values)
 		# self.showbtn.grid(row=self.rownum+3, columnspan=1, column=self.colnum, padx="7", pady="5", sticky="w")
@@ -498,9 +535,9 @@ class HomeBtn(): # master, rownum, colnum, colspan
 
 		# Read the Image
 		if dark_mode == True:
-			self.home_img = Image.open("assets/home-icon-dark.png")
+			self.home_img = Image.open(resource_path("assets\\home-icon-dark.png"))
 		else:
-			self.home_img = Image.open("assets/home-icon-light.png")
+			self.home_img = Image.open(resource_path("assets\\home-icon-light.png"))
 		# Resize the image using resize() method
 		self.resized_image = self.home_img.resize((50, 50))
 		self.img = ImageTk.PhotoImage(self.resized_image)
@@ -524,10 +561,11 @@ def clear_widgets(root):
 def all_set_changed():
 	if all([schedule_changed, wp_changed, led_changed, fan_changed, cam_changed, atmos_changed]) == True:
 		print("all settings changed")
+		# logf.write("GUI: All settings changed\n")
 		global all_changed
 		all_changed = True
 	else:
-		print("Not all settings changed")
+		print("not all settings changed")
 		#global all_changed
 		all_changed = False
 	send_set_btn()
@@ -537,7 +575,7 @@ def send_set_btn():
 	if all_changed == True:
 		set_preview_btn = MyButton("Preview Settings", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", "normal", lambda:load_set_preview_frame())
 	else:
-		set_preview_btn = MyButton("Preview Settings", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", "disabled", lambda:load_set_preview_frame())
+		set_preview_btn = MyButton("Preview Settings", ("Ubuntu", 22), 0, 24, 6, 3, 2, "sw", "normal", lambda:load_set_preview_frame()) #"disabled"
 
 
 # functions for website buttons
@@ -556,19 +594,23 @@ def open_files():
 # test functions
 def test_camera():
 	print("*click*")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # take picture and save it
+	arduino.write(bytes('C', 'utf-8')) # take picture and save it
+	logf.write("GUI: Camera tested\n")
 
 def test_atmos():
 	print("read atmos")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # take atmos reading and save it
+	arduino.write(bytes('A', 'utf-8')) # take atmos reading and save it
+	logf.write("GUI: Atmospheric sensor tested\n")
 
 def test_pump():
 	print("pump")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # pump some water and shake leaves
+	arduino.write(bytes('P', 'utf-8')) # pump some water and shake leaves
+	logf.write("GUI: Water pump tested\n")
 
 def test_fan():
 	print("fan running")
-	# arduino.write(bytes(str(repr(all_set)), 'utf-8')) # turn on the fan for a little bit
+	arduino.write(bytes('F', 'utf-8')) # turn on the fan for a little bit
+	logf.write("GUI: Fan tested\n")
 
 # LED test = test_LED()
 
@@ -585,9 +627,6 @@ c_array_string += f"const int myArraySize = {len(array)};\n"
 def raise_main_set():
 	settings_frame.tkraise()
 
-def raise_atmos_set():
-	atmos_sensor_frame.tkraise()
-
 def raise_wp_set():
 	w_pump_settings_frame.tkraise()
 
@@ -599,6 +638,12 @@ def raise_fan_set():
 
 def raise_cam_set():
 	camera_settings_frame.tkraise()
+
+def raise_atmos_set():
+	atmos_sensor_frame.tkraise()
+
+def raise_log_frame():
+	log_frame.tkraise()
 
 # defining button bar on top
 def load_menu(): 
@@ -700,19 +745,21 @@ def load_menu():
 			).grid(row=0, column=6, sticky="w", padx="5", pady="3")
 
 
-	image = Image.open("assets/night-mode-dark.png")
+	image = Image.open(resource_path("assets\\night-mode-dark.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((30, 30))
 	logo_img = ImageTk.PhotoImage(resize_image)
-	logo_widget = tk.Button(menu, image=logo_img, bg=menu_bg_color, command=lambda:toggle_bool(dark_mode))
+	logo_widget = tk.Button(menu, image=logo_img, bg=menu_bg_color, command=lambda:toggle_dark(dark_mode))
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, columnspan=1, column=8, sticky="e", padx="3", pady="1")
 
 	# print("loaded menu")
 
 def load_settings_frame():
+	set_theme()
 	all_set_changed()
-	clear_widgets(settings_frame)
+
+	# clear_widgets(settings_frame)
 	# clear_widgets(w_pump_settings_frame)
 	# clear_widgets(led_settings_frame)
 	# clear_widgets(fan_settings_frame)
@@ -724,7 +771,7 @@ def load_settings_frame():
 	settings_frame.grid_propagate(False)
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -743,11 +790,10 @@ def load_settings_frame():
 		dates = []
 		dates.append(end_cal.get_date())
 		dates.append(start_cal.get_date())
-		# print(f"Experiment will run from {dates[1]} - {dates[0]}")
+		print(f"Experiment will run from {dates[1]} - {dates[0]}")
+		logf.write(f"GUI: Experiment will run from {dates[1]} - {dates[0]}\n")
 		schedule = dates[1] + "\n" + dates[0]
-		print(schedule)
-		f.write_text(schedule)
-		f.write_text("\n")
+		# print(schedule)
 		MyButton.bg_color="green"
 		select_sch_btn = MyButton("Select Schedule", ("Ubuntu", 15), 1, 19, 6, 2, 1, "", "normal", lambda:sel_date())
 		global schedule_changed
@@ -778,13 +824,15 @@ def load_settings_frame():
 	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, 1, "sw", "normal", lambda:raise_wp_set())
 	led_set_btn = MyButton("LED Settings", big_font, 1, 19, 4, 2, 1, "sw", "normal", lambda:raise_led_set())
 	fan_set_btn = MyButton("Fan Settings", big_font, 1, 19, 4, 3, 1, "sw", "normal", lambda:raise_fan_set())
-	cam_set_btn = MyButton("Camera Intervals", big_font, 1, 19, 5, 1, 1, "sw", "normal", lambda:raise_cam_set())
+	cam_set_btn = MyButton("Timelapse Intervals", big_font, 1, 19, 5, 1, 1, "sw", "normal", lambda:raise_cam_set())
 	atmos_set_btn = MyButton("Atmospheric Sensor", big_font, 1, 19, 5, 2, 1, "sw", "normal", lambda:raise_atmos_set())
 	if comp_count <= 5:
 		data_res_btn = MyButton("Data Results", big_font, 1, 19, 5, 3, 1, "sw", "normal", lambda:load_data_results_frame())
+	select_sch_btn = MyButton("Select Schedule", ("Ubuntu", 15), 1, 19, 6, 2, 1, "", "normal", lambda:sel_date())
 	if beta == True:
 		beta_btn = MyButton("Rate your experience", ("Ubuntu", 10), 0, 19, 7, 0, 2, "sw", "normal", lambda:openbetaform())
-	select_sch_btn = MyButton("Select Schedule", ("Ubuntu", 15), 1, 19, 6, 2, 1, "", "normal", lambda:sel_date())
+	version_label = Label(settings_frame, text=f"Version {vernum}", font=("Ubuntu", 10), bg=bg_color, fg=fg_color)
+	version_label.grid(row=8, columnspan=1, column=0, sticky="n")
 	global all_changed
 	send_set_btn()
 
@@ -805,7 +853,7 @@ def load_w_pump_settings_frame():
 	w_pump_set = [] #"50mL", "5d/w"
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -820,6 +868,9 @@ def load_w_pump_settings_frame():
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn1 = TestButton(w_pump_settings_frame, 1, 1, 1, "w", lambda:test_pump())
 
+	Sliders.long_true = True
+	Sliders.durto = 20
+	Sliders.durres = 1
 	# master, rownum, colnum, stickdir, command
 	sliders1 = Sliders(w_pump_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 
@@ -832,11 +883,12 @@ def load_w_pump_settings_frame():
 		wp_fre = fre_val
 		wp_delay = delay_val
 		print(wp_dur, wp_fre, wp_delay)
-		f.write_text(str(sliders1))
-		f.write_text("\n")
+		# f.write(str(sliders1))
+		# f.write("\n")
 		SaveBtn.bg_color = "green"
 		savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, save_wp_set)
 		homebtn1 = HomeBtn(w_pump_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
+		logf.write("GUI: Water pump settings set\n")
 		global wp_changed
 		wp_changed = True
 		all_set_changed()
@@ -886,7 +938,9 @@ def load_led_settings_frame():
 	purple_fg = "purple"
 
 	def test_LED():
-		arduino.write(bytes('I', 'utf-8'))
+		print("LED on")
+		arduino.write(bytes('L', 'utf-8'))
+		logf.write("GUI: LED tested\n")
 
 	def redLED():
 		global rgb_code, rgb_color
@@ -939,7 +993,7 @@ def load_led_settings_frame():
 		arduino.write(bytes('CC', 'utf-8'))
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -954,6 +1008,9 @@ def load_led_settings_frame():
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn2 = TestButton(led_settings_frame, 1, 1, 1, "w", lambda:test_LED())
 
+	Sliders.long_true = True
+	Sliders.durto = 360
+	Sliders.durres = 10
 	# master, rownum, colnum, stickdir, command
 	sliders2 = Sliders(led_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 
@@ -1137,15 +1194,16 @@ def load_led_settings_frame():
 		print(led_dur, led_fre, led_delay)
 		global led_brightness
 		led_brightness = led_slider.get()
-		f.write_text(str(sliders2))
-		f.write_text("\n")
+		# f.write(str(sliders2))
+		# f.write("\n")
 		print(rgb_code)
-		f.write_text(str(rgb_code))
-		f.write_text("\n")
+		# f.write(str(rgb_code))
+		# f.write("\n")
 		print(led_brightness)
 		SaveBtn.bg_color = "green"
 		savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, save_led_set)
 		homebtn2 = HomeBtn(led_settings_frame, 5, 11, 1) # master, rownum, colnum, colspan
+		logf.write("GUI: LED settings set\n")
 		global led_changed
 		led_changed = True
 		all_set_changed()
@@ -1173,7 +1231,7 @@ def load_fan_settings_frame():
 	fan_set = [] #"90%", "30m/3d/w"
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1208,13 +1266,16 @@ def load_fan_settings_frame():
     	text='Fan Strength (%)',
     	font=normal_font, 
 		bg=bg_color,
-		fg=fg_color
-	).grid(row=2, columnspan=8, column=9, sticky="n")
+		fg=fg_color)
+	slider_label.grid(row=2, columnspan=8, column=9, sticky="n")
 
-	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=755, resolution=10, orient=HORIZONTAL, variable=current_value, bg=bg_color, fg=fg_color)
+	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=755, resolution=10, orient=HORIZONTAL, variable=current_value, 
+		font=normal_font, bg=bg_color, fg=fg_color)
 	fan_strength_slider.set(70)
 	fan_strength_slider.grid(row=2, columnspan=8, column=9, sticky="s")
 
+	Sliders.long_true = True
+	Sliders.durto = 360
 	# master, rownum, colnum, stickdir, command
 	sliders3 = Sliders(fan_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 
@@ -1232,6 +1293,7 @@ def load_fan_settings_frame():
 		SaveBtn.bg_color = "green"
 		savebtn3 = SaveBtn(fan_settings_frame, 5, 1, 16, save_fan_set)
 		homebtn3 = HomeBtn(fan_settings_frame, 5, 10, 1) # master, rownum, colnum, colspan
+		logf.write("GUI: Fan settings set\n")
 		global fan_changed
 		fan_changed = True
 		all_set_changed()
@@ -1259,7 +1321,7 @@ def load_camera_settings_frame():
 	cam_set = [] #"1/w"
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1267,23 +1329,16 @@ def load_camera_settings_frame():
 	logo_widget.image = logo_img
 	logo_widget.grid(row=0, column=0, sticky="w", padx="8", pady="5")
 
-	cam_settings_title = Label(camera_settings_frame, text = "Camera Intervals", font=title_font, bg=bg_color, fg=fg_color)
+	cam_settings_title = Label(camera_settings_frame, text = "Timelapse Intervals", font=title_font, bg=bg_color, fg=fg_color)
 	cam_settings_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 	
 	if dev_mode == True:
 		# master, rownum, columnnum, colspan, stickdir, command
-		testbtn4 = TestButton(camera_settings_frame, 1, 1, 1, "w", lambda:take_picture())
+		testbtn4 = TestButton(camera_settings_frame, 1, 1, 1, "w", lambda:test_camera())
 
+	Sliders.long_true = False
 	# master, rownum, colnum, stickdir, command
 	sliders4 = Sliders(camera_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
-	
-	image = Image.open("assets/sus.png")
-	# Resize the image using resize() method
-	resize_image = image.resize((2, 5))
-	logo_img = ImageTk.PhotoImage(resize_image)
-	logo_widget = tk.Button(camera_settings_frame, image=logo_img, bg=bg_color)
-	logo_widget.image = logo_img
-	logo_widget.grid(row=3, columnspan=1, column=1, sticky="e", padx="3", pady="1")
 
 	def save_cam_set():
 		print(sliders4.show_values())
@@ -1296,6 +1351,7 @@ def load_camera_settings_frame():
 		SaveBtn.bg_color = "green"
 		savebtn4 = SaveBtn(camera_settings_frame, 5, 1, 16, save_cam_set)
 		homebtn4 = HomeBtn(camera_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
+		logf.write("GUI: Camera settings set\n")
 		global cam_changed
 		cam_changed = True
 		all_set_changed()
@@ -1323,7 +1379,7 @@ def load_atmos_sensor_frame():
 	atmos_sen_set = [] #"2/d"
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1336,16 +1392,17 @@ def load_atmos_sensor_frame():
 
 	if dev_mode == True:
 		# master, rownum, columnnum, colspan, stickdir, command
-		testbtn5 = TestButton(atmos_sensor_frame, 1, 1, 1, "w", lambda:take_atmos_reading())
+		testbtn5 = TestButton(atmos_sensor_frame, 1, 1, 1, "w", lambda:test_atmos())
 
+	Sliders.long_true = False
 	# master, rownum, colnum, stickdir, command
-	sliders5 = Sliders(atmos_sensor_frame, hardware, 2, 1, "w", Sliders.show_values)
+	sliders5 = Sliders(atmos_sensor_frame, hardware, 1, 1, "w", Sliders.show_values)
 
 	if atmos_changed == False:
-		global gas_val
-		global temp_val
-		global humid_val
-		global bar_press_val
+		# global gas_val
+		# global temp_val
+		# global humid_val
+		# global bar_press_val
 		gas_val = False
 		temp_val = False
 		humid_val = False
@@ -1361,9 +1418,13 @@ def load_atmos_sensor_frame():
 			self.checktext3 = "Humidity"
 			self.checktext4 = "Barometric Pressure"
 			self.gas_bool = tk.BooleanVar()
+			#self.gas_bool.set(False)
 			self.temp_bool = tk.BooleanVar()
+			#self.temp_bool.set(False)
 			self.humid_bool = tk.BooleanVar()
+			#self.humid_bool.set(False)
 			self.bar_press_bool = tk.BooleanVar()
+			#self.bar_press_bool.set(False)
 
 			self.master = master
 			self.rownum = rownum
@@ -1389,7 +1450,11 @@ def load_atmos_sensor_frame():
 
 		def on_change(self):
 			#if checktext1:
-			print(f"{self.checktext1} = {self.gas_bool.get()}")
+			#print(f"{self.checktext1} = {self.gas_bool.get()}")
+			self.gas_bool.get()
+			self.temp_bool.get()
+			self.humid_bool.get()
+			self.bar_press_bool.get()
 			self.send_checks()
 
 		def send_checks(self):
@@ -1402,6 +1467,10 @@ def load_atmos_sensor_frame():
 			temp_val = self.temp_bool.get()
 			humid_val = self.humid_bool.get()
 			bar_press_val = self.bar_press_bool.get()
+			print(gas_val)
+			print(temp_val)
+			print(humid_val)
+			print(bar_press_val)
 
 	# master, checktext, rownum, columnnum, rowspan
 	checkboxs1 = MyCheckboxs(atmos_sensor_frame, 2, 6, 1)
@@ -1424,6 +1493,7 @@ def load_atmos_sensor_frame():
 		SaveBtn.bg_color = "green"
 		savebtn5 = SaveBtn(atmos_sensor_frame, 6, 1, 15, save_atmos_set)
 		homebtn5 = HomeBtn(atmos_sensor_frame, 6, 4, 2) # master, rownum, colnum, colspan
+		logf.write("GUI: Atmospheric sensor settings set\n")
 		global atmos_changed
 		atmos_changed = True
 		all_set_changed()
@@ -1445,7 +1515,7 @@ def load_data_results_frame():
 	data_results_frame.grid_propagate(False)
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1529,7 +1599,6 @@ def load_data_results_frame():
 	button.grid(row=1, column=4, sticky="w")
 	"""
 
-
 	# set frame in window
 	data_results_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
 	# print("data results loaded")
@@ -1539,11 +1608,13 @@ def load_error():
 	# prevent widgets from modifying the frame
 	error_404_frame.pack_propagate(False)
 
+	logf.write("GUI: error 404 (page doesn't exist)\n")
+
 	e404_title = Label(error_404_frame, bg="grey", text = "error_404", font=("Ubuntu", 60))
 	e404_title.pack(fill="both", expand=True, side="top")
 
 	# Read the Image
-	image = Image.open("assets/error_404.png")
+	image = Image.open(resource_path("assets\\error_404.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((200, 200))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1565,7 +1636,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	log_frame.grid_propagate(False)
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1576,14 +1647,37 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	log_title = Label(log_frame, text = "Log", font=title_font, bg=bg_color, fg=fg_color)
 	log_title.grid(row=0, columnspan=8, column=1, padx="8", pady="5")
 
+	# log file display ## https://stackoverflow.com/questions/43480156/how-to-display-a-files-text-in-python-tkinter-text-widget
+	# text box ## https://www.geeksforgeeks.org/python-tkinter-text-widget
+	log = tk.Text(log_frame, bg=bg_color, fg=fg_color, bd=1, font=("Ubuntu", 12), 
+		width=80, height=28, state="normal") # yscrollcommand
+
+	def load_log():
+		log_new = True
+		raise_log_frame()
+		file = open("data\\test.txt", "r") ## replace with log
+		if log_new == True:
+			data = file.read()
+			log.insert(tk.INSERT, data)
+			log_new = False
+		elif log_new == False:
+			log_new = False
+			log.insert(tk.INSERT, "\n")
+			log.insert(tk.INSERT, data)
+	load_log()
+	log.grid(row=1, columnspan=4, column=1, sticky="nsew", padx="8", pady="5")
+
+	upd_btn = tk.Button(log_frame,text = 'Update', font=normal_font, bg=bg_color, fg=fg_color, command = lambda:load_log())
+	upd_btn.grid(rowspan=1, row=2, columnspan=4, column=1, padx="8", pady="5", sticky="")
+
 	# Read the Image
-	image = Image.open("assets/log.jpg")
+	image = Image.open(resource_path("assets\\log.jpg"))
 	# Resize the image using resize() method
 	resize_image = image.resize((1000, 700))
 	logo_img = ImageTk.PhotoImage(resize_image)
 	logo_widget = tk.Label(log_frame, image=logo_img, bg=bg_color)
 	logo_widget.image = logo_img
-	logo_widget.grid(row=1, column=1, sticky="nsew", padx="8", pady="5")
+	# logo_widget.grid(row=1, column=8, sticky="nsew", padx="8", pady="5")
 
 	# set frame in window
 	log_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
@@ -1597,9 +1691,10 @@ class SetPreview: # command
 	colspan = 2
 
 	def __init__(self):
-		all_set_changed()
+		# all_set_changed()
 		if all([schedule_changed, wp_changed, led_changed, fan_changed, cam_changed, atmos_changed]) == True:
 			print("all settings changed")
+			logf.write("GUI: All settings changed\n")
 			all_changed = True
 		else:
 			print("Not all settings changed")
@@ -1626,11 +1721,11 @@ class SetPreview: # command
 			self.fan_delay = fan_delay
 			self.fan_str = fan_str
 
-			self.cam_dur = cam_dur
+			#self.cam_dur = cam_dur
 			self.cam_fre = cam_fre
 			self.cam_delay = cam_delay
 
-			self.atmos_dur = atmos_dur
+			#self.atmos_dur = atmos_dur
 			self.atmos_fre = atmos_fre
 			self.atmos_delay = atmos_delay
 			self.gas_val = gas_val
@@ -1638,38 +1733,43 @@ class SetPreview: # command
 			self.humid_val = humid_val
 			self.bar_press_val = bar_press_val
 
-		else: ## change all these to be values, not pulled variables ##
+		elif all_changed == False: ## change all these to be values, not pulled variables ##
 			# set all values
-			self.dates = dates
-			self.wp_dur = wp_dur
-			self.wp_fre = wp_fre
-			self.wp_delay = wp_delay
+			self.predates = []
+			self.pre_start_date = f"{cur_year}-{cur_month}-{cur_day}"
+			self.pre_end_date = f"{cur_year}-{cur_month}-{cur_day+7}"
+			self.predates.append(self.pre_end_date)
+			self.predates.append(self.pre_start_date) #2025/3/12
+			self.dates = self.predates
+			self.wp_dur = 8
+			self.wp_fre = 2
+			self.wp_delay = 720
 
-			self.led_dur = led_dur
-			self.led_fre = led_fre
-			self.led_delay = led_delay
-			self.rgb_code = rgb_code
-			self.rgb_color = rgb_color
-			self.led_brightness = led_brightness
+			self.led_dur = 360 #
+			self.led_fre = 2
+			self.led_delay = 360
+			self.rgb_code = "191, 64, 191"
+			self.rgb_color = "#7714b9"
+			self.led_brightness = 200
 
-			self.fan_dur = fan_dur
-			self.fan_fre = fan_fre
-			self.fan_delay = fan_delay
-			self.fan_str = fan_str
+			self.fan_dur = 60 #
+			self.fan_fre = 6
+			self.fan_delay = 60
+			self.fan_str = 50
 
-			self.cam_dur = cam_dur
-			self.cam_fre = cam_fre
-			self.cam_delay = cam_delay
+			#self.cam_dur = cam_dur
+			self.cam_fre = 1
+			self.cam_delay = 720
 
-			self.atmos_dur = atmos_dur
-			self.atmos_fre = atmos_fre
-			self.atmos_delay = atmos_delay
-			self.gas_val = gas_val
-			self.temp_val = temp_val
-			self.humid_val = humid_val
-			self.bar_press_val = bar_press_val
+			#self.atmos_dur = atmos_dur
+			self.atmos_fre = 4 #
+			self.atmos_delay = 180
+			self.gas_val = False
+			self.temp_val = True
+			self.humid_val = True
+			self.bar_press_val = False
 
-		self.all_sets = f"{dates}\n{wp_dur}\n{wp_fre}\n{wp_delay}\n{led_dur}\n{led_fre}\n{led_delay}\n{rgb_code}\n{led_brightness}\n{fan_dur}\n{fan_fre}\n{fan_delay}\n{fan_str}\n{cam_dur}\n{cam_fre}\n{cam_delay}\n{atmos_dur}\n{atmos_fre}\n{atmos_delay}\n{int(gas_val)}\n{int(temp_val)}\n{int(humid_val)}\n{int(bar_press_val)}\n"
+		self.all_sets = f"""{self.dates[1]}\n{self.dates[0]}\n{self.wp_dur}\n{self.wp_fre}\n{self.wp_delay}\n{self.led_dur}\n{self.led_fre}\n{self.led_delay}\n{self.rgb_code}\n{self.led_brightness}\n{self.fan_dur}\n{self.fan_fre}\n{self.fan_delay}\n{self.fan_str}\n{self.cam_fre}\n{self.cam_delay}\n{self.atmos_fre}\n{self.atmos_delay}\n{int(self.gas_val)}\n{int(self.temp_val)}\n{int(self.humid_val)}\n{int(self.bar_press_val)}\n"""
 
 		# define graphical elements
 		self.start_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Start Date", font=("Ubuntu", 14))
@@ -1679,17 +1779,17 @@ class SetPreview: # command
 
 		self.wp_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
 		self.wp_preview_title = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = "Water Pump", font=("Ubuntu", 14))
-		self.wp_long_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {wp_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
-		self.wp_fre_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {wp_fre} (in 24h period)", font=(normal_font))
-		self.wp_delay_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {wp_delay} (minutes)", font=(normal_font))
+		self.wp_long_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {self.wp_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
+		self.wp_fre_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {self.wp_fre} (in 24h period)", font=(normal_font))
+		self.wp_delay_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {self.wp_delay} (minutes)", font=(normal_font))
 		self.wp_filler_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=bg_color, text = "How much delay: ", font=(normal_font))
 		self.wp_filler_label2 = tk.Label(self.wp_preview_frame, bg=bg_color, fg=bg_color, text = "How much delay: ", font=(normal_font))
 
 		self.led_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
 		self.led_preview_title = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = "LED", font=("Ubuntu", 14))
-		self.led_long_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {led_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
-		self.led_fre_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {led_fre} (in 24h period)", font=(normal_font))
-		self.led_delay_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {led_delay} (minutes)", font=(normal_font))
+		self.led_long_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {self.led_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
+		self.led_fre_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {self.led_fre} (in 24h period)", font=(normal_font))
+		self.led_delay_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {self.led_delay} (minutes)", font=(normal_font))
 		self.led_color_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"Color: {self.rgb_code}", font=(normal_font))
 		# create led color box widget
 		self.led_color_box = tk.Button(
@@ -1707,26 +1807,26 @@ class SetPreview: # command
 
 		self.fan_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
 		self.fan_preview_title = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = "Fan", font=("Ubuntu", 14))
-		self.fan_long_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {fan_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
-		self.fan_fre_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {fan_fre} (in 24h period)", font=(normal_font))
-		self.fan_delay_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {fan_delay} (minutes)", font=(normal_font))
-		self.fan_strength_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"Fan Strength: {fan_str}%", font=(normal_font))
+		self.fan_long_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {self.fan_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
+		self.fan_fre_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {self.fan_fre} (in 24h period)", font=(normal_font))
+		self.fan_delay_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {self.fan_delay} (minutes)", font=(normal_font))
+		self.fan_strength_label = tk.Label(self.fan_preview_frame, bg=bg_color, fg=fg_color, text = f"Fan Strength: {self.fan_str}%", font=(normal_font))
 
 		self.cam_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
 		self.cam_preview_title = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = "Camera", font=("Ubuntu", 14))
-		self.cam_long_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {cam_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
-		self.cam_fre_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {cam_fre} (in 24h period)", font=(normal_font))
-		self.cam_delay_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {cam_delay} (minutes)", font=(normal_font))
+		#self.cam_long_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {cam_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
+		self.cam_fre_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {self.cam_fre} (in 24h period)", font=(normal_font))
+		self.cam_delay_label = tk.Label(self.cam_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {self.cam_delay} (minutes)", font=(normal_font))
 
 		self.atmos_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
 		self.atmos_preview_title = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = "Atmospheric Sensor", font=("Ubuntu", 14))
-		self.atmos_long_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {atmos_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
-		self.atmos_fre_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {atmos_fre} (in 24h period)", font=(normal_font))
-		self.atmos_delay_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {atmos_delay} (minutes)", font=(normal_font))
-		self.atmos_check1_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Gas (VOCs) = {gas_val}", font=(normal_font))
-		self.atmos_check2_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Temperature = {temp_val}", font=(normal_font))
-		self.atmos_check3_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Humidity = {humid_val}", font=(normal_font))
-		self.atmos_check4_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Barometric Pressure = {bar_press_val}", font=(normal_font))
+		#self.atmos_long_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {atmos_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
+		self.atmos_fre_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {self.atmos_fre} (in 24h period)", font=(normal_font))
+		self.atmos_delay_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {self.atmos_delay} (minutes)", font=(normal_font))
+		self.atmos_check1_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Gas (VOCs) = {self.gas_val}", font=(normal_font))
+		self.atmos_check2_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Temperature = {self.temp_val}", font=(normal_font))
+		self.atmos_check3_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Humidity = {self.humid_val}", font=(normal_font))
+		self.atmos_check4_label = tk.Label(self.atmos_preview_frame, bg=bg_color, fg=fg_color, text = f"Barometric Pressure = {self.bar_press_val}", font=(normal_font))
 
 
 		# create cancel button widget
@@ -1747,13 +1847,14 @@ class SetPreview: # command
 			# print(repr(all_set))
 			# arduino.write(bytes(str(repr(all_set)), 'utf-8'))
 			# something to check Arduino got it
-			f.write_text("send test\n")
-			f.write_text(c_array_string)
 			self.confirm_btn.config(bg="green")
 			self.confirm_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=7, sticky="e", padx="5", pady="3")
-			f.write_text(self.all_sets)
+			f.write(self.all_sets)
 			arduino.write(repr(self.all_sets))
 			print("experiment started")
+			logf.write("GUI: Custom experiment started\n")
+			#f.close()
+			#logf.close()
 
 		# create confirm button widget
 		self.confirm_btn = tk.Button(
@@ -1801,13 +1902,13 @@ class SetPreview: # command
 		
 		self.cam_preview_frame.grid(rowspan=6, columnspan=self.colspan+1, row=10, column=4, sticky="nesw", padx="8", pady="5")
 		self.cam_preview_title.grid(row=self.rownum+6, columnspan=self.colspan, column=self.colnum+3, padx="8", pady="5")
-		self.cam_long_label.grid(row=self.rownum+7, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
+		#self.cam_long_label.grid(row=self.rownum+7, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
 		self.cam_fre_label.grid(row=self.rownum+8, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
 		self.cam_delay_label.grid(row=self.rownum+9, columnspan=self.colspan, column=self.colnum+3, sticky="w", padx="10", pady="2")
 
 		self.atmos_preview_frame.grid(rowspan=13, columnspan=self.colspan+1, row=3, column=7, sticky="nesw", padx="8", pady="5")
 		self.atmos_preview_title.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, padx="8", pady="5")
-		self.atmos_long_label.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
+		#self.atmos_long_label.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
 		self.atmos_fre_label.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
 		self.atmos_delay_label.grid(row=self.rownum+3, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
 		self.atmos_check1_label.grid(row=self.rownum+4, columnspan=self.colspan, column=self.colnum, sticky="w", padx="10", pady="2")
@@ -1819,14 +1920,14 @@ class SetPreview: # command
 		self.confirm_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=7, sticky="e", padx="5", pady="3")
 
 def load_set_preview_frame(): # preview of settings
-	all_set_changed()
+	# all_set_changed()
 	# clear_widgets()
 	set_preview_frame.tkraise()
 	# prevent widgets from modifying the frame
 	set_preview_frame.grid_propagate(False)
 
 	# Read the Image
-	image = Image.open("assets/NanoLabs_logo.png")
+	image = Image.open(resource_path("assets\\NanoLabs_logo.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((125, 125))
 	logo_img = ImageTk.PhotoImage(resize_image)
@@ -1851,8 +1952,8 @@ load_fan_settings_frame()
 load_camera_settings_frame()
 load_atmos_sensor_frame()
 load_settings_frame()
-# f.close()
 root.mainloop()
 
+# =======================
 # main window end
 # =======================

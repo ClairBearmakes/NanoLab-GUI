@@ -1,6 +1,7 @@
 
 # Code writen by Asher Powell at Warren Tech North
-# Version 1.5b
+# Version 1.5
+vernum = "1.5"
 
 # import dependencies
 import tkinter as tk

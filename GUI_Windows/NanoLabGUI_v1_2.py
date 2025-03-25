@@ -1,3 +1,8 @@
+
+# Code writen by Asher Powell at Warren Tech North
+# Version 1.2
+vernum = "1.2"
+
 import tkinter as tk
 from PIL import ImageTk
 import sqlite3

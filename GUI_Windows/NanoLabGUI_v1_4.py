@@ -1,3 +1,8 @@
+
+# Code writen by Asher Powell at Warren Tech North
+# Version 1.4
+vernum = "1.4"
+
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
