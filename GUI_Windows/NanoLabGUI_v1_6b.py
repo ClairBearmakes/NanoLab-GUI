@@ -1396,10 +1396,10 @@ def load_atmos_sensor_frame():
 	sliders5 = Sliders(atmos_sensor_frame, hardware, 1, 1, "w", Sliders.show_values)
 
 	if atmos_changed == False:
-		global gas_val
-		global temp_val
-		global humid_val
-		global bar_press_val
+		# global gas_val
+		# global temp_val
+		# global humid_val
+		# global bar_press_val
 		gas_val = False
 		temp_val = False
 		humid_val = False
@@ -1448,10 +1448,13 @@ def load_atmos_sensor_frame():
 		def on_change(self):
 			#if checktext1:
 			#print(f"{self.checktext1} = {self.gas_bool.get()}")
+			self.gas_bool.get()
+			self.temp_bool.get()
+			self.humid_bool.get()
+			self.bar_press_bool.get()
 			self.send_checks()
 
 		def send_checks(self):
-			self.on_change()
 			global gas_val
 			global temp_val
 			global humid_val
@@ -1461,10 +1464,10 @@ def load_atmos_sensor_frame():
 			temp_val = self.temp_bool.get()
 			humid_val = self.humid_bool.get()
 			bar_press_val = self.bar_press_bool.get()
-			print(self.gas_val)
-			print(self.temp_val)
-			print(self.humid_val)
-			print(self.bar_press_val)
+			print(gas_val)
+			print(temp_val)
+			print(humid_val)
+			print(bar_press_val)
 
 	# master, checktext, rownum, columnnum, rowspan
 	checkboxs1 = MyCheckboxs(atmos_sensor_frame, 2, 6, 1)
