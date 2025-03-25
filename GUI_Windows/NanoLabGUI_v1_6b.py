@@ -627,9 +627,6 @@ c_array_string += f"const int myArraySize = {len(array)};\n"
 def raise_main_set():
 	settings_frame.tkraise()
 
-def raise_atmos_set():
-	atmos_sensor_frame.tkraise()
-
 def raise_wp_set():
 	w_pump_settings_frame.tkraise()
 
@@ -641,6 +638,12 @@ def raise_fan_set():
 
 def raise_cam_set():
 	camera_settings_frame.tkraise()
+
+def raise_atmos_set():
+	atmos_sensor_frame.tkraise()
+
+def raise_log_frame():
+	log_frame.tkraise()
 
 # defining button bar on top
 def load_menu(): 
@@ -1263,8 +1266,8 @@ def load_fan_settings_frame():
     	text='Fan Strength (%)',
     	font=normal_font, 
 		bg=bg_color,
-		fg=fg_color
-	).grid(row=2, columnspan=8, column=9, sticky="n")
+		fg=fg_color)
+	slider_label.grid(row=2, columnspan=8, column=9, sticky="n")
 
 	fan_strength_slider = Scale(fan_settings_frame, from_=0, to=100, length=755, resolution=10, orient=HORIZONTAL, variable=current_value, 
 		font=normal_font, bg=bg_color, fg=fg_color)
@@ -1647,7 +1650,25 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	# log file display ## https://stackoverflow.com/questions/43480156/how-to-display-a-files-text-in-python-tkinter-text-widget
 	# text box ## https://www.geeksforgeeks.org/python-tkinter-text-widget
 	log = tk.Text(log_frame, bg=bg_color, fg=fg_color, bd=1, font=("Ubuntu", 12), 
-		width=20, height=20, state="disabled") # yscrollcommand
+		width=80, height=28, state="normal") # yscrollcommand
+
+	def load_log():
+		log_new = True
+		raise_log_frame()
+		file = open("data\\test.txt", "r") ## replace with log
+		if log_new == True:
+			data = file.read()
+			log.insert(tk.INSERT, data)
+			log_new = False
+		elif log_new == False:
+			log_new = False
+			log.insert(tk.INSERT, "\n")
+			log.insert(tk.INSERT, data)
+	load_log()
+	log.grid(row=1, columnspan=4, column=1, sticky="nsew", padx="8", pady="5")
+
+	upd_btn = tk.Button(log_frame,text = 'Update', font=normal_font, bg=bg_color, fg=fg_color, command = lambda:load_log())
+	upd_btn.grid(rowspan=1, row=2, columnspan=4, column=1, padx="8", pady="5", sticky="")
 
 	# Read the Image
 	image = Image.open(resource_path("assets\\log.jpg"))
@@ -1656,7 +1677,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	logo_img = ImageTk.PhotoImage(resize_image)
 	logo_widget = tk.Label(log_frame, image=logo_img, bg=bg_color)
 	logo_widget.image = logo_img
-	logo_widget.grid(row=1, column=8, sticky="nsew", padx="8", pady="5")
+	# logo_widget.grid(row=1, column=8, sticky="nsew", padx="8", pady="5")
 
 	# set frame in window
 	log_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
