@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['NanoLabGUI_v1_6b.py'],
+    ['NanoLabGUI_v1_1b.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['icon.ico'],
+    icon=['logo.ico'],
 )
