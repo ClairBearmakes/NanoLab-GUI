@@ -85,13 +85,13 @@ else:
 
 # open log file
 logf = open('data\\log.txt', 'w')
-logf.write("test\n")
+# logf.write("test\n")
 
 # ttk.Style().theme_use('black') https://stackoverflow.com/questions/24367710/how-do-i-change-the-overall-theme-of-a-tkinter-application?rq=3
 def toggle_dark(value): # maybe use stackoverflow.com/questions/60595078/implementing-dark-mode-with-on-off-function-in-simple-python-tkinter-program
 	value = not value
 	print(value)
-	logf.write(f"dark_mode={value}\n")
+	logf.write(f"GUI: dark_mode = {value}\n")
 	return value
 	color_mode_switch()
 # dark_mode = toggle_bool(dark_mode)
@@ -166,7 +166,7 @@ def load_setup1():
 	def type_hydro():
 		box_type = "HydroFuge"
 		print(box_type + " selected")
-		logf.write(f"{box_type} selected\n")
+		logf.write(f"GUI: {box_type} selected\n")
 		hydro_logo_widget.config(bg="green")
 		hydro_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
 		saveBtn.config(state="normal")
@@ -176,7 +176,7 @@ def load_setup1():
 	def type_uni():
 		box_type = "Universal"
 		print(box_type + " selected")
-		logf.write(f"{box_type} selected\n")
+		logf.write(f"GUI: {box_type} selected\n")
 		uni_logo_widget.config(bg="green")
 		uni_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
 		saveBtn.config(state="normal")
@@ -246,8 +246,8 @@ def load_setup1():
 		command=setup_root.destroy) # lambda:load_setup2()
 	saveBtn.grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
 
-	version_label = Label(setup1_frame, text=f"Version: {vernum}", font=("Ubuntu", 8), bg=bg_color, fg=fg_color)
-	version_label.grid(row=4, columnspan=2, column=0, sticky="s")
+	version_label = Label(setup1_frame, text=f"v.{vernum}", font=("Ubuntu", 8), bg=bg_color, fg=fg_color)
+	version_label.grid(row=4, columnspan=2, column=0, sticky="sw")
 
 	# print("first screen loaded")
 
@@ -335,7 +335,7 @@ file_path = Path((strtdir) / "Arduino\\basic_hydrofuge_schedule")
 #f = Path(file_path / "array_for_arduino.h")
 f = open('Arduino\\basic_hydrofuge_schedule\\array_for_arduino.h', 'w')
 print(f)
-logf.write("Settings file opened\n")
+logf.write("GUI: Settings file opened\n")
 #if f.is_file():
 	#print(f.suffix)
 #else:
@@ -561,7 +561,7 @@ def clear_widgets(root):
 def all_set_changed():
 	if all([schedule_changed, wp_changed, led_changed, fan_changed, cam_changed, atmos_changed]) == True:
 		print("all settings changed")
-		logf.write("All settings changed\n")
+		# logf.write("GUI: All settings changed\n")
 		global all_changed
 		all_changed = True
 	else:
@@ -595,22 +595,22 @@ def open_files():
 def test_camera():
 	print("*click*")
 	arduino.write(bytes('C', 'utf-8')) # take picture and save it
-	logf.write("Camera tested\n")
+	logf.write("GUI: Camera tested\n")
 
 def test_atmos():
 	print("read atmos")
 	arduino.write(bytes('A', 'utf-8')) # take atmos reading and save it
-	logf.write("Atmospheric sensor tested\n")
+	logf.write("GUI: Atmospheric sensor tested\n")
 
 def test_pump():
 	print("pump")
 	arduino.write(bytes('P', 'utf-8')) # pump some water and shake leaves
-	logf.write("Water pump tested\n")
+	logf.write("GUI: Water pump tested\n")
 
 def test_fan():
 	print("fan running")
 	arduino.write(bytes('F', 'utf-8')) # turn on the fan for a little bit
-	logf.write("Fan tested\n")
+	logf.write("GUI: Fan tested\n")
 
 # LED test = test_LED()
 
@@ -788,7 +788,7 @@ def load_settings_frame():
 		dates.append(end_cal.get_date())
 		dates.append(start_cal.get_date())
 		print(f"Experiment will run from {dates[1]} - {dates[0]}")
-		logf.write(f"Experiment will run from {dates[1]} - {dates[0]}\n")
+		logf.write(f"GUI: Experiment will run from {dates[1]} - {dates[0]}\n")
 		schedule = dates[1] + "\n" + dates[0]
 		# print(schedule)
 		MyButton.bg_color="green"
@@ -828,7 +828,7 @@ def load_settings_frame():
 	select_sch_btn = MyButton("Select Schedule", ("Ubuntu", 15), 1, 19, 6, 2, 1, "", "normal", lambda:sel_date())
 	if beta == True:
 		beta_btn = MyButton("Rate your experience", ("Ubuntu", 10), 0, 19, 7, 0, 2, "sw", "normal", lambda:openbetaform())
-	version_label = Label(settings_frame, text=f"Version: {vernum}", font=("Ubuntu", 10), bg=bg_color, fg=fg_color)
+	version_label = Label(settings_frame, text=f"Version {vernum}", font=("Ubuntu", 10), bg=bg_color, fg=fg_color)
 	version_label.grid(row=8, columnspan=1, column=0, sticky="n")
 	global all_changed
 	send_set_btn()
@@ -885,7 +885,7 @@ def load_w_pump_settings_frame():
 		SaveBtn.bg_color = "green"
 		savebtn1 = SaveBtn(w_pump_settings_frame, 5, 1, 16, save_wp_set)
 		homebtn1 = HomeBtn(w_pump_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
-		logf.write("Water pump settings set\n")
+		logf.write("GUI: Water pump settings set\n")
 		global wp_changed
 		wp_changed = True
 		all_set_changed()
@@ -937,7 +937,7 @@ def load_led_settings_frame():
 	def test_LED():
 		print("LED on")
 		arduino.write(bytes('L', 'utf-8'))
-		logf.write("LED tested\n")
+		logf.write("GUI: LED tested\n")
 
 	def redLED():
 		global rgb_code, rgb_color
@@ -1200,7 +1200,7 @@ def load_led_settings_frame():
 		SaveBtn.bg_color = "green"
 		savebtn2 = SaveBtn(led_settings_frame, 5, 1, 16, save_led_set)
 		homebtn2 = HomeBtn(led_settings_frame, 5, 11, 1) # master, rownum, colnum, colspan
-		logf.write("LED settings set\n")
+		logf.write("GUI: LED settings set\n")
 		global led_changed
 		led_changed = True
 		all_set_changed()
@@ -1290,7 +1290,7 @@ def load_fan_settings_frame():
 		SaveBtn.bg_color = "green"
 		savebtn3 = SaveBtn(fan_settings_frame, 5, 1, 16, save_fan_set)
 		homebtn3 = HomeBtn(fan_settings_frame, 5, 10, 1) # master, rownum, colnum, colspan
-		logf.write("Fan settings set\n")
+		logf.write("GUI: Fan settings set\n")
 		global fan_changed
 		fan_changed = True
 		all_set_changed()
@@ -1348,7 +1348,7 @@ def load_camera_settings_frame():
 		SaveBtn.bg_color = "green"
 		savebtn4 = SaveBtn(camera_settings_frame, 5, 1, 16, save_cam_set)
 		homebtn4 = HomeBtn(camera_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
-		logf.write("Camera settings set\n")
+		logf.write("GUI: Camera settings set\n")
 		global cam_changed
 		cam_changed = True
 		all_set_changed()
@@ -1487,7 +1487,7 @@ def load_atmos_sensor_frame():
 		SaveBtn.bg_color = "green"
 		savebtn5 = SaveBtn(atmos_sensor_frame, 6, 1, 15, save_atmos_set)
 		homebtn5 = HomeBtn(atmos_sensor_frame, 6, 4, 2) # master, rownum, colnum, colspan
-		logf.write("Atmospheric sensor settings set\n")
+		logf.write("GUI: Atmospheric sensor settings set\n")
 		global atmos_changed
 		atmos_changed = True
 		all_set_changed()
@@ -1602,7 +1602,7 @@ def load_error():
 	# prevent widgets from modifying the frame
 	error_404_frame.pack_propagate(False)
 
-	logf.write("error 404 (page doesn't exist)\n")
+	logf.write("GUI: error 404 (page doesn't exist)\n")
 
 	e404_title = Label(error_404_frame, bg="grey", text = "error_404", font=("Ubuntu", 60))
 	e404_title.pack(fill="both", expand=True, side="top")
@@ -1667,10 +1667,10 @@ class SetPreview: # command
 	colspan = 2
 
 	def __init__(self):
-		all_set_changed()
+		# all_set_changed()
 		if all([schedule_changed, wp_changed, led_changed, fan_changed, cam_changed, atmos_changed]) == True:
 			print("all settings changed")
-			logf.write("All settings are set\n")
+			logf.write("GUI: All settings changed\n")
 			all_changed = True
 		else:
 			print("Not all settings changed")
@@ -1828,7 +1828,7 @@ class SetPreview: # command
 			f.write(self.all_sets)
 			arduino.write(repr(self.all_sets))
 			print("experiment started")
-			logf.write("Custom experiment started\n")
+			logf.write("GUI: Custom experiment started\n")
 			#f.close()
 			#logf.close()
 
@@ -1896,7 +1896,7 @@ class SetPreview: # command
 		self.confirm_btn.grid(rowspan=1, row=self.rownum+19, columnspan=3, column=7, sticky="e", padx="5", pady="3")
 
 def load_set_preview_frame(): # preview of settings
-	all_set_changed()
+	# all_set_changed()
 	# clear_widgets()
 	set_preview_frame.tkraise()
 	# prevent widgets from modifying the frame

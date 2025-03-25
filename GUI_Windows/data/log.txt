@@ -1,4 +1,10 @@
-test
-HydroFuge selected
-Settings file opened
-error 404 (page doesn't exist)
+GUI: HydroFuge selected
+GUI: Settings file opened
+GUI: dark_mode = True
+GUI: Experiment will run from 3/24/25 - 3/31/25
+GUI: Water pump settings set
+GUI: LED settings set
+GUI: Fan settings set
+GUI: Camera settings set
+GUI: Atmospheric sensor settings set
+GUI: All settings changed
