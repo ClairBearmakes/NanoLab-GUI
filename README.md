@@ -3,7 +3,7 @@
 ### Instructions
 1. Plug in/Setup your NanoLab
 2. Download GUI (Windows):
-	[NanoLab_GUI_v1_setup.exe](https://github.com/ClairBearmakes/NanoLab-GUI/blob/main/NanoLab-GUI_v1.1b_setup.exe)
+   [NanoLab-GUI_v1.1b_setup.exe](https://github.com/ClairBearmakes/NanoLab-GUI/blob/main/NanoLab-GUI_v1.1b_setup.exe)
 3. Select your schedule
 4. Select your settings for each component
 5. Send settings to NanoLab
