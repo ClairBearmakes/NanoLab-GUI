@@ -1,7 +1,7 @@
 
 # Code writen by Asher Powell at Warren Tech North
-# Version 1.1b
-vernum = "1.1b"
+# Version 1.1
+vernum = "1.1"
 
 # import dependencies
 import tkinter as tk
@@ -58,7 +58,7 @@ def closeport(): # closes port if currently open
 
 # set starting variables
 dev_mode = True # if True will show log button and test buttons
-beta = True # enable beta testing form button
+beta = False # enable beta testing form button
 dark_mode = False # changes color theme
 comp_count = 5 # number of components
 type_selected = False
@@ -200,7 +200,7 @@ def load_setup1():
 	logo_img = ImageTk.PhotoImage(resize_image)
 	logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, command=lambda:toggle_dark(dark_mode))
 	logo_widget.image = logo_img
-	logo_widget.grid(row=0, columnspan=1, column=6, sticky="e", padx="3", pady="1")
+	# logo_widget.grid(row=0, columnspan=1, column=6, sticky="e", padx="3", pady="1")
 
 	# Set Label
 	welcome_label = Label(setup1_frame, text="Welcome to your NanoLab!", font=("Ubuntu-Bold", 20), bg=bg_color, fg=fg_color)
@@ -1683,13 +1683,13 @@ def load_log_frame(): # log of what is happening on Arduino right now
 			log.delete("1.0", tk.END)
 			log.insert(tk.INSERT, data)
 			open_log()
-	load_log()
-	log.grid(row=1, columnspan=4, column=1, sticky="nsew", padx="8", pady="5")
+	# load_log()
+	# log.grid(row=1, columnspan=4, column=1, sticky="nsew", padx="8", pady="5")
 
 	open_log()
 
 	upd_btn = tk.Button(log_frame,text = 'Update', font=normal_font, bg=bg_color, fg=fg_color, command = lambda:load_log())
-	upd_btn.grid(rowspan=1, row=2, columnspan=4, column=1, padx="8", pady="5", sticky="")
+	# upd_btn.grid(rowspan=1, row=2, columnspan=4, column=1, padx="8", pady="5", sticky="")
 
 	# Read the Image
 	image = Image.open(resource_path("assets\\log.jpg"))
@@ -1698,7 +1698,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	logo_img = ImageTk.PhotoImage(resize_image)
 	logo_widget = tk.Label(log_frame, image=logo_img, bg=bg_color)
 	logo_widget.image = logo_img
-	# logo_widget.grid(row=1, column=8, sticky="nsew", padx="8", pady="5")
+	logo_widget.grid(row=1, column=8, sticky="nsew", padx="8", pady="5")
 
 	# set frame in window
 	log_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
