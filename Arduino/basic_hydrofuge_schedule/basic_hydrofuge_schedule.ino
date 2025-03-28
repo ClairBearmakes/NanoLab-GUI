@@ -138,7 +138,7 @@ void loop() {                    //This is general functions for manual control 
 
     switch (DoThis) {
 
-      case 'I':   // Maxwell, can you help me understand why this function wont enter the 'while' loop?
+      case 'I':   // Maxwell, can you help me understand why this function wont enter the 'while' loop? the intent is to iterate throught the sent imformation and asign it to the array.
         Serial.println("Beginning Settings download");
 
         while (i >= numReadings) {
