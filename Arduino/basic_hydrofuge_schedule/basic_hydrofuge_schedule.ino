@@ -59,7 +59,7 @@ void setup() {
     while (1)
       ;
   }
-  Serial.println("SD Connected"); //this check passes 
+  Serial.println("SD Connected");  //this check passes
 
   const int numReadings = 10;   // Size of the array
   char dataArray[numReadings];  // Array to hold the file contents (adjust size as needed)
@@ -78,7 +78,7 @@ void setup() {
     }
 
     dataArray[index] = '\0';  // Null-terminate the array
-    dataFile.close();         
+    dataFile.close();
 
 
     Serial.println(dataArray);
@@ -102,9 +102,9 @@ void setup() {
   // create the alarms, to trigger at specific times
 
 
-  
-  
-  Alarm.timerRepeat(dataArray[0], 0, 0, pumpFlush);
+
+
+  Alarm.timerRepeat(dataArray[4], 0, 0, pumpFlush);
   Alarm.timerRepeat(dataArray[1], 0, 0, fanOn);
   Alarm.timerRepeat(dataArray[2], 0, 0, fanOff);
   Alarm.timerRepeat(dataArray[3], 0, 0, ledOn);
@@ -112,7 +112,7 @@ void setup() {
 
   Serial.print("Checking for Motor Controller");
   //*****initialize the driver get wait for idle*****//
-  while (myMotorDriver.begin() != 0xA9)  //Wait until a valid ID word is returned
+  /*  while (myMotorDriver.begin() != 0xA9)  //Wait until a valid ID word is returned
   {
     Serial.println("ID mismatch, trying again");
     delay(500);
@@ -124,7 +124,9 @@ void setup() {
   while (myMotorDriver.ready() == false)
     ;
   Serial.println("Done.");
-  Serial.println();
+  Serial.println();     
+
+  */
 }
 
 #define PUMP_MOTOR 0
@@ -136,37 +138,31 @@ void loop() {                    //This is general functions for manual control 
 
     switch (DoThis) {
 
-      case 'I':  //not entirely sure if this even functions and Case 'A' was supposed to show how it function but instead outputs garbage and caused errors
+      case 'I':   // Maxwell, can you help me understand why this function wont enter the 'while' loop?
+        Serial.println("Beginning Settings download");
 
-        if (Serial.available() > 0) {
+        while (i >= numReadings) {
+          //if (Serial.available() > 0) {
+            Serial.println("reciveing . . .");
+            float reading = Serial.parseFloat();  // Read incoming data
+            // Store the reading in the array
 
-          Serial.println("Beginning Settings download");
+            sensorReadings[i] = reading;
 
-          float reading = Serial.parseInt();  // Read incoming data
-          // Store the reading in the array
+            Serial.println(sensorReadings[i]);
 
-          sensorReadings[i] = reading;
+            i++;
 
-          Serial.println(sensorReadings[1]);
+            if (i >= numReadings) {
 
-          i++;
+              saveToSD();
 
-          if (i >= numReadings) {
-
-            saveToSD();
-
-            i == 0;  // Reset i after saving
-          }
+              i == 0;  // Reset i after saving
+            }
+          //}
         }
+        Serial.println("download done");
         break;
-
-      case 'A':
-        for (i == numReadings; i++;) {  //this will crash a windows computer if left to run for too long
-          Serial.println(sensorReadings[i]);
-        }
-        i = 0;
-        break;
-
 
       case 'L':
         pixels->fill(pixels->Color(214, 83, 211), 0, 15);
@@ -194,7 +190,6 @@ void loop() {                    //This is general functions for manual control 
         myMotorDriver.setDrive(FAN, 0, 0);
 
         break;
-
     }
   }
 }
@@ -205,11 +200,11 @@ void pumpFlush() {
   //pump needs to turn on 30s and then wait to let the plant soak up water
   //and then run in reverse to drain
   myMotorDriver.setDrive(PUMP_MOTOR, 0, 50);
-  delay(30000);
+  delay(dataArray[3]);
   myMotorDriver.setDrive(PUMP_MOTOR, 0, 0);
-  delay(120000);
+  delay(dataArray[5]);
   myMotorDriver.setDrive(PUMP_MOTOR, 1, 50);
-  delay(30000);
+  delay(dataArray[3]);
   myMotorDriver.setDrive(PUMP_MOTOR, 0, 0);
 }
 
