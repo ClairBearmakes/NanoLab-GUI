@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 GUI: HydroFuge selected
 GUI: Settings file opened
 GUI: Please select water pump settings
@@ -7,4 +5,3 @@ GUI: Please select LED settings
 GUI: Please select fan settings
 GUI: Please select camera settings
 GUI: Please select atmospheric sensor settings
->>>>>>> 271d64bf7f8602e1f773d095af6578b98a97c7e0
