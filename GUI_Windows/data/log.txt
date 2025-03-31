@@ -1,7 +1,2 @@
 GUI: HydroFuge selected
 GUI: Settings file opened
-GUI: Please select water pump settings
-GUI: Please select LED settings
-GUI: Please select fan settings
-GUI: Please select camera settings
-GUI: Please select atmospheric sensor settings

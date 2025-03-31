@@ -12,6 +12,7 @@ from PIL import Image, ImageTk
 import pyglet
 import webbrowser
 import serial
+import serial.tools.list_ports
 import sys
 import os
 import time
@@ -40,21 +41,50 @@ big_font = ("Ubuntu", 24)
 title_font = ("Ubuntu", 46)
 calender_font = ("Arial", 10)
 
-"""
 # Arduino Stuff
-# open serial port
-arduino = serial.Serial(port="COM4", baudrate=9600, timeout=0.1)
-# check which port was really used
-print(arduino.name)
+#"""
+# stackoverflow.com/questions/24214643/python-to-automatically-select-serial-ports-for-arduino
+serPort = ""
+int1 = 0
+ardname = ""
+port = ""
 
-# close serial port from https://stackoverflow.com/questions/35235436/python-arduino-prototyping-api-v2-closing-serial-port
-def closeport(): # closes port if currently open
-    ser = serial.Serial(usbport) 
-    if ser.isOpen() == True:
-        ser.close()
+# Find Live Ports
+ports = list(serial.tools.list_ports.comports())
+for p in ports:
+	print (p) # This causes each port's information to be printed out.
+			# To search this p data, use p[1].
 
-# closeport()
-"""
+	while int1 < 9:   # Loop checks "COM0" to "COM8" for Adruino Port Info. 
+
+		if "CH340" in p[1]:  # Looks for "CH340" in P[1].
+			port = str(int1) # Converts an Integer to a String, allowing:
+			ardname = "COM" + port # add the strings together.
+
+		if "CH340" in p[1] and ardname in p[1]: # Looks for "CH340" and "COM#"
+			print ("Found Arduino on " + ardname)
+			int1 = 9 # Causes loop to end.
+
+		if int1 == 8:
+			print ("Arduino not found!")
+			port = "not connected"
+			#sys.exit() # Terminates Script.
+
+		int1 = int1 + 1
+
+# Set Port
+try:
+	arduino = serial.Serial(ardname, 115200, timeout=10) # Put in your speed and timeout value.
+
+	# This opens the serial port
+	arduino.close()  # In case the port is already open this closes it.
+	arduino.open()   # Reopen the port.
+
+	arduino.flushInput()
+	arduino.flushOutput()
+except:
+	port = "not connected"
+#"""
 
 # set starting variables
 dev_mode = True # if True will show log button and test buttons
@@ -552,6 +582,58 @@ class HomeBtn(): # master, rownum, colnum, colspan
 		self.img_widget.image = self.img
 		self.img_widget.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, sticky="", padx="3", pady="1")
 
+class CreateToolTip(object): #stackoverflow.com/questions/3221956/how-do-i-display-tooltips-in-tkinter
+    """
+    create a tooltip for a given widget
+    """
+    def __init__(self, widget, text='widget info'):
+        self.waittime = 500     #miliseconds
+        self.wraplength = 180   #pixels
+        self.widget = widget
+        self.text = text
+        self.widget.bind("<Enter>", self.enter)
+        self.widget.bind("<Leave>", self.leave)
+        self.widget.bind("<ButtonPress>", self.leave)
+        self.id = None
+        self.tw = None
+
+    def enter(self, event=None):
+        self.schedule()
+
+    def leave(self, event=None):
+        self.unschedule()
+        self.hidetip()
+
+    def schedule(self):
+        self.unschedule()
+        self.id = self.widget.after(self.waittime, self.showtip)
+
+    def unschedule(self):
+        id = self.id
+        self.id = None
+        if id:
+            self.widget.after_cancel(id)
+
+    def showtip(self, event=None):
+        x = y = 0
+        x, y, cx, cy = self.widget.bbox("insert")
+        x += self.widget.winfo_rootx() + 25
+        y += self.widget.winfo_rooty() + 20
+        # creates a toplevel window
+        self.tw = tk.Toplevel(self.widget)
+        # Leaves only the label and removes the app window
+        self.tw.wm_overrideredirect(True)
+        self.tw.wm_geometry("+%d+%d" % (x, y))
+        label = tk.Label(self.tw, text=self.text, justify='left',
+                       background="#ffffff", relief='solid', borderwidth=1,
+                       wraplength = self.wraplength)
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tw
+        self.tw= None
+        if tw:
+            tw.destroy()
 
 # set functions
 # general settings
@@ -795,6 +877,16 @@ def load_settings_frame():
 
 	settings_title = Label(settings_frame, text = "Main Settings", font=title_font, bg=bg_color, fg=fg_color)
 	settings_title.grid(row=0, columnspan=3, column=1, padx="8", pady="5")
+
+	# Arduino connection indication
+	ard_connect_frame = tk.Frame(settings_frame, highlightbackground="grey", highlightthickness=1, width=150, height=100, bg=bg_color)
+	ard_connect_frame.grid(row=0, columnspan=2, column=3, sticky="e", padx="10", pady="10")
+
+	ard_title = Label(ard_connect_frame, text = "Arduino", font=normal_font, bg=bg_color, fg=fg_color)
+	ard_title.grid(row=0, columnspan=2, column=0, padx="15", pady="1")
+
+	port_title = Label(ard_connect_frame, text = f"Port: {port}", font=normal_font, bg=bg_color, fg=fg_color)
+	port_title.grid(row=1, columnspan=2, column=0, padx="15", pady="1")
 
 	# Add start and end calendars
 	global dates
@@ -1434,7 +1526,7 @@ def load_atmos_sensor_frame():
 	# checkbox made with class
 	class MyCheckboxs: # master, rownum, columnnum, rowspan
 		def __init__(self, master, rownum, columnnum, rowspan):
-			self.checktext1 = "Gas (VOCs)"
+			self.checktext1 = "Gases (VOCs)"
 			self.checktext2 = "Temperature"
 			self.checktext3 = "Humidity"
 			self.checktext4 = "Barometric Pressure"
@@ -1454,6 +1546,8 @@ def load_atmos_sensor_frame():
 
 			self.checkbox1 = tk.Checkbutton(master, text=self.checktext1, variable=self.gas_bool, command=self.on_change)
 			self.checkbox1.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor=bg_color, relief="raised", padx=10, pady=5)
+
+			self.gas_ttp = CreateToolTip(self.checkbox1, "Read Volatile Organic Compounds (toxic gases)")
 
 			self.checkbox2 = tk.Checkbutton(master, text=self.checktext2, variable=self.temp_bool, command=self.on_change)
 			self.checkbox2.config(bg=bg_color, fg=fg_color, font=normal_font, selectcolor=bg_color, relief="raised", padx=10, pady=5)
@@ -1731,18 +1825,10 @@ class SetPreview: # command
 			all_changed = False
 
 		self.bg_color = bg_color
-		self.predates = []
-		#self.pre_start_date = f"{cur_year}-{cur_month}-{cur_day}"
-		#self.pre_end_date = f"{cur_year}-{cur_month}-{cur_day+1}"
-		#self.predates.append(self.pre_end_date)
-		#self.predates.append(self.pre_start_date)
-		self.predatesard = []
-		#self.pre_start_date_ard = f"{cur_day}"
-		#self.pre_end_date_ard = f"{cur_day+1}"
-		#self.predatesard.append(self.pre_end_date_ard)
-		#self.predatesard.append(self.pre_start_date_ard)
 
 		if all_changed == True:
+			print("All user set values")
+			logf.write("GUI: Using all custom values")
 			# pull all values
 			self.dates = dates
 			self.datesard = datesard
@@ -1773,36 +1859,44 @@ class SetPreview: # command
 			self.bar_press_val = bar_press_val
 
 		elif all_changed == False:
-			print("pulling or setting values")
+			print("Using better one-click™")
+			logf.write("GUI: Using better one-click™")
 			# set all values or set unselected values
-			#self.predates = []
+			self.predates = []
 			self.pre_start_date = f"{cur_year}-{cur_month}-{cur_day}"
 			self.pre_end_date = f"{cur_year}-{cur_month}-{cur_day+1}"
 			self.predates.append(self.pre_end_date)
 			self.predates.append(self.pre_start_date) #2025/3/12
-			#self.predatesard = []
+			print(self.predates)
+			self.predatesard = []
+			print(self.predatesard)
 			self.pre_start_date_ard = f"{cur_day}"
 			self.pre_end_date_ard = f"{cur_day+1}"
 			self.predatesard.append(self.pre_end_date_ard)
 			self.predatesard.append(self.pre_start_date_ard) #2025/3/12
+			print(self.predatesard)
 			try:
 				self.dates = dates
+				print(self.dates)
 				self.datesard = datesard
+				print(self.datesard)
 			except IndexError:
+				print("*&%$##%$^%!")
 				logf.write("GUI: Please select schedule")
-				#raise Exception("Select schedule")
+				# raise Exception("Please select your schedule\n")
 				self.dates = self.predates
 				self.datesard = self.predatesard
 			#finally:
-			#	self.dates = self.predates
-			#	self.datesard = self.predatesard
+				#raise Exception("Please select your schedule\n")
+				#self.dates = self.predates
+				#self.datesard = self.predatesard
 			
 			try:
 				self.wp_dur = wp_dur
 				self.wp_fre = wp_fre
 				self.wp_delay = wp_delay
 			except NameError:
-				logf.write("GUI: Please select water pump settings\n")
+				#logf.write("GUI: Please select water pump settings\n")
 				#raise Exception("Select water pump settings")
 				self.wp_dur = 8
 				self.wp_fre = 2
@@ -1816,7 +1910,7 @@ class SetPreview: # command
 				self.rgb_color = rgb_color
 				self.led_brightness = led_brightness
 			except NameError:
-				logf.write("GUI: Please select LED settings\n")
+				#logf.write("GUI: Please select LED settings\n")
 				#raise Exception("Select LED settings")
 				self.led_dur = 360
 				self.led_fre = 2
@@ -1831,7 +1925,7 @@ class SetPreview: # command
 				self.fan_delay = fan_delay
 				self.fan_str = fan_str
 			except NameError:
-				logf.write("GUI: Please select fan settings\n")
+				#logf.write("GUI: Please select fan settings\n")
 				#raise Exception("Select LED settings")
 				self.fan_dur = 60
 				self.fan_fre = 6
@@ -1842,7 +1936,7 @@ class SetPreview: # command
 				self.cam_fre = cam_fre
 				self.cam_delay = cam_delay
 			except NameError:
-				logf.write("GUI: Please select camera settings\n")
+				#logf.write("GUI: Please select camera settings\n")
 				#raise Exception("Select LED settings")
 				self.cam_fre = 1
 				self.cam_delay = 720
@@ -1855,9 +1949,8 @@ class SetPreview: # command
 				self.humid_val = humid_val
 				self.bar_press_val = bar_press_val
 			except NameError:
-				logf.write("GUI: Please select atmospheric sensor settings\n")
+				#logf.write("GUI: Please select atmospheric sensor settings\n")
 				#raise Exception("Select LED settings")
-			finally:
 				self.atmos_fre = 4
 				self.atmos_delay = 180
 				self.gas_val = False
@@ -1865,10 +1958,6 @@ class SetPreview: # command
 				self.humid_val = True
 				self.bar_press_val = False
 
-		print(dates)
-		print(datesard)
-		print(self.predates)
-		print(self.predatesard)
 		if all_changed == True:
 			self.all_sets = f"""{self.datesard[1]}\n{self.datesard[0]}\n{self.wp_dur}\n{self.wp_fre}\n{self.wp_delay}\n{self.led_dur}\n{self.led_fre}\n{self.led_delay}\n{self.rgb_code}\n{self.led_brightness}\n{self.fan_dur}\n{self.fan_fre}\n{self.fan_delay}\n{self.fan_str}\n{self.cam_fre}\n{self.cam_delay}\n{self.atmos_fre}\n{self.atmos_delay}\n{int(self.gas_val)}\n{int(self.temp_val)}\n{int(self.humid_val)}\n{int(self.bar_press_val)}\n"""
 		elif all_changed == False:
