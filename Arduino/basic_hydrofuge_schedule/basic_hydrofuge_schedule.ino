@@ -8,6 +8,7 @@
 #include "SCMD.h"
 #include "SCMD_config.h"  //Contains #defines for common SCMD register names and values
 #include "Wire.h"
+#include <FS.h>
 #include <SPI.h>
 #include <SD.h>
 
@@ -66,7 +67,9 @@ void setup() {
 
 
   // Settings Load Function ******************//
-  File dataFile = SD.open("data.txt" FILE_WRITE);  // i dont know why but this wont open the file? i dont have a solution atm
+  dataFile = fs.open("data.txt" FILE_WRITE);  // i dont know why but this wont open the file? i dont have a solution atm
+  //im attempting to use file open directly from the FS library like how SD_test does, because it actually works for some reason, but im clearly missing something. 
+  //also i wonder if SD_test is referencing another sketch.
 
 
   if (dataFile) {
@@ -141,8 +144,8 @@ void loop() {                    //This is general functions for manual control 
       case 'I':   // Maxwell, can you help me understand why this function wont enter the 'while' loop? the intent is to iterate throught the sent imformation and asign it to the array.
         Serial.println("Beginning Settings download");
 
-        while (i >= numReadings) {
-          //if (Serial.available() > 0) {
+        while (i <= numReadings) {
+          if (Serial.available() > 0) {
             Serial.println("reciveing . . .");
             float reading = Serial.parseFloat();  // Read incoming data
             // Store the reading in the array
@@ -159,7 +162,7 @@ void loop() {                    //This is general functions for manual control 
 
               i == 0;  // Reset i after saving
             }
-          //}
+          }
         }
         Serial.println("download done");
         break;
