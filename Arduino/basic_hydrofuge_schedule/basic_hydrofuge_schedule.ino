@@ -28,7 +28,7 @@ AlarmId id;
 
 SCMD myMotorDriver;  //This creates the main object of one motor driver and connected peripherals.
 
-File dataFile;
+File settings;
 
 const int numReadings = 10;   // Size of the array
 char dataArray[numReadings];  // Array to hold the file contents (adjust size as needed)
@@ -54,41 +54,9 @@ void setup() {
   digitalWrite(ledP, HIGH);  //by default we want this set to high and then flash it to low to wipe pixels.
   //did this because the pixels wouldn't clear when told too and instead were displaying random garbled barf!
 
-  //SD Card ******************************//
-  if (!SD.begin(5)) {
-    Serial.println("No SD card");
-    while (1)
-      ;
-  }
-  Serial.println("SD Connected");  //this check passes
-
-  const int numReadings = 10;   // Size of the array
-  char dataArray[numReadings];  // Array to hold the file contents (adjust size as needed)
 
 
-  // Settings Load Function ******************//
-  dataFile = fs.open("data.txt" FILE_WRITE);  // i dont know why but this wont open the file? i dont have a solution atm
-  //im attempting to use file open directly from the FS library like how SD_test does, because it actually works for some reason, but im clearly missing something. 
-  //also i wonder if SD_test is referencing another sketch.
-
-
-  if (dataFile) {
-    int index = 0;
-
-    while (dataFile.available() && index < sizeof(dataArray) - 1) {
-      dataArray[index] = dataFile.read();  // Read character by character
-      index++;
-    }
-
-    dataArray[index] = '\0';  // Null-terminate the array
-    dataFile.close();
-
-
-    Serial.println(dataArray);
-  } else {
-    Serial.println("Error opening data.txt");
-  }
-
+  
 
   //***** Configure the Motor Driver's Settings *****//
   //  .commInter face is I2C_MODE
@@ -126,10 +94,11 @@ void setup() {
   Serial.print("Waiting for enumeration...");
   while (myMotorDriver.ready() == false)
     ;
-  Serial.println("Done.");
+  Serial.println("Done.");*/
   Serial.println();     
 
-  */
+  SDtoArray(SD);  //moved the onstart file read to array to its own function
+  arrayToSet();  
 }
 
 #define PUMP_MOTOR 0
@@ -137,8 +106,9 @@ void setup() {
 
 void loop() {                    //This is general functions for manual control of the NanoLab
   if (Serial.available() > 0) {  //Serial functions, it waits for the serial port to be avilible
-    int DoThis = Serial.read();  // then switches case based on set the character sent
-
+    int DoThis = Serial.read();  // then switches case based on set the character sent. 
+                                 //mostly just for quickly turning something off/on to check if it works.
+//maxwell said 'yehaw' to this and i dont know why
     switch (DoThis) {
 
       case 'I':   // Maxwell, can you help me understand why this function wont enter the 'while' loop? the intent is to iterate throught the sent imformation and asign it to the array.
@@ -147,7 +117,8 @@ void loop() {                    //This is general functions for manual control 
         while (i <= numReadings) {
           if (Serial.available() > 0) {
             Serial.println("reciveing . . .");
-            float reading = Serial.parseFloat();  // Read incoming data
+            float reading = Serial.parseFloat();  // Read incoming settings
+
             // Store the reading in the array
 
             sensorReadings[i] = reading;
@@ -235,27 +206,78 @@ void ledOff() {
 
 
 
+//SD Card ******************************//
+void SDtoArray(fs::FS &fs){
+  
+  if (!SD.begin(5)) {
+    Serial.println("No SD card");
+    while (1)
+      ;
+  }
+  Serial.println("SD Connected");  //this check passes
+
+  const int numReadings = 10;   // Size of the array
+  char dataArray[numReadings];  // Array to hold the file contents (adjust size as needed)
+
+
+  // Settings Load Function ******************//
+  settings = fs.open("settings.txt" FILE_WRITE);  // i dont know why but this wont open the file? i dont have a solution atm
+  //im attempting to use file open directly from the FS library like how SD_test does, because it actually works for some reason, but im clearly missing something. 
+  //also i wonder if SD_test is referencing another sketch.
+
+
+  if (settings) {
+    int index = 0;
+
+    while (settings.available() && index < sizeof(dataArray) - 1) {
+      dataArray[index] = settings.read();  // Read character by character
+      index++;
+    }
+
+    dataArray[index] = '\0';  // Null-terminate the array
+    settings.close();
+
+
+    Serial.println(dataArray);
+  } else {
+    Serial.println("Error opening settings.txt");
+  }
+}
+
+void arrayToSet(){
+  //Time And date and Alarms ******************************//
+  setTime(5, 59, 40, 1, 1, 11);  // set time to Saturday 8:29:00am Jan 1 2011
+  // create the alarms, to trigger at specific times
+  Alarm.timerRepeat(dataArray[4], 0, 0, pumpFlush);
+  Alarm.timerRepeat(dataArray[1], 0, 0, fanOn);
+  Alarm.timerRepeat(dataArray[2], 0, 0, fanOff);
+  Alarm.timerRepeat(dataArray[3], 0, 0, ledOn);
+  Alarm.timerRepeat(dataArray[3], 0, 0, ledOff);
+}
+
+
+
 void saveToSD() {
 
-  File dataFile = SD.open("data.txt", FILE_WRITE);
-  if (!dataFile) {
+  File settings = SD.open("settings.txt", FILE_WRITE);
+  if (!settings) {
     Serial.println("unable to open file");
   } else {
     Serial.print("File opened");
   }
 
-  if (dataFile) {
+  if (settings) {
 
     for (int i = 0; i < numReadings; i++) {
 
-      dataFile.print(sensorReadings[i]);
+      settings.print(sensorReadings[i]);
 
-      dataFile.print(",");  // CSV format
+      settings.print(",");  // CSV format
     }
 
-    dataFile.println();  // New line after each batch of readings
+    settings.println();  // New line after each batch of readings
 
-    dataFile.close();
+    settings.close();
 
     Serial.println("Data saved to SD card.");
 
