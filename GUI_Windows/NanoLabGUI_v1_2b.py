@@ -42,37 +42,38 @@ title_font = ("Ubuntu", 46)
 calender_font = ("Arial", 10)
 
 # Arduino Stuff
-#"""
+
+#os.system('"drivers\\CH341SER.EXE"')
+
 # stackoverflow.com/questions/24214643/python-to-automatically-select-serial-ports-for-arduino
+# find live ports with Arduinos on them
 serPort = ""
 int1 = 0
 ardname = ""
-port = ""
+global port
+port = "not " #not found
 
-# Find Live Ports
 ports = list(serial.tools.list_ports.comports())
 for p in ports:
-	print (p) # This causes each port's information to be printed out.
-			# To search this p data, use p[1].
+	print (p) # This causes each port's information to be printed out
+			# To search this p data, use p[1]
 
-	while int1 < 9:   # Loop checks "COM0" to "COM8" for Adruino Port Info. 
+	while int1 < 9:   # Loop checks "COM0" to "COM8" for Adruino Port Info
 
 		if "CH340" in p[1]:  # Looks for "CH340" in P[1].
 			port = str(int1) # Converts an Integer to a String, allowing:
-			ardname = "COM" + port # add the strings together.
+			ardname = f"COM{port}" # add the strings together
 
 		if "CH340" in p[1] and ardname in p[1]: # Looks for "CH340" and "COM#"
-			print ("Found Arduino on " + ardname)
-			int1 = 9 # Causes loop to end.
+			print (f"Found Arduino on {ardname}")
+			int1 = 9 # Causes loop to end
 
 		if int1 == 8:
+			port = str("not found")
 			print ("Arduino not found!")
-			port = "not connected"
-			#sys.exit() # Terminates Script.
 
 		int1 = int1 + 1
 
-# Set Port
 try:
 	arduino = serial.Serial(ardname, 115200, timeout=10) # Put in your speed and timeout value.
 
@@ -83,7 +84,53 @@ try:
 	arduino.flushInput()
 	arduino.flushOutput()
 except:
-	port = "not connected"
+	#port = "not connected"
+	print("exception found")
+
+def findard():
+	serPort = ""
+	int1 = 0
+	ardname = ""
+	global port
+	port = ""
+
+	ports = list(serial.tools.list_ports.comports())
+	for p in ports:
+		print (p) # This causes each port's information to be printed out.
+				# To search this p data, use p[1].
+
+		while int1 < 9:   # Loop checks "COM0" to "COM8" for Adruino Port Info. 
+
+			if "CH340" in p[1]:  # Looks for "CH340" in P[1].
+				port = str(int1) # Converts an Integer to a String, allowing:
+				ardname = "COM" + port # add the strings together.
+				print(int1)
+
+			if "CH340" in p[1] and ardname in p[1]: # Looks for "CH340" and "COM#"
+				print ("Found Arduino on " + ardname)
+				print(int1)
+				int1 = 9 # Causes loop to end.
+
+			if int1 == 8:
+				port = str("not connected")
+				print ("Arduino not found!")
+
+			arduino_set()
+			int1 = int1 + 1
+
+def arduino_set():
+	try:
+		arduino = serial.Serial(ardname, 115200, timeout=10) # Put in your speed and timeout value.
+		print(arduino)
+
+		# This opens the serial port
+		arduino.close()  # In case the port is already open this closes it.
+		arduino.open()   # Reopen the port.
+
+		arduino.flushInput()
+		arduino.flushOutput()
+	except:
+		port = "not connected"
 #"""
 
 # set starting variables
@@ -486,22 +533,25 @@ class TestButton: # master, rownum, columnnum, colspan, stickdir, command
 
 # sliders
 class Sliders: # master, hardware, rownum, colnum, stickdir, command
-	# class variables (attributes)
-	durto = 360 # change with Sliders.durto = int defining run time minute limit
-	freto = 24 # change with Sliders.freto = int limit defining times it runs in 24h period
-	delayto = 720 # change with Sliders.delayto = int defining delay minute limit
-	dur_val = 0
-	durres = 10
+	# class variables (attributes) ## change with Sliders.durto ##
+	dur_unit = "minutes" # unit of dur slider
+	durto = 360 # defining run time limit
+	freto = 24 # defining times it runs in 24h period
+	delayto = 720 # defining delay limit
+	dur_val = 0 # variables holding slider value
 	fre_val = 0
 	delay_val = 0
-	long_true = True
-	often_true = True
+	durres = 10 # resolution of sliders
+	freres = 1
+	delayres = 10
+	dur_true = True # bool defining to show slider or not
+	fre_true = True
 	delay_true = True
 
 	def __init__(self, master, hardware, rownum, colnum, stickdir, command):
 		self.master = master
 		self.hardware = hardware
-		self.label_txt = f"How long do you want {hardware} to run? (minutes)"
+		self.label_txt = f"How long do you want {hardware} to run? ({self.dur_unit})"
 		self.label_txt2 = f"How many times should {hardware} run? (24h period)"
 		self.label_txt3 = f"How much delay do you want between runs? (minutes)"
 		self.rownum = rownum
@@ -516,23 +566,24 @@ class Sliders: # master, hardware, rownum, colnum, stickdir, command
 		self.durslider = Scale(self.master, from_=0, to=self.durto, length=700, resolution=self.durres, orient=HORIZONTAL, 
 			variable=self.dur_value, label=self.label_txt, font=normal_font, bg=bg_color, fg=fg_color)
 		self.durslider.set(10)
-		if self.long_true == True:
+		if self.dur_true == True:
 			self.durslider.grid(row=self.rownum, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
-		self.freslider = Scale(self.master, from_=0, to=self.freto, length=700, resolution=1, orient=HORIZONTAL, 
+		self.freslider = Scale(self.master, from_=0, to=self.freto, length=700, resolution=self.freres, orient=HORIZONTAL, 
 			variable=self.fre_value, label=self.label_txt2, font=normal_font, bg=bg_color, fg=fg_color)
 		self.freslider.set(10)
-		if self.often_true == True:
+		if self.fre_true == True:
 			self.freslider.grid(row=self.rownum+1, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
-		self.delayslider = Scale(self.master, from_=0, to=self.delayto, length=700, resolution=10, orient=HORIZONTAL, 
+		self.delayslider = Scale(self.master, from_=0, to=self.delayto, length=700, resolution=self.delayres, orient=HORIZONTAL, 
 			variable=self.delay_value, label=self.label_txt3, font=normal_font, bg=bg_color, fg=fg_color)
 		self.delayslider.set(10)
 		if self.delay_true == True:
 			self.delayslider.grid(row=self.rownum+2, columnspan=self.colspan, column=self.colnum, sticky=self.stickdir, padx="0", pady="10")
 
-		# self.showbtn = tk.Button(self.master, text='Show slider values', font=normal_font, bg=bg_color, fg=fg_color, command=self.show_values)
-		# self.showbtn.grid(row=self.rownum+3, columnspan=1, column=self.colnum, padx="7", pady="5", sticky="w")
+		if dev_mode and type_selected == True:
+			self.showbtn = tk.Button(self.master, text='Show slider values', font=normal_font, bg=bg_color, fg=fg_color, command=self.show_values)
+			self.showbtn.grid(row=self.rownum+3, columnspan=1, column=self.colnum, padx="7", pady="5", sticky="w")
 
 	def show_values(self):
 		# print(self.durslider.get(), self.freslider.get(), self.delayslider.get())
@@ -761,7 +812,7 @@ def load_menu():
 		activebackground=menu_act_bg_color,
 		activeforeground=act_fg_color, 
 		command=lambda:raise_main_set()
-		).grid(row=0, column=0, sticky="w", padx="5", pady="3") # row==up and down, column==left and right
+		).grid(row=0, column=0, sticky="w", padx="5", pady="3") # row: across, column: vertical
 
 	# create about button widget
 	tk.Button(
@@ -852,6 +903,7 @@ def load_menu():
 	# print("loaded menu")
 
 def load_settings_frame():
+	#findard()
 	set_theme()
 	all_set_changed()
 
@@ -981,9 +1033,12 @@ def load_w_pump_settings_frame():
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn1 = TestButton(w_pump_settings_frame, 1, 1, 1, "w", lambda:test_pump())
 
-	Sliders.long_true = True
+	# setup sliders
+	Sliders.dur_true = True
+	Sliders.dur_unit = "seconds"
 	Sliders.durto = 20
 	Sliders.durres = 1
+	# load sliders
 	# master, rownum, colnum, stickdir, command
 	sliders1 = Sliders(w_pump_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 
@@ -1121,9 +1176,12 @@ def load_led_settings_frame():
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn2 = TestButton(led_settings_frame, 1, 1, 1, "w", lambda:test_LED())
 
-	Sliders.long_true = True
+	# setup sliders
+	Sliders.dur_true = True
+	Sliders.dur_unit = "minutes"
 	Sliders.durto = 360
 	Sliders.durres = 10
+	# load sliders
 	# master, rownum, colnum, stickdir, command
 	sliders2 = Sliders(led_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 
@@ -1387,8 +1445,10 @@ def load_fan_settings_frame():
 	fan_strength_slider.set(70)
 	fan_strength_slider.grid(row=2, columnspan=8, column=9, sticky="s")
 
-	Sliders.long_true = True
+	# setup sliders
+	Sliders.dur_true = True
 	Sliders.durto = 360
+	# load sliders
 	# master, rownum, colnum, stickdir, command
 	sliders3 = Sliders(fan_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 
@@ -1449,7 +1509,9 @@ def load_camera_settings_frame():
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn4 = TestButton(camera_settings_frame, 1, 1, 1, "w", lambda:test_camera())
 
-	Sliders.long_true = False
+	# setup sliders
+	Sliders.dur_true = False
+	# load sliders
 	# master, rownum, colnum, stickdir, command
 	sliders4 = Sliders(camera_settings_frame, hardware, 2, 1, "w", Sliders.show_values)
 
@@ -1507,7 +1569,9 @@ def load_atmos_sensor_frame():
 		# master, rownum, columnnum, colspan, stickdir, command
 		testbtn5 = TestButton(atmos_sensor_frame, 1, 1, 1, "w", lambda:test_atmos())
 
-	Sliders.long_true = False
+	# setup sliders
+	Sliders.dur_true = False
+	# load sliders
 	# master, rownum, colnum, stickdir, command
 	sliders5 = Sliders(atmos_sensor_frame, hardware, 1, 1, "w", Sliders.show_values)
 
@@ -1859,8 +1923,8 @@ class SetPreview: # command
 			self.bar_press_val = bar_press_val
 
 		elif all_changed == False:
-			print("Using better one-click™")
-			logf.write("GUI: Using better one-click™")
+			print("Using better one-click")
+			logf.write("GUI: Using better one-click")
 			# set all values or set unselected values
 			self.predates = []
 			self.pre_start_date = f"{cur_year}-{cur_month}-{cur_day}"
@@ -1958,10 +2022,12 @@ class SetPreview: # command
 				self.humid_val = True
 				self.bar_press_val = False
 
+		self.start = 1
+		self.wp_dur_ard = self.wp_dur * 1000
 		if all_changed == True:
-			self.all_sets = f"""{self.datesard[1]}\n{self.datesard[0]}\n{self.wp_dur}\n{self.wp_fre}\n{self.wp_delay}\n{self.led_dur}\n{self.led_fre}\n{self.led_delay}\n{self.rgb_code}\n{self.led_brightness}\n{self.fan_dur}\n{self.fan_fre}\n{self.fan_delay}\n{self.fan_str}\n{self.cam_fre}\n{self.cam_delay}\n{self.atmos_fre}\n{self.atmos_delay}\n{int(self.gas_val)}\n{int(self.temp_val)}\n{int(self.humid_val)}\n{int(self.bar_press_val)}\n"""
+			self.all_sets = f"""{self.start}\n{self.datesard[1]}\n{self.datesard[0]}\n{self.wp_dur_ard}\n{self.wp_fre}\n{self.wp_delay}\n{self.led_dur}\n{self.led_fre}\n{self.led_delay}\n{self.rgb_code}\n{self.led_brightness}\n{self.fan_dur}\n{self.fan_fre}\n{self.fan_delay}\n{self.fan_str}\n{self.cam_fre}\n{self.cam_delay}\n{self.atmos_fre}\n{self.atmos_delay}\n{int(self.gas_val)}\n{int(self.temp_val)}\n{int(self.humid_val)}\n{int(self.bar_press_val)}\n"""
 		elif all_changed == False:
-			self.all_sets = f"""{self.predatesard[1]}\n{self.predatesard[0]}\n{self.wp_dur}\n{self.wp_fre}\n{self.wp_delay}\n{self.led_dur}\n{self.led_fre}\n{self.led_delay}\n{self.rgb_code}\n{self.led_brightness}\n{self.fan_dur}\n{self.fan_fre}\n{self.fan_delay}\n{self.fan_str}\n{self.cam_fre}\n{self.cam_delay}\n{self.atmos_fre}\n{self.atmos_delay}\n{int(self.gas_val)}\n{int(self.temp_val)}\n{int(self.humid_val)}\n{int(self.bar_press_val)}\n"""
+			self.all_sets = f"""{self.start}\n{self.predatesard[1]}\n{self.predatesard[0]}\n{self.wp_dur_ard}\n{self.wp_fre}\n{self.wp_delay}\n{self.led_dur}\n{self.led_fre}\n{self.led_delay}\n{self.rgb_code}\n{self.led_brightness}\n{self.fan_dur}\n{self.fan_fre}\n{self.fan_delay}\n{self.fan_str}\n{self.cam_fre}\n{self.cam_delay}\n{self.atmos_fre}\n{self.atmos_delay}\n{int(self.gas_val)}\n{int(self.temp_val)}\n{int(self.humid_val)}\n{int(self.bar_press_val)}\n"""
 
 		# define graphical elements
 		self.start_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Start Date", font=("Ubuntu", 14))
@@ -1971,7 +2037,7 @@ class SetPreview: # command
 
 		self.wp_preview_frame = tk.Frame(self.master, highlightbackground="grey", highlightthickness=1, width=200, height=300, bg=bg_color)
 		self.wp_preview_title = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = "Water Pump", font=("Ubuntu", 14))
-		self.wp_long_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {self.wp_dur} (minutes)", font=(normal_font)) #normal_font(12 vs 14)
+		self.wp_long_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How long: {self.wp_dur} (seconds)", font=(normal_font)) #normal_font(12 vs 14)
 		self.wp_fre_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How often: {self.wp_fre} (in 24h period)", font=(normal_font))
 		self.wp_delay_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=fg_color, text = f"How much delay: {self.wp_delay} (minutes)", font=(normal_font))
 		self.wp_filler_label = tk.Label(self.wp_preview_frame, bg=bg_color, fg=bg_color, text = "How much delay: ", font=(normal_font))
