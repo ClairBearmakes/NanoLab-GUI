@@ -1,2 +1,4 @@
 GUI: HydroFuge selected
 GUI: Settings file opened
+GUI: Experiment will run from 04-01-25 - 04-02-25
+GUI: Using better one-click
