@@ -56,7 +56,7 @@ void setup() {
 
 
 
-  
+
 
   //***** Configure the Motor Driver's Settings *****//
   //  .commInter face is I2C_MODE
@@ -95,10 +95,10 @@ void setup() {
   while (myMotorDriver.ready() == false)
     ;
   Serial.println("Done.");*/
-  Serial.println();     
+  Serial.println();
 
   SDtoArray(SD);  //moved the onstart file read to array to its own function
-  arrayToSet();  
+  arrayToSet();
 }
 
 #define PUMP_MOTOR 0
@@ -106,12 +106,12 @@ void setup() {
 
 void loop() {                    //This is general functions for manual control of the NanoLab
   if (Serial.available() > 0) {  //Serial functions, it waits for the serial port to be avilible
-    int DoThis = Serial.read();  // then switches case based on set the character sent. 
+    int DoThis = Serial.read();  // then switches case based on set the character sent.
                                  //mostly just for quickly turning something off/on to check if it works.
-//maxwell said 'yeehaw' to this and i dont know why
+                                 //maxwell said 'yeehaw' to this and i dont know why
     switch (DoThis) {
 
-      case 'I':   
+      case 'I':
         Serial.println("Beginning Settings download");
         SD.remove("settings.txt");
         while (i <= numReadings) {
@@ -207,8 +207,8 @@ void ledOff() {
 
 
 //SD Card ******************************//
-void SDtoArray(fs::FS &fs){
-  
+void SDtoArray(fs::FS &fs) {
+
   if (!SD.begin(5)) {
     Serial.println("No SD card");
     while (1)
@@ -222,7 +222,7 @@ void SDtoArray(fs::FS &fs){
 
   // Settings Load Function ******************//
   settings = fs.open("settings.txt" FILE_WRITE);  // i dont know why but this wont open the file? i dont have a solution atm
-  //im attempting to use file open directly from the FS library like how SD_test does, because it actually works for some reason, but im clearly missing something. 
+  //im attempting to use file open directly from the FS library like how SD_test does, because it actually works for some reason, but im clearly missing something.
   //also i wonder if SD_test is referencing another sketch.
 
 
@@ -244,7 +244,9 @@ void SDtoArray(fs::FS &fs){
   }
 }
 
-void arrayToSet(){
+
+
+void arrayToSet() {
   //Time And date and Alarms ******************************//
   setTime(5, 59, 40, 1, 1, 11);  // set time to Saturday 8:29:00am Jan 1 2011
   // create the alarms, to trigger at specific times
@@ -252,7 +254,7 @@ void arrayToSet(){
   Alarm.timerRepeat(dataArray[1], 0, 0, fanOn);
   Alarm.timerRepeat(dataArray[2], 0, 0, fanOff);
   Alarm.timerRepeat(dataArray[3], 0, 0, ledOn);
-  Alarm.timerRepeat(dataArray[3], 0, 0, ledOff); //arrays are 0 indexed, the 0th possition is used to check if the array has been loaded or not
+  Alarm.timerRepeat(dataArray[3], 0, 0, ledOff);  //arrays are 0 indexed, the 0th possition is used to check if the array has been loaded or not
 }
 
 
