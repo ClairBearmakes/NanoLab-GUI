@@ -108,12 +108,12 @@ void loop() {                    //This is general functions for manual control 
   if (Serial.available() > 0) {  //Serial functions, it waits for the serial port to be avilible
     int DoThis = Serial.read();  // then switches case based on set the character sent. 
                                  //mostly just for quickly turning something off/on to check if it works.
-//maxwell said 'yehaw' to this and i dont know why
+//maxwell said 'yeehaw' to this and i dont know why
     switch (DoThis) {
 
-      case 'I':   // Maxwell, can you help me understand why this function wont enter the 'while' loop? the intent is to iterate throught the sent imformation and asign it to the array.
+      case 'I':   
         Serial.println("Beginning Settings download");
-
+        SD.remove("settings.txt");
         while (i <= numReadings) {
           if (Serial.available() > 0) {
             Serial.println("reciveing . . .");
@@ -129,7 +129,7 @@ void loop() {                    //This is general functions for manual control 
 
             if (i >= numReadings) {
 
-              saveToSD();
+              saveToSD(SD);
 
               i == 0;  // Reset i after saving
             }
@@ -252,14 +252,14 @@ void arrayToSet(){
   Alarm.timerRepeat(dataArray[1], 0, 0, fanOn);
   Alarm.timerRepeat(dataArray[2], 0, 0, fanOff);
   Alarm.timerRepeat(dataArray[3], 0, 0, ledOn);
-  Alarm.timerRepeat(dataArray[3], 0, 0, ledOff);
+  Alarm.timerRepeat(dataArray[3], 0, 0, ledOff); //arrays are 0 indexed, the 0th possition is used to check if the array has been loaded or not
 }
 
 
 
-void saveToSD() {
+void saveToSD(fs::FS &fs) {
 
-  File settings = SD.open("settings.txt", FILE_WRITE);
+  File settings = fs.open("settings.txt", FILE_WRITE);
   if (!settings) {
     Serial.println("unable to open file");
   } else {
