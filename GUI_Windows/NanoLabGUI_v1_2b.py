@@ -41,8 +41,13 @@ big_font = ("Ubuntu", 24)
 title_font = ("Ubuntu", 46)
 calender_font = ("Arial", 10)
 
-# Arduino Stuff
+# open log file
+logf = open('data\\log.txt', 'w+')
+log_new = True
 
+## Arduino Stuff ##
+
+# Install drivers
 #os.system('"drivers\\CH341SER.EXE"')
 
 # stackoverflow.com/questions/24214643/python-to-automatically-select-serial-ports-for-arduino
@@ -51,7 +56,7 @@ serPort = ""
 int1 = 0
 ardname = ""
 global port
-port = "not " #not found
+port = "not found"
 
 ports = list(serial.tools.list_ports.comports())
 for p in ports:
@@ -84,8 +89,9 @@ try:
 	arduino.flushInput()
 	arduino.flushOutput()
 except:
-	#port = "not connected"
+	port = "not connected"
 	print("exception found")
+	logf.write("Arduino not found\n")
 
 def findard():
 	serPort = ""
@@ -108,6 +114,7 @@ def findard():
 
 			if "CH340" in p[1] and ardname in p[1]: # Looks for "CH340" and "COM#"
 				print ("Found Arduino on " + ardname)
+				logf.write("Found Arduino on " + ardname)
 				print(int1)
 				int1 = 9 # Causes loop to end.
 
@@ -131,7 +138,6 @@ def arduino_set():
 		arduino.flushOutput()
 	except:
 		port = "not connected"
-#"""
 
 # set starting variables
 dev_mode = True # if True will show log button and test buttons
@@ -141,46 +147,20 @@ comp_count = 5 # number of components
 type_selected = False
 box_type = ""
 
-if dark_mode == False:
-	# set normal colors
-	menu_bg_color = "#000000"
-	menu_fg_color = "#ffffff"
-	menu_act_bg_color = "#000000"
-	bg_color = "#ffffff"
-	fg_color = "#000000"
-	act_bg_color = "#ffffff"
-	act_fg_color = "#808080"
-else:
-	# set dark mode colors
-	menu_bg_color = "#000000"
-	menu_fg_color = "#ffffff"
-	menu_act_bg_color = "#ffffff"
-	bg_color = "#000000"
-	fg_color = "#ffffff"
-	act_bg_color = "#808080"
-	act_fg_color = "#ffffff"
-
-# open log file
-logf = open('data\\log.txt', 'w+')
-log_new = True
-
-def open_log():
-	# open log file
-	logf = open('data\\log.txt', 'w')
-	# logf.write("test\n")
-	return logf
-# open_log()
+setup_root = tk.Tk()
+#root = tk.Tk()
 
 # ttk.Style().theme_use('black') https://stackoverflow.com/questions/24367710/how-do-i-change-the-overall-theme-of-a-tkinter-application?rq=3
-def toggle_dark(value): # maybe use stackoverflow.com/questions/60595078/implementing-dark-mode-with-on-off-function-in-simple-python-tkinter-program
-	value = not value
-	print(value)
-	logf.write(f"GUI: dark_mode = {value}\n")
-	return value
-	color_mode_switch()
-# dark_mode = toggle_bool(dark_mode)
+def toggle_dark(): # maybe use stackoverflow.com/questions/60595078/implementing-dark-mode-with-on-off-function-in-simple-python-tkinter-program
+	global dark_mode
+	dark_mode = not dark_mode
+	print(f"{dark_mode}")
+	logf.write(f"GUI: dark_mode = {dark_mode}\n")
+	set_theme()
+
 print(dark_mode)
 def set_theme():
+	global menu_bg_color, menu_fg_color, menu_act_bg_color, bg_color, fg_color, act_bg_color, act_fg_color
 	if dark_mode == False:
 		# set normal colors
 		menu_bg_color = "#000000"
@@ -190,7 +170,6 @@ def set_theme():
 		fg_color = "#000000"
 		act_bg_color = "#ffffff"
 		act_fg_color = "#808080"
-		return(menu_bg_color, menu_fg_color, menu_act_bg_color, bg_color, fg_color, act_bg_color, act_fg_color)
 	else:
 		# set dark mode colors
 		menu_bg_color = "#000000"
@@ -200,7 +179,6 @@ def set_theme():
 		fg_color = "#ffffff"
 		act_bg_color = "#808080"
 		act_fg_color = "#ffffff"
-		return(menu_bg_color, menu_fg_color, menu_act_bg_color, bg_color, fg_color, act_bg_color, act_fg_color)
 set_theme()
 
 
@@ -209,7 +187,7 @@ set_theme()
 # =======================
 
 # create object
-setup_root = tk.Tk()
+#setup_root = tk.Tk()
 setup_root.title("Universal NanoLab Setup")
 setup_root.configure(bg=bg_color)
 
@@ -267,18 +245,6 @@ def load_setup1():
 		saveBtn.grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
 		type_selected = True
 
-	# dark mode button
-	if dark_mode == True:
-		image = Image.open(resource_path("assets\\night-mode-dark.png"))
-	else:
-		image = Image.open(resource_path("assets\\night-mode-light.png"))
-	# Resize the image using resize() method
-	resize_image = image.resize((30, 30))
-	logo_img = ImageTk.PhotoImage(resize_image)
-	logo_widget = tk.Button(setup1_frame, image=logo_img, bg=bg_color, command=lambda:toggle_dark(dark_mode))
-	logo_widget.image = logo_img
-	logo_widget.grid(row=0, columnspan=1, column=6, sticky="e", padx="3", pady="1")
-
 	# Set Label
 	welcome_label = Label(setup1_frame, text="Welcome to your NanoLab!", font=("Ubuntu-Bold", 20), bg=bg_color, fg=fg_color)
 	welcome_label.grid(row=0, columnspan=8, column=0, sticky="")
@@ -332,6 +298,42 @@ def load_setup1():
 
 	version_label = Label(setup1_frame, text=f"v.{vernum}", font=("Ubuntu", 8), bg=bg_color, fg=fg_color)
 	version_label.grid(row=4, columnspan=2, column=0, sticky="sw")
+
+	## Dark Mode Button ##
+	global dark_mode
+	dark_mode = False
+	# Define our switch function
+	def switch_theme():
+		global dark_mode
+		print(dark_mode)
+		# Determine if on or off
+		if dark_mode == True:
+			theme_switch.config(image = dark)
+			theme_label.config(text = "Dark")
+			dark_mode = False
+			set_theme()
+		if dark_mode == False:
+			theme_switch.config(image = light)
+			theme_label.config(text = "Light")
+			dark_mode = True
+			set_theme()
+		set_theme()
+
+	theme_label = Label(setup1_frame, text="Light", font=("Ubuntu", 8), bg=bg_color, fg=fg_color)
+	theme_label.grid(rowspan=2, row=3, columnspan=1, column=2, sticky="", padx="1", pady="1")
+
+	#light = Image.open(resource_path("assets\\night-mode-light.png")) # change to switch format
+	light = PhotoImage(file = resource_path("assets\\light.png"))
+	#dark = Image.open(resource_path("assets\\night-mode-dark.png")) # change to switch format
+	dark = PhotoImage(file = resource_path("assets\\dark.png"))
+	"""
+	# Resize the image using resize() method
+	resize_image = image.resize((30, 30))
+	logo_img = ImageTk.PhotoImage(resize_image)
+	"""
+	theme_switch = tk.Button(setup1_frame, image=light, bg=bg_color, width=48, height=28, command=lambda:switch_theme())
+	#theme_switch.image = logo_img
+	theme_switch.grid(rowspan=2, row=4, columnspan=1, column=2, sticky="s", padx="1", pady="1")
 
 	# print("first screen loaded")
 
@@ -638,7 +640,7 @@ class CreateToolTip(object): #stackoverflow.com/questions/3221956/how-do-i-displ
     create a tooltip for a given widget
     """
     def __init__(self, widget, text='widget info'):
-        self.waittime = 500     #miliseconds
+        self.waittime = 100     #miliseconds
         self.wraplength = 180   #pixels
         self.widget = widget
         self.text = text
@@ -766,13 +768,10 @@ c_array_string += f"const int myArraySize = {len(array)};\n"
 # functions for raising frames
 def raise_main_set():
 	settings_frame.tkraise()
-	"""
-	logf = open('data\\log.txt', 'w')
-	try:
-		logf = open(fileName, 'wb+')
-	except:
-		print("File already opened!")
-	"""
+	#data_results_frame.destroy()
+	for frame in root.winfo_children():
+		if isinstance(frame, tk.Toplevel):
+			print(frame)
 
 def raise_wp_set():
 	w_pump_settings_frame.tkraise()
@@ -898,7 +897,7 @@ def load_menu():
 	logo_img = ImageTk.PhotoImage(resize_image)
 	logo_widget = tk.Button(menu, image=logo_img, bg=menu_bg_color, command=lambda:toggle_dark(dark_mode))
 	logo_widget.image = logo_img
-	logo_widget.grid(row=0, columnspan=1, column=8, sticky="e", padx="3", pady="1")
+	#logo_widget.grid(row=0, columnspan=1, column=8, sticky="e", padx="3", pady="1")
 
 	# print("loaded menu")
 
@@ -1834,26 +1833,21 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	def load_log():
 		global log_new
 		raise_log_frame()
-		#file = open("data\\test.txt", "r") ## replace with log
-		logf.close()
+		logf.flush()
 		with open("data\\log.txt", "r") as file:
+			# file.seek(0)
 			data = file.read()
 
-		if log_new == True:  # First time loading the log
-			logf.close()
-			log.insert(tk.INSERT, data)
-			log_new = False  # Mark as loaded
-		elif log_new == False:
-			print("no")
-			#file = open('data\\log.txt', 'r')
-			data = file.read()
-			log.delete("1.0", tk.END)
-			log.insert(tk.INSERT, data)
-			open_log()
+			if log_new == True:  # First time loading the log
+				log.insert(tk.INSERT, data)
+				log_new = False  # Mark as loaded
+			else:
+				print("no")
+				print(data)
+				log.delete("1.0", tk.END)
+				log.insert(tk.INSERT, data)
 	load_log()
 	log.grid(row=1, columnspan=4, column=1, sticky="nsew", padx="8", pady="5")
-
-	open_log()
 
 	upd_btn = tk.Button(log_frame,text = 'Update', font=normal_font, bg=bg_color, fg=fg_color, command = lambda:load_log())
 	upd_btn.grid(rowspan=1, row=2, columnspan=4, column=1, padx="8", pady="5", sticky="")
@@ -1891,9 +1885,9 @@ class SetPreview: # command
 		self.bg_color = bg_color
 
 		if all_changed == True:
+			# pull all values
 			print("All user set values")
 			logf.write("GUI: Using all custom values")
-			# pull all values
 			self.dates = dates
 			self.datesard = datesard
 			self.wp_dur = wp_dur
@@ -1923,9 +1917,9 @@ class SetPreview: # command
 			self.bar_press_val = bar_press_val
 
 		elif all_changed == False:
+			# set all values or set unselected values
 			print("Using better one-click")
 			logf.write("GUI: Using better one-click")
-			# set all values or set unselected values
 			self.predates = []
 			self.pre_start_date = f"{cur_year}-{cur_month}-{cur_day}"
 			self.pre_end_date = f"{cur_year}-{cur_month}-{cur_day+1}"
@@ -1939,15 +1933,14 @@ class SetPreview: # command
 			self.predatesard.append(self.pre_end_date_ard)
 			self.predatesard.append(self.pre_start_date_ard) #2025/3/12
 			print(self.predatesard)
-			try:
+			if len(dates) > 1:
 				self.dates = dates
 				print(self.dates)
 				self.datesard = datesard
 				print(self.datesard)
-			except IndexError:
-				print("*&%$##%$^%!")
+			else:
+				print("**5****4***")
 				logf.write("GUI: Please select schedule")
-				# raise Exception("Please select your schedule\n")
 				self.dates = self.predates
 				self.datesard = self.predatesard
 			#finally:
@@ -2031,6 +2024,7 @@ class SetPreview: # command
 
 		# define graphical elements
 		self.start_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "Start Date", font=("Ubuntu", 14))
+		print(f"124{self.dates}")
 		self.start_date_label = tk.Label(self.master, bg=bg_color, fg=fg_color, text = self.dates[1], font=normal_font)
 		self.end_date_title = tk.Label(self.master, bg=bg_color, fg=fg_color, text = "End Date", font=("Ubuntu", 14))
 		self.end_date_label = tk.Label(self.master, bg=bg_color, fg=fg_color, text = self.dates[0], font=normal_font)
