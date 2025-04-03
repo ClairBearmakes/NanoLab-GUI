@@ -322,18 +322,22 @@ def load_setup1():
 	theme_label = Label(setup1_frame, text="Light", font=("Ubuntu", 8), bg=bg_color, fg=fg_color)
 	theme_label.grid(rowspan=2, row=3, columnspan=1, column=2, sticky="", padx="1", pady="1")
 
-	#light = Image.open(resource_path("assets\\night-mode-light.png")) # change to switch format
-	light = PhotoImage(file = resource_path("assets\\light.png"))
-	#dark = Image.open(resource_path("assets\\night-mode-dark.png")) # change to switch format
-	dark = PhotoImage(file = resource_path("assets\\dark.png"))
-	"""
-	# Resize the image using resize() method
-	resize_image = image.resize((30, 30))
-	logo_img = ImageTk.PhotoImage(resize_image)
-	"""
+	lightimg = PhotoImage(file = resource_path("assets\\light.png"))
+	darkimg = PhotoImage(file = resource_path("assets\\dark.png"))
 	theme_switch = tk.Button(setup1_frame, image=light, bg=bg_color, width=48, height=28, command=lambda:switch_theme())
 	#theme_switch.image = logo_img
 	theme_switch.grid(rowspan=2, row=4, columnspan=1, column=2, sticky="s", padx="1", pady="1")
+
+	if dark_mode == True:
+		theme_switch.config(image = darkimg)
+		theme_label.config(text = "Dark")
+		dark_mode = False
+		set_theme()
+	if dark_mode == False:
+		theme_switch.config(image = lightimg)
+		theme_label.config(text = "Light")
+		dark_mode = True
+		set_theme()
 
 	# print("first screen loaded")
 
