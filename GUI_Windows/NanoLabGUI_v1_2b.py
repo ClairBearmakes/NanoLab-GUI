@@ -2,6 +2,8 @@
 # Code writen by Asher Powell at Warren Tech North
 # Version 1.2b
 vernum = "1.2b"
+dev_mode = True # if True will show log button and test buttons
+beta = True # enable beta testing form button
 
 # import dependencies
 import tkinter as tk
@@ -145,8 +147,6 @@ def arduino_set():
 
 # set starting variables
 global dark_mode
-dev_mode = True # if True will show log button and test buttons
-beta = True # enable beta testing form button
 dark_mode = False # changes color theme
 comp_count = 5 # number of components
 type_selected = False
