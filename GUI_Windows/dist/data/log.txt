@@ -1,2 +1,0 @@
-GUI: HydroFuge selected
-GUI: Settings file opened
