@@ -97,7 +97,7 @@ void setup() {
   Serial.println("Done.");*/
   Serial.println();
 
-  SDtoArray(SD);  //moved the onstart file read to array to its own function
+  SDtoArray(SD, "/stuff/settings.txt");  //moved the onstart file read to array to its own function
   arrayToSet();
 }
 
@@ -113,7 +113,7 @@ void loop() {                    //This is general functions for manual control 
 
       case 'I':
         Serial.println("Beginning Settings download");
-        SD.remove("settings.txt");
+        SD.remove("/stuff/settings.txt");
         while (i <= numReadings) {
           if (Serial.available() > 0) {
             Serial.println("reciveing . . .");
@@ -129,7 +129,7 @@ void loop() {                    //This is general functions for manual control 
 
             if (i >= numReadings) {
 
-              saveToSD(SD);
+              saveToSD(SD, "/stuff/settings.txt");
 
               i == 0;  // Reset i after saving
             }
@@ -207,7 +207,7 @@ void ledOff() {
 
 
 //SD Card ******************************//
-void SDtoArray(fs::FS &fs) {
+void SDtoArray(fs::FS &fs, const char *path) {
 
   if (!SD.begin(5)) {
     Serial.println("No SD card");
@@ -219,9 +219,9 @@ void SDtoArray(fs::FS &fs) {
   const int numReadings = 10;   // Size of the array
   char dataArray[numReadings];  // Array to hold the file contents (adjust size as needed)
 
-
+  
   // Settings Load Function ******************//
-  settings = fs.open("settings.txt" FILE_WRITE);  // i dont know why but this wont open the file? i dont have a solution atm
+  File settings = fs.open(path);  // i dont know why but this wont open the file? i dont have a solution atm
   //im attempting to use file open directly from the FS library like how SD_test does, because it actually works for some reason, but im clearly missing something.
   //also i wonder if SD_test is referencing another sketch.
 
@@ -232,6 +232,7 @@ void SDtoArray(fs::FS &fs) {
     while (settings.available() && index < sizeof(dataArray) - 1) {
       dataArray[index] = settings.read();  // Read character by character
       index++;
+      Serial.println("WORKING");
     }
 
     dataArray[index] = '\0';  // Null-terminate the array
@@ -240,7 +241,7 @@ void SDtoArray(fs::FS &fs) {
 
     Serial.println(dataArray);
   } else {
-    Serial.println("Error opening settings.txt");
+    Serial.println("Error opening settings");
   }
 }
 
@@ -259,9 +260,9 @@ void arrayToSet() {
 
 
 
-void saveToSD(fs::FS &fs) {
+void saveToSD(fs::FS &fs, const char *path) {
 
-  File settings = fs.open("settings.txt", FILE_WRITE);
+  File settings = fs.open(path);
   if (!settings) {
     Serial.println("unable to open file");
   } else {
