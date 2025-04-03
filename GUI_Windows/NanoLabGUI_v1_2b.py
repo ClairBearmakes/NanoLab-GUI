@@ -43,7 +43,9 @@ calender_font = ("Arial", 10)
 
 # open log file
 logf = open('data\\log.txt', 'w+')
+logf.write(f"GUI: Log opened\n")
 log_new = True
+
 
 ## Arduino Stuff ##
 
@@ -71,6 +73,7 @@ for p in ports:
 
 		if "CH340" in p[1] and ardname in p[1]: # Looks for "CH340" and "COM#"
 			print (f"Found Arduino on {ardname}")
+			logf.write(f"GUI: Found Arduino on {ardname}\n")
 			int1 = 9 # Causes loop to end
 
 		if int1 == 8:
@@ -91,7 +94,7 @@ try:
 except:
 	port = "not connected"
 	print("exception found")
-	logf.write("Arduino not found\n")
+	logf.write("GUI: Arduino not found\n")
 
 def findard():
 	serPort = ""
@@ -114,7 +117,7 @@ def findard():
 
 			if "CH340" in p[1] and ardname in p[1]: # Looks for "CH340" and "COM#"
 				print ("Found Arduino on " + ardname)
-				logf.write("Found Arduino on " + ardname)
+				logf.write(f"GUI: Found Arduino on {ardname}\n")
 				print(int1)
 				int1 = 9 # Causes loop to end.
 
@@ -139,7 +142,9 @@ def arduino_set():
 	except:
 		port = "not connected"
 
+
 # set starting variables
+global dark_mode
 dev_mode = True # if True will show log button and test buttons
 beta = True # enable beta testing form button
 dark_mode = False # changes color theme
@@ -148,29 +153,16 @@ type_selected = False
 box_type = ""
 
 setup_root = tk.Tk()
-#root = tk.Tk()
 
-# ttk.Style().theme_use('black') https://stackoverflow.com/questions/24367710/how-do-i-change-the-overall-theme-of-a-tkinter-application?rq=3
-def toggle_dark(): # maybe use stackoverflow.com/questions/60595078/implementing-dark-mode-with-on-off-function-in-simple-python-tkinter-program
+def toggle_dark():
 	global dark_mode
 	dark_mode = not dark_mode
 	print(f"{dark_mode}")
 	logf.write(f"GUI: dark_mode = {dark_mode}\n")
-	set_theme()
 
-print(dark_mode)
 def set_theme():
 	global menu_bg_color, menu_fg_color, menu_act_bg_color, bg_color, fg_color, act_bg_color, act_fg_color
-	if dark_mode == False:
-		# set normal colors
-		menu_bg_color = "#000000"
-		menu_fg_color = "#ffffff"
-		menu_act_bg_color = "#000000"
-		bg_color = "#ffffff"
-		fg_color = "#000000"
-		act_bg_color = "#ffffff"
-		act_fg_color = "#808080"
-	else:
+	if dark_mode:
 		# set dark mode colors
 		menu_bg_color = "#000000"
 		menu_fg_color = "#ffffff"
@@ -179,6 +171,15 @@ def set_theme():
 		fg_color = "#ffffff"
 		act_bg_color = "#808080"
 		act_fg_color = "#ffffff"
+	else:
+		# set normal colors
+		menu_bg_color = "#000000"
+		menu_fg_color = "#ffffff"
+		menu_act_bg_color = "#000000"
+		bg_color = "#ffffff"
+		fg_color = "#000000"
+		act_bg_color = "#ffffff"
+		act_fg_color = "#808080"
 set_theme()
 
 
@@ -211,12 +212,6 @@ setup2_frame = tk.Frame(setup_root, highlightbackground="grey", highlightthickne
 # place frames into setup window
 setup1_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
 setup2_frame.grid(rowspan=4, columnspan=10, row=0, column=0, sticky="nesw")
-
-"""
-def goto_main():
-	if selected == True:
-		setup_root.destroy
-"""
 
 def load_setup1():
 	set_theme()
@@ -300,42 +295,46 @@ def load_setup1():
 	version_label.grid(row=4, columnspan=2, column=0, sticky="sw")
 
 	## Dark Mode Button ##
-	global dark_mode
 	dark_mode = False
-	# Define our switch function
+	# Define switch function
 	def switch_theme():
 		global dark_mode
-		print(dark_mode)
+		toggle_dark()
 		# Determine if on or off
-		if dark_mode == True:
-			theme_switch.config(image = dark)
+		if dark_mode:
+			theme_switch.config(image = darkimg)
 			theme_label.config(text = "Dark")
-			dark_mode = False
+			theme_label.grid(rowspan=2, row=3, columnspan=1, column=2, sticky="", padx="1", pady="1")
+			theme_switch.grid(rowspan=2, row=4, columnspan=1, column=2, sticky="s", padx="1", pady="1")
 			set_theme()
-		if dark_mode == False:
-			theme_switch.config(image = light)
+		else:
+			theme_switch.config(image = lightimg)
 			theme_label.config(text = "Light")
-			dark_mode = True
+			theme_label.grid(rowspan=2, row=3, columnspan=1, column=2, sticky="", padx="1", pady="1")
+			theme_switch.grid(rowspan=2, row=4, columnspan=1, column=2, sticky="s", padx="1", pady="1")
 			set_theme()
-		set_theme()
 
 	theme_label = Label(setup1_frame, text="Light", font=("Ubuntu", 8), bg=bg_color, fg=fg_color)
-	theme_label.grid(rowspan=2, row=3, columnspan=1, column=2, sticky="", padx="1", pady="1")
+	#theme_label.grid(rowspan=2, row=3, columnspan=1, column=2, sticky="", padx="1", pady="1")
 
 	lightimg = PhotoImage(file = resource_path("assets\\light.png"))
 	darkimg = PhotoImage(file = resource_path("assets\\dark.png"))
-	theme_switch = tk.Button(setup1_frame, image=light, bg=bg_color, width=48, height=28, command=lambda:switch_theme())
-	#theme_switch.image = logo_img
-	theme_switch.grid(rowspan=2, row=4, columnspan=1, column=2, sticky="s", padx="1", pady="1")
+
+	theme_switch = tk.Button(setup1_frame, image=lightimg, bg=bg_color, width=48, height=28, command=lambda:switch_theme())
+	#theme_switch.grid(rowspan=2, row=4, columnspan=1, column=2, sticky="s", padx="1", pady="1")
 
 	if dark_mode == True:
 		theme_switch.config(image = darkimg)
 		theme_label.config(text = "Dark")
+		theme_label.grid(rowspan=2, row=3, columnspan=1, column=2, sticky="", padx="1", pady="1")
+		theme_switch.grid(rowspan=2, row=4, columnspan=1, column=2, sticky="s", padx="1", pady="1")
 		dark_mode = False
 		set_theme()
 	if dark_mode == False:
 		theme_switch.config(image = lightimg)
 		theme_label.config(text = "Light")
+		theme_label.grid(rowspan=2, row=3, columnspan=1, column=2, sticky="", padx="1", pady="1")
+		theme_switch.grid(rowspan=2, row=4, columnspan=1, column=2, sticky="s", padx="1", pady="1")
 		dark_mode = True
 		set_theme()
 
@@ -350,36 +349,6 @@ def load_setup2():
 	# Set Label
 	welcome2_label = Label(setup2_frame, text="Pick Your Version", font=("Ubuntu", 20), bg=bg_color)
 	welcome2_label.grid(row=0, columnspan=4, column=3, sticky="")
-
-	# go back a frame
-	tk.Button(
-		setup2_frame,
-		text="Back",
-		font=normal_font,
-		height=("1"),
-		width=("7"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=lambda:load_setup1()
-		).grid(row=5, column=5, sticky="", padx="5", pady="3")
-
-	# finish setup
-	tk.Button(
-		setup2_frame,
-		text="Done",
-		font=normal_font,
-		height=("1"),
-		width=("7"),
-		bg=bg_color,
-		fg=fg_color,
-		cursor="hand2",
-		activebackground=act_bg_color,
-		activeforeground=act_fg_color,
-		command=setup_root.destroy
-		).grid(row=5, column=6, sticky="", padx="5", pady="3")
 
 	# print("second screen loaded")
 """
@@ -894,7 +863,7 @@ def load_menu():
 			command=lambda:load_log_frame() # open a log of what is happening right now on the Arduino
 			).grid(row=0, column=6, sticky="w", padx="5", pady="3")
 
-
+	"""
 	image = Image.open(resource_path("assets\\night-mode-dark.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((30, 30))
@@ -902,6 +871,7 @@ def load_menu():
 	logo_widget = tk.Button(menu, image=logo_img, bg=menu_bg_color, command=lambda:toggle_dark(dark_mode))
 	logo_widget.image = logo_img
 	#logo_widget.grid(row=0, columnspan=1, column=8, sticky="e", padx="3", pady="1")
+	"""
 
 	# print("loaded menu")
 
@@ -1529,7 +1499,7 @@ def load_camera_settings_frame():
 		SaveBtn.bg_color = "green"
 		savebtn4 = SaveBtn(camera_settings_frame, 5, 1, 16, save_cam_set)
 		homebtn4 = HomeBtn(camera_settings_frame, 5, 3, 1) # master, rownum, colnum, colspan
-		logf.write("GUI: Camera settings set\n")
+		logf.write("GUI: Timelapse intervals set\n")
 		global cam_changed
 		cam_changed = True
 		all_set_changed()
@@ -1856,7 +1826,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	upd_btn = tk.Button(log_frame,text = 'Update', font=normal_font, bg=bg_color, fg=fg_color, command = lambda:load_log())
 	upd_btn.grid(rowspan=1, row=2, columnspan=4, column=1, padx="8", pady="5", sticky="")
 
-	# Read the Image
+	"""
 	image = Image.open(resource_path("assets\\log.jpg"))
 	# Resize the image using resize() method
 	resize_image = image.resize((1000, 700))
@@ -1864,6 +1834,7 @@ def load_log_frame(): # log of what is happening on Arduino right now
 	logo_widget = tk.Label(log_frame, image=logo_img, bg=bg_color)
 	logo_widget.image = logo_img
 	# logo_widget.grid(row=1, column=8, sticky="nsew", padx="8", pady="5")
+	"""
 
 	# set frame in window
 	log_frame.grid(rowspan=4, columnspan=8, row=1, column=0, sticky="nesw")
@@ -1923,7 +1894,7 @@ class SetPreview: # command
 		elif all_changed == False:
 			# set all values or set unselected values
 			print("Using better one-click")
-			logf.write("GUI: Using better one-click")
+			logf.write("GUI: Using better one-click\n")
 			self.predates = []
 			self.pre_start_date = f"{cur_year}-{cur_month}-{cur_day}"
 			self.pre_end_date = f"{cur_year}-{cur_month}-{cur_day+1}"
@@ -1937,13 +1908,12 @@ class SetPreview: # command
 			self.predatesard.append(self.pre_end_date_ard)
 			self.predatesard.append(self.pre_start_date_ard) #2025/3/12
 			print(self.predatesard)
-			if len(dates) > 1:
+			if len(dates) == 2:
 				self.dates = dates
 				print(self.dates)
 				self.datesard = datesard
 				print(self.datesard)
 			else:
-				print("**5****4***")
 				logf.write("GUI: Please select schedule")
 				self.dates = self.predates
 				self.datesard = self.predatesard

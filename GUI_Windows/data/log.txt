@@ -1,4 +1,4 @@
-GUI: HydroFuge selected
+GUI: Log opened
+GUI: Arduino not found
+GUI: dark_mode = True
 GUI: Settings file opened
-GUI: Experiment will run from 04-01-25 - 04-02-25
-GUI: Using better one-click
