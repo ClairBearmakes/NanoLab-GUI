@@ -1,11 +1,6 @@
 GUI: Log opened
 GUI: Arduino not found
 GUI: HydroFuge selected
-GUI: dark_mode = True
 GUI: Settings file opened
-GUI: Experiment will run from 04-03-25 - 04-04-25
-GUI: Using better one-click
-GUI: Water pump settings set
-GUI: Using better one-click
-GUI: Water pump settings set
-GUI: Using better one-click
+GUI: Arduino not found
+GUI: Experiment will run from 04-09-25 to 04-10-25

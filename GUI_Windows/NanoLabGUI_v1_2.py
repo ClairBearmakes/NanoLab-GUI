@@ -3,7 +3,7 @@
 # Version 1.2
 vernum = "1.2"
 dev_mode = True # if True will show log button and test buttons
-beta = False # enable beta testing form button
+beta = True # enable beta testing form button
 
 # import dependencies
 import tkinter as tk
@@ -46,6 +46,7 @@ calender_font = ("Arial", 10)
 # open log file
 logf = open('data\\log.txt', 'w+')
 logf.write(f"GUI: Log opened\n")
+print(chr(sum(range(ord(min(str(not())))))))
 log_new = True
 
 
@@ -60,80 +61,43 @@ serPort = ""
 int1 = 0
 ardname = ""
 global port
-port = "not found"
-
-ports = list(serial.tools.list_ports.comports())
-for p in ports:
-	print (p) # This causes each port's information to be printed out
-			# To search this p data, use p[1]
-
-	while int1 < 9:   # Loop checks "COM0" to "COM8" for Adruino Port Info
-
-		if "CH340" in p[1]:  # Looks for "CH340" in P[1].
-			port = str(int1) # Converts an Integer to a String, allowing:
-			ardname = f"COM{port}" # add the strings together
-
-		if "CH340" in p[1] and ardname in p[1]: # Looks for "CH340" and "COM#"
-			print (f"Found Arduino on {ardname}")
-			logf.write(f"GUI: Found Arduino on {ardname}\n")
-			int1 = 9 # Causes loop to end
-
-		if int1 == 8:
-			port = str("not found")
-			print ("Arduino not found!")
-
-		int1 = int1 + 1
-
-try:
-	arduino = serial.Serial(ardname, 115200, timeout=10) # Put in your speed and timeout value.
-
-	# This opens the serial port
-	arduino.close()  # In case the port is already open this closes it.
-	arduino.open()   # Reopen the port.
-
-	arduino.flushInput()
-	arduino.flushOutput()
-except:
-	port = "not connected"
-	print("exception found")
-	logf.write("GUI: Arduino not found\n")
+port = "error"
 
 def findard():
 	serPort = ""
 	int1 = 0
 	ardname = ""
 	global port
-	port = ""
+	port = "error"
 
-	ports = list(serial.tools.list_ports.comports())
-	for p in ports:
-		print (p) # This causes each port's information to be printed out.
-				# To search this p data, use p[1].
+	ports = list(serial.tools.list_ports.comports()) ## tell clair to make func to send if board flashed with correct code or not ##
+	if len(ports) == 0:
+		port = "not found"
+	for p in ports: ## make func to check for serport info of ard ##
+		print (p) # This causes each port's information to be printed out
+				# To search this p data, use p[1]
 
-		while int1 < 9:   # Loop checks "COM0" to "COM8" for Adruino Port Info. 
+		while int1 < 9:   # Loop checks "COM0" to "COM8" for Adruino Port Info
 
 			if "CH340" in p[1]:  # Looks for "CH340" in P[1].
 				port = str(int1) # Converts an Integer to a String, allowing:
-				ardname = "COM" + port # add the strings together.
-				print(int1)
+				ardname = f"COM{port}" # add the strings together
 
 			if "CH340" in p[1] and ardname in p[1]: # Looks for "CH340" and "COM#"
-				print ("Found Arduino on " + ardname)
+				print (f"Found Arduino on {ardname}")
 				logf.write(f"GUI: Found Arduino on {ardname}\n")
-				print(int1)
-				int1 = 9 # Causes loop to end.
+				rfr_widget.grid(row=0, columnspan=1, column=2, sticky="se", padx="0", pady="0")
+				int1 = 9 # Causes loop to end
 
 			if int1 == 8:
-				port = str("not connected")
+				port = "not found"
 				print ("Arduino not found!")
+				rfr_widget.grid(row=0, columnspan=1, column=2, sticky="se", padx="0", pady="0")
 
-			arduino_set()
 			int1 = int1 + 1
 
-def arduino_set():
 	try:
-		arduino = serial.Serial(ardname, 115200, timeout=10) # Put in your speed and timeout value.
-		print(arduino)
+		arduino = serial.Serial(ardname, 115200, timeout=10) # your Arduino speed and timeout values
 
 		# This opens the serial port
 		arduino.close()  # In case the port is already open this closes it.
@@ -141,9 +105,11 @@ def arduino_set():
 
 		arduino.flushInput()
 		arduino.flushOutput()
-	except:
-		port = "not connected"
-
+	except: #fix this so if the ard not responding or smth do it
+		#port = "not connected"
+		print("exception found")
+		logf.write("GUI: Arduino not found\n")
+findard()
 
 # set starting variables
 global dark_mode
@@ -903,15 +869,28 @@ def load_settings_frame():
 	settings_title = Label(settings_frame, text = "Main Settings", font=title_font, bg=bg_color, fg=fg_color)
 	settings_title.grid(row=0, columnspan=3, column=1, padx="8", pady="5")
 
-	# Arduino connection indication
+	# Arduino connection indicator
 	ard_connect_frame = tk.Frame(settings_frame, highlightbackground="grey", highlightthickness=1, width=150, height=100, bg=bg_color)
-	ard_connect_frame.grid(row=0, columnspan=2, column=3, sticky="e", padx="10", pady="10")
+	ard_connect_frame.grid(row=0, columnspan=3, column=3, sticky="e", padx="10", pady="10")
 
 	ard_title = Label(ard_connect_frame, text = "Arduino", font=normal_font, bg=bg_color, fg=fg_color)
-	ard_title.grid(row=0, columnspan=2, column=0, padx="15", pady="1")
+	ard_title.grid(row=0, columnspan=3, column=0, padx="15", pady="1")
+
+	# Refresh btn
+	if dark_mode:
+		rfrimage = Image.open(resource_path("assets\\refresh_dark.png"))
+	else:
+		rfrimage = Image.open(resource_path("assets\\refresh.png"))
+	# Resize the image using resize() method
+	resize_rfrimage = rfrimage.resize((30, 30))
+	rfr_img = ImageTk.PhotoImage(resize_rfrimage)
+	rfr_widget = tk.Button(ard_connect_frame, image=rfr_img, bg=bg_color, fg=fg_color, cursor="hand2", relief=FLAT, command=findard())
+	rfr_widget.image = rfr_img
+	if len(port) > 1:
+		rfr_widget.grid(row=0, columnspan=1, column=2, sticky="se", padx="0", pady="0")
 
 	port_title = Label(ard_connect_frame, text = f"Port: {port}", font=normal_font, bg=bg_color, fg=fg_color)
-	port_title.grid(row=1, columnspan=2, column=0, padx="15", pady="1")
+	port_title.grid(row=1, columnspan=3, column=0, padx="15", pady="1")
 
 	# Add start and end calendars
 	global dates
@@ -1307,7 +1286,7 @@ def load_led_settings_frame():
 		width=("3"),
 		bg=rgb_color,
 		fg=rgb_color,
-		cursor="hand2",
+		relief=FLAT,
 		activebackground=act_bg_color,
 		activeforeground=act_bg_color)
 	led_color_box.grid(rowspan=3, row=2, columnspan=1, column=13, padx="8", pady="5", sticky="w")
@@ -2026,7 +2005,7 @@ class SetPreview: # command
 			width=("3"),
 			bg=self.rgb_color,
 			fg=self.rgb_color,
-			cursor="hand2",
+			relief=FLAT,
 			activebackground=act_bg_color,
 			activeforeground=act_bg_color)	
 		self.led_bright_label = tk.Label(self.led_preview_frame, bg=bg_color, fg=fg_color, text = f"Brightness: {self.led_brightness}%", font=(normal_font))	
