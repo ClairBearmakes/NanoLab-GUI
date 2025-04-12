@@ -2,8 +2,8 @@
 # Code writen by Asher Powell at Warren Tech North
 # Version 1.2
 vernum = "1.2"
-dev_mode = True # if True will show log button and test buttons
-beta = True # enable beta testing form button
+dev_mode = False # if True will show log button and test buttons
+beta = False # enable beta testing form button
 
 # import dependencies
 import tkinter as tk
@@ -111,10 +111,14 @@ def findard():
 		logf.write("GUI: Arduino not found\n")
 findard()
 
+## End Arduino stuff ##
+
 # set starting variables
 global dark_mode
+global components
 dark_mode = False # changes color theme
 comp_count = 5 # number of components
+components = []
 type_selected = False
 box_type = ""
 
@@ -194,6 +198,8 @@ def load_setup1():
 		hydro_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
 		saveBtn.config(state="normal")
 		saveBtn.grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
+		global components
+		components = ["water pump", "LED", "fan", "timelapse camera", "atmospheric sensor"]
 		type_selected = True
 
 	def type_uni():
@@ -204,6 +210,8 @@ def load_setup1():
 		uni_logo_widget.grid(row=2, columnspan=3, column=1, sticky="", padx="8", pady="5")
 		saveBtn.config(state="normal")
 		saveBtn.grid(row=4, columnspan=2, column=3, sticky="", padx="5", pady="3")
+		global components
+		components = []
 		type_selected = True
 
 	# Set Label
@@ -419,7 +427,7 @@ github = "https://github.com/ClairBearmakes/NanoLab-GUI"
 betaform = "https://docs.google.com/forms/d/e/1FAIpQLScn_A1m8JzfphVgT83yOyETZGsvzdgrhsZ03veFijbZWohrrg/viewform"
 
 # set classes
-# buttons for main settings screen
+# buttons
 class MyButton: # text, font, height, width, row, column, columnspan, sticky, command
 	# class variables (attributes)
 	master = settings_frame # change with MyButton.master = whatever_frame
@@ -448,6 +456,32 @@ class MyButton: # text, font, height, width, row, column, columnspan, sticky, co
 
 	# def on_change(self):
 		# print(f"Record {self.checktext} = {self.checkbox_value.get()}") 
+
+# main buttons for main settings screen
+class MainBtns: # btntext, rownum, columnnum, command
+	# class variables (attributes)
+	master = settings_frame # change with MyButton.master = whatever_frame
+	bg_color = bg_color
+
+	def __init__(self, btntext, rownum, columnnum, command):	
+		self.btntext = btntext
+		self.font = big_font
+		self.btnheight = 2
+		self.btnwidth = 19
+		self.rownum = rownum
+		self.columnnum = columnnum
+		self.colspan = 1
+		self.stickdir = "sw"
+		self.command = command
+
+		self.btn = tk.Button(self.master, 
+		text=self.btntext, font=self.font,
+		height = self.btnheight,  width = self.btnwidth,
+		bg = self.bg_color, fg = fg_color,
+		activebackground = act_bg_color, activeforeground = act_fg_color,
+		cursor = "hand2", command=self.command)
+		self.btn.config(padx=0, pady=0)
+		self.btn.grid(row=self.rownum, column=self.columnnum, columnspan=self.colspan, padx="8", pady="5", sticky=self.stickdir)
 
 # test buttons
 class TestButton: # master, rownum, columnnum, colspan, stickdir, command
@@ -813,21 +847,20 @@ def load_menu():
 			command=lambda:load_data_results_frame() # data results frame
 			).grid(row=0, column=5, sticky="w", padx="5", pady="3")
 
-	if dev_mode == True:
-		# create log button widget
-		tk.Button(
-			menu,
-			text="Log",
-			font=normal_font,
-			height=("0"),
-			width=("4"),
-			bg=menu_bg_color,
-			fg=menu_fg_color,
-			cursor="hand2",
-			activebackground=menu_act_bg_color,
-			activeforeground=act_fg_color,
-			command=lambda:load_log_frame() # open a log of what is happening right now on the Arduino
-			).grid(row=0, column=6, sticky="w", padx="5", pady="3")
+	# create log button widget
+	tk.Button(
+		menu,
+		text="Log",
+		font=normal_font,
+		height=("0"),
+		width=("4"),
+		bg=menu_bg_color,
+		fg=menu_fg_color,
+		cursor="hand2",
+		activebackground=menu_act_bg_color,
+		activeforeground=act_fg_color,
+		command=lambda:load_log_frame() # open a log of what is happening right now on the Arduino
+		).grid(row=0, column=6, sticky="w", padx="5", pady="3")
 
 	"""
 	image = Image.open(resource_path("assets\\night-mode-dark.png"))
@@ -886,8 +919,8 @@ def load_settings_frame():
 	rfr_img = ImageTk.PhotoImage(resize_rfrimage)
 	rfr_widget = tk.Button(ard_connect_frame, image=rfr_img, bg=bg_color, fg=fg_color, cursor="hand2", relief=FLAT, command=findard())
 	rfr_widget.image = rfr_img
-	if len(port) > 1:
-		rfr_widget.grid(row=0, columnspan=1, column=2, sticky="se", padx="0", pady="0")
+	#if len(port) > 1:
+		#rfr_widget.grid(row=0, columnspan=1, column=2, sticky="se", padx="0", pady="0")
 
 	port_title = Label(ard_connect_frame, text = f"Port: {port}", font=normal_font, bg=bg_color, fg=fg_color)
 	port_title.grid(row=1, columnspan=3, column=0, padx="15", pady="1")
@@ -937,19 +970,19 @@ def load_settings_frame():
 			date_pattern="mm-dd-yy", font=calender_font)
 	end_cal.grid(row=2, columnspan=2, column=2, padx="8", pady="5", sticky="")
 
-	# text, font, height, width, row, column, columnspan, sticky, command
-	w_pump_btn = MyButton("Water Pump Settings", big_font, 1, 19, 4, 1, 1, "sw", "normal", lambda:raise_wp_set())
-	led_set_btn = MyButton("LED Settings", big_font, 1, 19, 4, 2, 1, "sw", "normal", lambda:raise_led_set())
-	fan_set_btn = MyButton("Fan Settings", big_font, 1, 19, 4, 3, 1, "sw", "normal", lambda:raise_fan_set())
-	cam_set_btn = MyButton("Timelapse Intervals", big_font, 1, 19, 5, 1, 1, "sw", "normal", lambda:raise_cam_set())
-	atmos_set_btn = MyButton("Atmospheric Sensor", big_font, 1, 19, 5, 2, 1, "sw", "normal", lambda:raise_atmos_set())
+	# btntext, rownum, columnnum, command
+	w_pump_btn = MainBtns("Water Pump Settings", 4, 1, lambda:raise_wp_set())
+	led_set_btn = MainBtns("LED Settings", 4, 2, lambda:raise_led_set())
+	fan_set_btn = MainBtns("Fan Settings", 4, 3, lambda:raise_fan_set())
+	cam_set_btn = MainBtns("Timelapse Intervals", 5, 1, lambda:raise_cam_set())
+	atmos_set_btn = MainBtns("Atmospheric Sensor", 5, 2, lambda:raise_atmos_set())
 	if comp_count <= 5:
-		data_res_btn = MyButton("Data Results", big_font, 1, 19, 5, 3, 1, "sw", "normal", lambda:load_data_results_frame())
+		data_res_btn = MainBtns("Data Results", 5, 3, lambda:load_data_results_frame())
 	select_sch_btn = MyButton("Select Schedule", ("Ubuntu", 15), 1, 19, 6, 2, 1, "", "normal", lambda:sel_date())
 	if beta == True:
-		beta_btn = MyButton("Rate your experience", ("Ubuntu", 10), 0, 19, 7, 0, 2, "sw", "normal", lambda:openbetaform())
-	version_label = Label(settings_frame, text=f"Version {vernum}", font=("Ubuntu", 10), bg=bg_color, fg=fg_color)
-	version_label.grid(row=8, columnspan=1, column=0, sticky="n")
+		beta_btn = MyButton("Rate your experience", ("Ubuntu", 9), 0, 19, 7, 0, 2, "sw", "normal", lambda:openbetaform())
+	version_label = Label(settings_frame, text=f"Version {vernum}", font=("Ubuntu", 9), bg=bg_color, fg=fg_color)
+	version_label.grid(row=6, columnspan=1, column=0, sticky="sw")
 	global all_changed
 	send_set_btn()
 
@@ -1607,7 +1640,7 @@ def load_atmos_sensor_frame():
 	checkboxs1 = MyCheckboxs(atmos_sensor_frame, 2, 6, 1)
 
 	reading_checks_label = tk.Label(atmos_sensor_frame, text = "What do you want to record?", font=("Ubuntu", 14), bg=bg_color, fg=fg_color, padx="8", pady="8")
-	reading_checks_label.grid(rowspan=2, row=1, column=6, sticky="", padx="8", pady="8")
+	reading_checks_label.grid(rowspan=1, row=2, column=6, sticky="n", padx="8", pady="8")
 
 	def save_atmos_set():
 		print(sliders5.show_values())
@@ -1795,8 +1828,6 @@ def load_log_frame(): # log of what is happening on Arduino right now
 				log.insert(tk.INSERT, data)
 				log_new = False  # Mark as loaded
 			else:
-				print("no")
-				print(data)
 				log.delete("1.0", tk.END)
 				log.insert(tk.INSERT, data)
 	load_log()
@@ -1893,21 +1924,14 @@ class SetPreview: # command
 				self.datesard = datesard
 				print(self.datesard)
 			else:
-				logf.write("GUI: Please select schedule")
 				self.dates = self.predates
 				self.datesard = self.predatesard
-			#finally:
-				#raise Exception("Please select your schedule\n")
-				#self.dates = self.predates
-				#self.datesard = self.predatesard
 			
 			try:
 				self.wp_dur = wp_dur
 				self.wp_fre = wp_fre
 				self.wp_delay = wp_delay
 			except NameError:
-				#logf.write("GUI: Please select water pump settings\n")
-				#raise Exception("Select water pump settings")
 				self.wp_dur = 8
 				self.wp_fre = 2
 				self.wp_delay = 720
@@ -1920,8 +1944,6 @@ class SetPreview: # command
 				self.rgb_color = rgb_color
 				self.led_brightness = led_brightness
 			except NameError:
-				#logf.write("GUI: Please select LED settings\n")
-				#raise Exception("Select LED settings")
 				self.led_dur = 360
 				self.led_fre = 2
 				self.led_delay = 360
@@ -1935,8 +1957,6 @@ class SetPreview: # command
 				self.fan_delay = fan_delay
 				self.fan_str = fan_str
 			except NameError:
-				#logf.write("GUI: Please select fan settings\n")
-				#raise Exception("Select LED settings")
 				self.fan_dur = 60
 				self.fan_fre = 6
 				self.fan_delay = 60
@@ -1946,8 +1966,6 @@ class SetPreview: # command
 				self.cam_fre = cam_fre
 				self.cam_delay = cam_delay
 			except NameError:
-				#logf.write("GUI: Please select camera settings\n")
-				#raise Exception("Select LED settings")
 				self.cam_fre = 1
 				self.cam_delay = 720
 				
@@ -1959,8 +1977,6 @@ class SetPreview: # command
 				self.humid_val = humid_val
 				self.bar_press_val = bar_press_val
 			except NameError:
-				#logf.write("GUI: Please select atmospheric sensor settings\n")
-				#raise Exception("Select LED settings")
 				self.atmos_fre = 4
 				self.atmos_delay = 180
 				self.gas_val = False
