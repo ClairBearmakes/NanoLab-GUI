@@ -1,7 +1,9 @@
 GUI: Log opened
 GUI: Arduino not found
-GUI: dark_mode = True
 GUI: HydroFuge selected
+GUI: dark_mode = True
 GUI: Settings file opened
 GUI: Arduino not found
-GUI: Experiment will run from 04-09-25 - 01-01-28
+GUI: Fan settings set
+GUI: LED settings set
+GUI: Using better one-click

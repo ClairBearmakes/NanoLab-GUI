@@ -254,7 +254,7 @@ def load_setup1():
 
 	# Universal
 	# Read the Image
-	image = Image.open(resource_path("assets\\Universal NanoLab.png"))
+	image = Image.open(resource_path("assets\\Coming Soon.png"))
 	# Resize the image using resize() method
 	resize_image = image.resize((270, 320))
 	logo_img = ImageTk.PhotoImage(resize_image)
