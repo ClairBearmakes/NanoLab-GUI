@@ -1,4 +1,9 @@
 GUI: Log opened
 GUI: Arduino not found
+GUI: HydroFuge selected
 GUI: Settings file opened
 GUI: Arduino not found
+GUI: LED settings set
+GUI: Using better one-click
+GUI: LED settings set
+GUI: Using better one-click

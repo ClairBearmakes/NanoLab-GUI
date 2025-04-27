@@ -2033,7 +2033,7 @@ class SetPreview: # command
 			try:
 				self.led_dur = led_dur
 				self.led_fre = led_fre
-				self.led_delay = led_dur
+				self.led_delay = led_delay
 				self.rgb_code = rgb_code
 				self.rgb_color = rgb_color
 				self.led_brightness = led_brightness

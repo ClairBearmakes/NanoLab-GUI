@@ -1,9 +1,17 @@
 GUI: Log opened
 GUI: Arduino not found
 GUI: HydroFuge selected
-GUI: dark_mode = True
 GUI: Settings file opened
 GUI: Arduino not found
-GUI: Fan settings set
 GUI: LED settings set
+GUI: Using better one-click
+GUI: LED settings set
+GUI: Using better one-click
+GUI: LED settings set
+GUI: Using better one-click
+GUI: Water pump settings set
+GUI: Using better one-click
+GUI: Water pump settings set
+GUI: Using better one-click
+GUI: Water pump settings set
 GUI: Using better one-click
