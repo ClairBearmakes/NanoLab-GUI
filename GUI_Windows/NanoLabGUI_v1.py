@@ -248,8 +248,8 @@ cam_set = [] #"1/w"
 atmos_sen_set = [] #"2/d"
 all_set = f"{w_pump_set = } {LED_set = } {fan_set = } {cam_set = } {atmos_sen_set = }"
 
-with open("data/variablesfile.txt", 'w') as f:
-	f.write(all_set + '\n')
+#with open("data/variablesfile.txt", 'w') as f:
+	#f.write(all_set + '\n')
 	#f.write(str(all_set1))
 
 # initiallize app with basic settings
