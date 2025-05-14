@@ -27,7 +27,7 @@ Adafruit_NeoPixel *pixels;
 AlarmId id;
 
 SCMD myMotorDriver;  //This creates the main object of one motor driver and connected peripherals.
-
+                      //defined later
 File settings;
 
 const int numReadings = 10;   // Size of the array
@@ -36,7 +36,7 @@ float sensorReadings[numReadings];
 
 void setup() {
   Serial.begin(115200);
-  SD.begin(5);
+  SPI.begin(18, 19, 23, 5);
   //while(!Serial);
 
   pinMode(27, INPUT_PULLUP);  //Use to halt motor movement (ground)
@@ -51,7 +51,7 @@ void setup() {
   pixels = new Adafruit_NeoPixel(numPixels, led, pixelFormat);
   pixels->begin();
   pinMode(ledP, OUTPUT);
-  digitalWrite(ledP, HIGH);  //by default we want this set to high and then flash it to low to wipe pixels.
+  digitalWrite(ledP, HIGH);  //by default we want this set to high and then flash it to low to wipe pixels. this conntrols a transistor that stops and allows 5v to the LED ring
   //did this because the pixels wouldn't clear when told too and instead were displaying random garbled barf!
 
 
@@ -60,6 +60,9 @@ void setup() {
 
   //***** Configure the Motor Driver's Settings *****//
   //  .commInter face is I2C_MODE
+
+  //Defines the motor conntroller object from earlier
+
   myMotorDriver.settings.commInterface = I2C_MODE;
 
   //  set address if I2C configuration selected with the config jumpers
@@ -81,6 +84,7 @@ void setup() {
   Alarm.timerRepeat(dataArray[3], 0, 0, ledOn);
   Alarm.timerRepeat(dataArray[3], 0, 0, ledOff);
 
+//commented out because the motor controller wasnt being recongnised.
   Serial.print("Checking for Motor Controller");
   //*****initialize the driver get wait for idle*****//
   /*  while (myMotorDriver.begin() != 0xA9)  //Wait until a valid ID word is returned
@@ -108,16 +112,19 @@ void loop() {                    //This is general functions for manual control 
   if (Serial.available() > 0) {  //Serial functions, it waits for the serial port to be avilible
     int DoThis = Serial.read();  // then switches case based on set the character sent.
                                  //mostly just for quickly turning something off/on to check if it works.
-                                 //maxwell said 'yeehaw' to this and i dont know why
+                                 //maxwell said 'yeehaw' to this and i dont know why, may need to find a better method based on this comment
     switch (DoThis) {
 
       case 'I':
         Serial.println("Beginning Settings download");
+        
+        Serial.flush();
         SD.remove("/stuff/settings.txt");
+
         while (i <= numReadings) {
           if (Serial.available() > 0) {
             Serial.println("reciveing . . .");
-            float reading = Serial.parseFloat();  // Read incoming settings
+            float reading = Serial.parseFloat();  // Read incoming settings, skipping any characters, stops reading at the end of a number
 
             // Store the reading in the array
 
@@ -138,7 +145,7 @@ void loop() {                    //This is general functions for manual control 
         Serial.println("download done");
         break;
 
-      case 'L':
+      case 'L': //LED test function, Off/On/Off
         pixels->fill(pixels->Color(214, 83, 211), 0, 15);
         delay(10000);
         digitalWrite(ledP, LOW);
@@ -147,7 +154,7 @@ void loop() {                    //This is general functions for manual control 
 
         break;
 
-      case 'P':
+      case 'P': // Pump Test function, In/Wait/Out
         myMotorDriver.setDrive(PUMP_MOTOR, 0, 50);
         delay(3000);
         myMotorDriver.setDrive(PUMP_MOTOR, 0, 0);
@@ -158,7 +165,7 @@ void loop() {                    //This is general functions for manual control 
 
         break;
 
-      case 'F':
+      case 'F': // Fan Test function, On/Off
         myMotorDriver.setDrive(FAN, 0, 50);
         delay(3000);
         myMotorDriver.setDrive(FAN, 0, 0);
@@ -182,7 +189,8 @@ void pumpFlush() {
   myMotorDriver.setDrive(PUMP_MOTOR, 0, 0);
 }
 
-
+//turns the fan on. i have this writen as the fan connected directly to the board and running off of 3.3v even thought the fan we're using is rated for 5v.
+//probably fine we'll see ig
 void fanOn() {
   digitalWrite(fan, HIGH);
 }
@@ -196,7 +204,8 @@ void ledOn() {
   pixels->show();
   Serial.println("turn lights on");
 }
-
+// the NeoPixels werent turning off correctly and we couldnt run the off the 3.3v of the board because they need 5v, so we are running LED Vin through a transistor that is on by default
+//and we flash it off to reset the leds. 5v from the NanoRack case.
 void ledOff() {
   digitalWrite(ledP, LOW);
   delay(100);
@@ -207,7 +216,7 @@ void ledOff() {
 
 
 //SD Card ******************************//
-void SDtoArray(fs::FS &fs, const char *path) {
+void SDtoArray(fs::FS &fs, const char *path) { //This loads the settings from the SD cards settings.txt file and writes them into the array that is used by the schedule bellow 
 
   if (!SD.begin(5)) {
     Serial.println("No SD card");
@@ -221,9 +230,9 @@ void SDtoArray(fs::FS &fs, const char *path) {
 
   
   // Settings Load Function ******************//
-  File settings = fs.open(path);  // i dont know why but this wont open the file? i dont have a solution atm
+  File settings = fs.open(path);  // i dont know why but this wont open the file? i dont have a solution atm. its able to create, delete, rename files but is unable to modify contents. 
   //im attempting to use file open directly from the FS library like how SD_test does, because it actually works for some reason, but im clearly missing something.
-  //also i wonder if SD_test is referencing another sketch.
+  //also i wonder if SD_test is referencing another sketch. 
 
 
   if (settings) {
@@ -246,7 +255,7 @@ void SDtoArray(fs::FS &fs, const char *path) {
 }
 
 
-
+//this is where the schedule is set based off a pre determined position in the array. we've documented array positions here : https://docs.google.com/spreadsheets/d/1JPTmcTCYlM9P-x_9hxaRDUCVdAjyxHlH8E4f6FbuCOs/edit?gid=0#gid=0
 void arrayToSet() {
   //Time And date and Alarms ******************************//
   setTime(5, 59, 40, 1, 1, 11);  // set time to Saturday 8:29:00am Jan 1 2011
@@ -255,11 +264,11 @@ void arrayToSet() {
   Alarm.timerRepeat(dataArray[1], 0, 0, fanOn);
   Alarm.timerRepeat(dataArray[2], 0, 0, fanOff);
   Alarm.timerRepeat(dataArray[3], 0, 0, ledOn);
-  Alarm.timerRepeat(dataArray[3], 0, 0, ledOff);  //arrays are 0 indexed, the 0th possition is used to check if the array has been loaded or not
+  Alarm.timerRepeat(dataArray[3], 0, 0, ledOff);  //arrays are 0 indexed, the 0th possition is going to be used to check if the array has been loaded or not, probably should be some unique identifier for each lab
 }
 
 
-
+//This saves the incoming data array to the SD card. this does this by itterating through each varible and writing it to the settings.txt file.
 void saveToSD(fs::FS &fs, const char *path) {
 
   File settings = fs.open(path);

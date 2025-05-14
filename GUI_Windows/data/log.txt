@@ -1,7 +1,0 @@
-GUI: Log opened
-GUI: Arduino not found
-GUI: HydroFuge selected
-GUI: Settings file opened
-GUI: Arduino not found
-GUI: Atmospheric sensor settings set
-GUI: Using better one-click
