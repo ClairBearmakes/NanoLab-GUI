@@ -421,7 +421,7 @@ logf.write("GUI: Settings file opened\n")
 # initiallize app with basic settings
 root = Tk() # root is the main window name
 root.title("Universal NanoLab Settings")
-root.configure(bg="white")
+root.configure(bg=bg_color)
 # set logo
 root.iconbitmap(resource_path("assets\\Universal logo.ico"))
 # small_icon = tk.PhotoImage(file="assets/NanoLabs_logo.png") #16
@@ -784,6 +784,9 @@ global previous_frame, current_frame
 previous_frame = f"none"
 current_frame = f"{settings_frame}"
 
+def back_func():
+	previous_frame.tkraise()
+
 def raise_main_set():
 	global previous_frame, current_frame
 	previous_frame = f"{current_frame}"
@@ -859,7 +862,7 @@ def load_menu():
 		cursor="hand2",
 		activebackground=menu_act_bg_color,
 		activeforeground=act_fg_color, 
-		command=lambda:raise_main_set()
+		command=back_func  #lambda:raise_main_set()
 		).grid(row=0, column=0, sticky="w", padx="5", pady="3") # row: across, column: vertical
 
 	# create about button widget
